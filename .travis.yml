@@ -1,0 +1,14 @@
+language: r
+sudo: required
+bioc_required: true
+warnings_are_errors: true
+
+r_github_packages:
+  - hadley/testthat
+- jimhester/covr
+
+bioc_packages:
+  - BiocInstaller
+
+after_success:
+  - Rscript -e 'library(covr);coveralls()'

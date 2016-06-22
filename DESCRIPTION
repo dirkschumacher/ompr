@@ -1,0 +1,16 @@
+Package: romp
+Type: Package
+Title: R optimization modelling project
+Version: 0.1.0
+Author: Dirk Schumacher
+Maintainer: Dirk Schumacher <mail@dirk-schumacher.net>
+Description: A package to model (mixed) integer programs.
+License: GPLv3
+LazyData: TRUE
+RoxygenNote: 5.0.1
+Imports:
+ stringr
+Suggests:
+ testthat,
+ clpAPI,
+ magrittr
