@@ -20,5 +20,8 @@ notifications:
   email:
     on_success: change
     on_failure: change
+    
+warnings_are_errors: false
+
 after_success:
 - Rscript -e 'library(covr); codecov()'
