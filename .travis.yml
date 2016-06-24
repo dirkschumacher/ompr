@@ -2,6 +2,11 @@ language: r
 sudo: false
 cache: packages
 
+addons:
+  apt:
+    packages:
+    - libglpk-dev
+    
 r_packages:
   - stringr
   - magrittr
