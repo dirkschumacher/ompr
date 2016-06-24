@@ -24,4 +24,4 @@ notifications:
 warnings_are_errors: false
 
 after_success:
-- Rscript -e 'library(covr); codecov()'
+  - Rscript -e 'covr::coveralls()'
