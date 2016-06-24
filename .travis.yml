@@ -1,14 +1,19 @@
 language: r
-sudo: required
-bioc_required: true
-warnings_are_errors: true
+sudo: false
+cache: packages
+
+r_packages:
+  - stringr
+  - magrittr
+  - Rglpk
 
 r_github_packages:
   - hadley/testthat
-- jimhester/covr
+  - jimhester/covr
 
-bioc_packages:
-  - BiocInstaller
-
+notifications:
+  email:
+    on_success: change
+    on_failure: change
 after_success:
-  - Rscript -e 'library(covr);coveralls()'
+- Rscript -e 'library(covr); codecov()'
