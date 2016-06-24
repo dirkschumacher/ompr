@@ -12,5 +12,5 @@ Imports:
  stringr
 Suggests:
  testthat,
- clpAPI,
+ Rglpk,
  magrittr
