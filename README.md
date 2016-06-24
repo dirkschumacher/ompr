@@ -1,7 +1,7 @@
 # Model MIPs in R
 
 [![Build Status](https://travis-ci.org/dirkschumacher/romp.png?branch=master)](https://travis-ci.org/dirkschumacher/romp)
-[![Coverage Status](https://coveralls.io/repos/dirkschumacher/romp/badge.svg?branch=master)](https://coveralls.io/r/dirkschumacher/romp?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/dirkschumacher/romp/badge.svg?branch=master)](https://coveralls.io/github/dirkschumacher/romp?branch=master)
 
 ROMP is a library for R that helps you to model your Mixed Integer Program in a more readable way. It is inspired by the excellent Jump project in Julia.
 
