@@ -69,7 +69,7 @@ These functions currently form the public API. Anything else is even more unstab
 ### Solver
 
 * `configure_glpk_solver` the GLPK solver based on the package `Rglpk`
-* `configure_symphony_solver` the GLPK solver based on the package `Rsymphony`
+* `configure_symphony_solver` the Symphony solver based on the package `Rsymphony`
  
 ## Examples
 
