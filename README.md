@@ -9,7 +9,7 @@ This is just a first pre-alpha version to test the DSL and with probably a lot o
 
 The documentation is incomplete.
 
-Current version: 0.1.0
+Current version: 0.1.1
 
 ## Install
 
@@ -69,6 +69,7 @@ These functions currently form the public API. Anything else is even more unstab
 ### Solver
 
 * `configure_glpk_solver` the GLPK solver based on the package `Rglpk`
+* `configure_symphony_solver` the GLPK solver based on the package `Rsymphony`
  
 ## Examples
 
