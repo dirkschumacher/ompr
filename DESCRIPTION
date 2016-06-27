@@ -1,7 +1,7 @@
 Package: romp
 Type: Package
 Title: R optimization modelling project
-Version: 0.1.0
+Version: 0.1.1
 Author: Dirk Schumacher
 Maintainer: Dirk Schumacher <mail@dirk-schumacher.net>
 Description: A package to model (mixed) integer programs.
@@ -13,4 +13,5 @@ Imports:
 Suggests:
  testthat,
  Rglpk,
- magrittr
+ magrittr,
+ Rsymphony
