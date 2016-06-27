@@ -6,7 +6,7 @@ addons:
   apt:
     packages:
     - libglpk-dev
-    
+
 r_packages:
   - stringr
   - magrittr
@@ -15,12 +15,13 @@ r_packages:
 r_github_packages:
   - hadley/testthat
   - jimhester/covr
+  - jimhester/lintr
 
 notifications:
   email:
     on_success: change
     on_failure: change
-    
+
 warnings_are_errors: false
 
 after_success:
