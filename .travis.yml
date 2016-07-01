@@ -6,11 +6,8 @@ addons:
   apt:
     packages:
     - libglpk-dev
-    
-r_packages:
-  - stringr
-  - magrittr
-  - Rglpk
+    - coinor-libcgl-dev
+    - r-cran-rsymphony
 
 r_github_packages:
   - hadley/testthat
@@ -20,7 +17,7 @@ notifications:
   email:
     on_success: change
     on_failure: change
-    
+
 warnings_are_errors: false
 
 after_success:
