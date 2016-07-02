@@ -207,7 +207,10 @@ standardize_ast <- function(ast, multiply = NULL) {
         new_ast[[3]] <- try_eval_exp(new_ast[[3]])
         standardize_ast(new_ast)
       } else {
-        if (as.character(ast[[1]]) == "-") {
+        if (length(ast) == 2 && as.character(ast[[1]]) == "-") {
+          # convert -x to -1 * x
+          standardize_ast(substitute(-1 * x, list(x = ast[[2]])))
+        } else if (as.character(ast[[1]]) == "-") {
           standardize_ast(substitute(x + -1 * y, list(x = ast[[2]], y = ast[[3]])))
         } else {
           new_ast <- ast
