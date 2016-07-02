@@ -1,5 +1,3 @@
 library(testthat)
 library(magrittr)
-library(Rglpk)
-library(Rsymphony)
 test_check("ompr")

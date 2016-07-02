@@ -238,6 +238,7 @@ standardize_ast <- function(ast, multiply = NULL) {
 # only multiplication and + operators are allowed
 # for each multiplication operation, one operand must be a numeric
 # the other a non-numeric
+#' @export
 extract_coefficients <- function(ast) {
   extr_coef_internal <- function(the_ast) {
     if (is.call(the_ast)) {
@@ -301,8 +302,3 @@ extract_coefficients <- function(ast) {
   }, result$coefficients, init = list())
   result
 }
-
-#extract_coefficients(substitute(5 + 3))
-#extract_coefficients(substitute(x))
-#extract_coefficients(substitute(x + y[1]))
-#extract_coefficients(substitute(5 + 3 * x + 5 * y[1, 2] + -1 * x + -4))

@@ -17,6 +17,7 @@ To install the current development version use devtools:
 
 ```R 
 devtools::install_github("dirkschumacher/ompr")
+devtools::install_github("dirkschumacher/ompr.glpk")
 ```
 
 ## Quickstart
@@ -26,7 +27,8 @@ A simple problem:
 ```R
 library(dplyr)
 library(Rglpk)
-library(romp)
+library(ompr)
+library(ompr.glpk)
 result <- MIPModel() %>%
   add_variable(x, type = "integer") %>%
   add_variable(y, type = "continuous") %>%
@@ -42,7 +44,8 @@ Solve a Knapsack problem:
 ```R
 library(dplyr)
 library(Rglpk)
-library(romp)
+library(ompr)
+library(ompr.glpk)
 max_capacity <- 5
 n <- 4
 weights <- runif(n, max = max_capacity)
@@ -68,8 +71,10 @@ These functions currently form the public API. Anything else is even more unstab
 
 ### Solver
 
-* `configure_glpk_solver` the GLPK solver based on the package `Rglpk`
-* `configure_symphony_solver` the Symphony solver based on the package `Rsymphony`
+Solvers are in different packages.
+
+* `configure_glpk_solver` the GLPK in the package `ompr.glpk`
+* `configure_symphony_solver` the Symphony solver in the package `ompr.symphony`
  
 ## Examples
 
@@ -78,7 +83,8 @@ These functions currently form the public API. Anything else is even more unstab
 ```R
 library(dplyr)
 library(Rglpk)
-library(romp)
+library(ompr)
+library(ompr.glpk)
 max_capacity <- 5
 n <- 10
 weights <- runif(n, max = max_capacity)
@@ -95,7 +101,8 @@ MIPModel() %>%
 ```R
 library(dplyr)
 library(Rglpk)
-library(romp)
+library(ompr)
+library(ompr.glpk)
 max_bins <- 10
 bin_size <- 3
 n <- 10
@@ -117,7 +124,8 @@ MIPModel() %>%
 ```R
 library(dplyr)
 library(Rglpk)
-library(romp)
+library(ompr)
+library(ompr.glpk)
 cities <- 6
 distance_matrix <- as.matrix(dist(1:cities, diag = TRUE, upper = TRUE))
 sub_tours <- Filter(function(x) length(x) > 0 & length(x) < cities, lapply(sets::cset_power(1:cities), as.double))

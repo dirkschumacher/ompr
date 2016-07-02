@@ -2,16 +2,6 @@ language: r
 sudo: false
 cache: packages
 
-addons:
-  apt:
-    packages:
-    - libglpk-dev
-    
-r_packages:
-  - stringr
-  - magrittr
-  - Rglpk
-
 r_github_packages:
   - hadley/testthat
   - jimhester/covr
@@ -20,7 +10,7 @@ notifications:
   email:
     on_success: change
     on_failure: change
-    
+
 warnings_are_errors: false
 
 after_success:
