@@ -3,5 +3,5 @@
 #' Implements a DSL to formulate optimization problems.
 #'
 #' @docType package
-#' @name romp
+#' @name ompr
 NULL

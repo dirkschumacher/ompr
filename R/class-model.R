@@ -167,12 +167,14 @@ setMethod("add_constraint",
             bound_subscripts <- list(...)
             constraints <- model@constraints
             if (is.list(bound_subscripts) && length(bound_subscripts) > 0) {
-              bound_subscripts <- Filter(function(x) is.integer(x) & length(x) > 0, bound_subscripts)
+              bound_subscripts <- Filter(function(x) is.integer(x) & length(x) > 0,
+                                         bound_subscripts)
               var_combinations <- expand.grid(bound_subscripts)
               new_constraints <- apply(var_combinations, 1, function(row) {
                 calling_env <- as.environment(as.list(row))
                 parent.env(calling_env) <- parent_env
-                add_constraint_internal(calling_env)
+                constraint <- add_constraint_internal(calling_env)
+                constraint
               })
               constraints <- c(constraints, new_constraints)
             } else {
