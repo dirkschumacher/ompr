@@ -204,3 +204,10 @@ test_that("we can model a tsp", {
     add_constraint(x[i, j], "==", x[j, i], i = 1:cities, j = 1:cities) %>%
     add_constraint(sum_exp(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]), "<=", length(sub_tours[s]) - 1, s = 1:length(sub_tours))
 })
+
+test_that("bug 20160701: -x as a formula", {
+  add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
+    add_variable(y, type = "continuous", ub = 4) %>%
+    add_constraint(x + y, "<=", 10) %>%
+    set_objective(-x + y, direction = "max")
+})
