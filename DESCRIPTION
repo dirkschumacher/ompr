@@ -1,4 +1,4 @@
-Package: romp
+Package: ompr
 Type: Package
 Title: R optimization modelling project
 Version: 0.1.1
