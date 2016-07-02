@@ -1,9 +1,9 @@
 # Model MIPs in R
 
-[![Build Status](https://travis-ci.org/dirkschumacher/romp.png?branch=master)](https://travis-ci.org/dirkschumacher/romp)
-[![Coverage Status](https://coveralls.io/repos/github/dirkschumacher/romp/badge.svg?branch=master)](https://coveralls.io/github/dirkschumacher/romp?branch=master)
+[![Build Status](https://travis-ci.org/dirkschumacher/ompr.png?branch=master)](https://travis-ci.org/dirkschumacher/ompr)
+[![Coverage Status](https://coveralls.io/repos/github/dirkschumacher/ompr/badge.svg?branch=master)](https://coveralls.io/github/dirkschumacher/ompr?branch=master)
 
-ROMP is a library for R that helps you to model your Mixed Integer Program in a more readable way. It is inspired by the excellent Jump project in Julia.
+OMPR (Optimization Modelling Package in R) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
 
 This is just a first pre-alpha version to test the DSL and with probably a lot of bugs. It is currently quite slow for realworld applications but I am working on it. Any feedback is greatly appreciated.
 
@@ -16,7 +16,7 @@ Current version: 0.1.1
 To install the current development version use devtools:
 
 ```R 
-devtools::install_github("dirkschumacher/romp")
+devtools::install_github("dirkschumacher/ompr")
 ```
 
 ## Quickstart
