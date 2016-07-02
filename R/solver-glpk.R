@@ -24,7 +24,7 @@ configure_glpk_solver <- function(verbose = FALSE) {
     column_bounds_l <- unlist(lapply(names(vars), function(key) {
       var <- vars[[key]]
       lb <- if (length(var@lb) == 0) -Inf else var@lb
-      if (var@type == "binary") lb <- 1
+      if (var@type == "binary") lb <- 0
       rep.int(x = lb, times = length(var@instances))
     }))
 

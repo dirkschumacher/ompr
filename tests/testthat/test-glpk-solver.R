@@ -83,3 +83,21 @@ test_that("glpk has a verbose option", {
     set_objective(sum_exp(x[i] * weights[i], i = 1:3) + 5)
   expect_output(solve_model(m, configure_glpk_solver(verbose = TRUE)))
 })
+
+test_that("glpk correctly considers lower and upper bounds on continuous variables", {
+  m <- add_variable(new("Model"), x, type = "continuous", lb = 4) %>%
+    add_variable(y, type = "continuous", ub = 4) %>%
+    add_constraint(x + y, "<=", 10) %>%
+    set_objective(-1 * x + y, direction = "max") %>%
+    solve_model(configure_glpk_solver())
+  expect_equivalent(get_solution(m, y), 4)
+  expect_equivalent(get_solution(m, x), 4)
+})
+
+test_that("glpk treats lbs of binary vars correctly", {
+  m <- add_variable(new("Model"), x, type = "binary") %>%
+    add_constraint(x, "<=", 1) %>%
+    set_objective(x, direction = "min") %>%
+    solve_model(configure_glpk_solver())
+  expect_equivalent(get_solution(m, x), 0)
+})
