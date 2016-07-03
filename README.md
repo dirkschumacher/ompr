@@ -17,7 +17,7 @@ To install the current development version use devtools:
 
 ```R 
 devtools::install_github("dirkschumacher/ompr")
-devtools::install_github("dirkschumacher/ompr.glpk")
+devtools::install_github("dirkschumacher/ompr.roi")
 ```
 
 ## Quickstart
@@ -26,15 +26,16 @@ A simple problem:
 
 ```R
 library(dplyr)
-library(Rglpk)
+library(ROI)
+library(ROI.plugin.glpk)
 library(ompr)
-library(ompr.glpk)
+library(ompr.roi)
 result <- MIPModel() %>%
   add_variable(x, type = "integer") %>%
   add_variable(y, type = "continuous") %>%
   set_objective(x + y, "max") %>%
   add_constraint(x + y, "<=", 11.25) %>%
-  solve_model(configure_glpk_solver(verbose = TRUE)) 
+  solve_model(with_ROI(solver = "glpk")) 
 get_solution(result, x)
 get_solution(result, y)
 ```
@@ -43,9 +44,10 @@ Solve a Knapsack problem:
 
 ```R
 library(dplyr)
-library(Rglpk)
+library(ROI)
+library(ROI.plugin.glpk)
 library(ompr)
-library(ompr.glpk)
+library(ompr.roi)
 max_capacity <- 5
 n <- 4
 weights <- runif(n, max = max_capacity)
@@ -53,7 +55,7 @@ MIPModel() %>%
   add_variable(x[i], i = 1:n, type = "binary") %>%
   set_objective(sum_exp(weights[i] * x[i], i = 1:n), "max") %>%
   add_constraint(sum_exp(weights[i] * x[i], i = 1:n), "<=", max_capacity) %>%
-  solve_model(configure_glpk_solver(verbose = TRUE)) %>%
+  solve_model(with_ROI(solver = "glpk")) %>% 
   get_solution(x[i]) # this gives you a data.frame
 ```
 
@@ -71,10 +73,13 @@ These functions currently form the public API. Anything else is even more unstab
 
 ### Solver
 
-Solvers are in different packages.
+Solvers are in different packages. `ompr.ROI` uses the ROI package which offers support for all kinds of solvers.
 
-* `configure_glpk_solver` the GLPK in the package `ompr.glpk`
-* `configure_symphony_solver` the Symphony solver in the package `ompr.symphony`
+* `with_ROI(solver = "glpk")` solve the model with GLPK. Install `ROI.plugin.glpk`
+* `with_ROI(solver = "symphony")` solve the model with Symphony. Install `ROI.plugin.symphony`
+* `with_ROI(solver = "cplex")` solve the model with CPLEX. Install `ROI.plugin.cplex`
+* ... See the [ROI package](https://cran.r-project.org/web/packages/ROI/index.html) for more plugins.
+
  
 ## Examples
 
@@ -82,9 +87,10 @@ Solvers are in different packages.
 
 ```R
 library(dplyr)
-library(Rglpk)
+library(ROI)
+library(ROI.plugin.glpk)
 library(ompr)
-library(ompr.glpk)
+library(ompr.roi)
 max_capacity <- 5
 n <- 10
 weights <- runif(n, max = max_capacity)
@@ -92,17 +98,19 @@ MIPModel() %>%
   add_variable(x[i], i = 1:n, type = "binary") %>%
   set_objective(sum_exp(weights[i] * x[i], i = 1:n), "max") %>%
   add_constraint(sum_exp(weights[i] * x[i], i = 1:n), "<=", max_capacity) %>%
-  solve_model(configure_glpk_solver(verbose = TRUE)) %>%
+  solve_model(with_ROI(solver = "glpk")) %>% 
   get_solution(x[i])
 ```
 
 ### Bin Packing
+An example of a more difficult model solved by symphony.
 
 ```R
 library(dplyr)
-library(Rglpk)
+library(ROI)
+library(ROI.plugin.symphony)
 library(ompr)
-library(ompr.glpk)
+library(ompr.roi)
 max_bins <- 10
 bin_size <- 3
 n <- 10
@@ -113,7 +121,7 @@ MIPModel() %>%
   set_objective(sum_exp(y[i], i = 1:max_bins), "min") %>%
   add_constraint(sum_exp(weights[j] * x[i, j], j = 1:n), "<=", y[i] * bin_size, i = 1:max_bins) %>%
   add_constraint(sum_exp(x[i, j], i = 1:max_bins), "==", 1, j = 1:n) %>%
-  solve_model(configure_glpk_solver(verbose = TRUE)) %>%
+  solve_model(with_ROI(solver = "symphony")) %>% 
   get_solution(x[i, j]) %>%
   filter(value > 0) %>%
   arrange(i)
@@ -123,9 +131,10 @@ MIPModel() %>%
 
 ```R
 library(dplyr)
-library(Rglpk)
+library(ROI)
+library(ROI.plugin.glpk)
 library(ompr)
-library(ompr.glpk)
+library(ompr.roi)
 cities <- 6
 distance_matrix <- as.matrix(dist(1:cities, diag = TRUE, upper = TRUE))
 sub_tours <- Filter(function(x) length(x) > 0 & length(x) < cities, lapply(sets::cset_power(1:cities), as.double))
@@ -138,7 +147,7 @@ MIPModel() %>%
   add_constraint(sum_exp(x[i, j], i = 1:cities), "==", 1, j = 1:cities) %>%
   add_constraint(sum_exp(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]), "<=",
                  length(sub_tours[[s]]) - 1, s = 1:length(sub_tours)) %>%
-  solve_model(configure_glpk_solver(verbose = TRUE)) %>%
+  solve_model(with_ROI(solver = "glpk")) %>% 
   get_solution(x[i, j]) %>%
   filter(value > 0)
 ```
