@@ -51,10 +51,12 @@ any_unbounded_indexes <- function(ast) {
   if (is.call(ast)) {
     if (ast[[1]] == "[") {
       for(i in 3:length(ast)) {
-        if (is.name(ast[[3]])) {
+        if (is.name(ast[[i]])) {
           return(TRUE)
         } else {
-          return(!is.numeric(ast[[3]]))
+          if (!is.numeric(ast[[i]])) {
+            return(FALSE)
+          }
         }
       }
       return(FALSE)
