@@ -1,10 +1,15 @@
 language: r
+r:
+  - oldrel
+  - release
+  - devel
 sudo: false
 cache: packages
 
 r_github_packages:
   - hadley/testthat
   - jimhester/covr
+  - jimhester/lintr
 
 notifications:
   email:
@@ -15,3 +20,6 @@ warnings_are_errors: false
 
 after_success:
   - Rscript -e 'covr::coveralls()'
+
+env:
+  - LINTR_COMMENT_BOT=true
