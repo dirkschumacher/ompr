@@ -211,3 +211,11 @@ test_that("bug 20160701: -x as a formula", {
     add_constraint(x + y, "<=", 10) %>%
     set_objective(-x + y, direction = "max")
 })
+
+test_that("model has a nice default output", {
+  m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
+    add_variable(y, type = "continuous", ub = 4) %>%
+    add_constraint(x + y, "<=", 10) %>%
+    set_objective(-x + y, direction = "max")
+  expect_output(show(m), "Constraints: 1")
+})

@@ -11,7 +11,9 @@ Variable <- setClass("Variable",
     type = "character",
     lb = "numeric",
     ub = "numeric",
-    instances = "character"),
+    instances = "character",
+    variable_expression = "expression",
+    variable_quantifiers = "list"),
   validity = function(object) {
     length(object@arity) == 1 && length(object@type) == 1 &&
     object@arity >= 0 && object@type %in% c("binary", "continuous", "integer")
