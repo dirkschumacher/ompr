@@ -66,3 +66,11 @@ setMethod("get_solution",
 
           }
 )
+
+#' @export
+setMethod("show", signature(object = "Solution"),
+          definition = function(object) {
+            cat("Status:", object@status)
+            cat("\\n")
+            cat("Objective value:", object@objective_value)
+          })

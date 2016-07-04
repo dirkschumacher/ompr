@@ -103,3 +103,20 @@ test_that("export solutions to data.frame in a model with more than one variable
   result <- get_solution(solution, y[i])
   expect_equivalent(result$value, c(2, 2, 2))
 })
+
+test_that("model has a nice default output", {
+  model <- Model() %>%
+    add_variable(x[i], i = 1:3, ub = 1) %>%
+    add_variable(y[i], i = 1:3, ub = 1) %>%
+    set_objective(sum_exp(x[i], i = 1:3))
+  solution <- new("Solution",
+                  status = "optimal",
+                  model = model,
+                  objective_value = 3,
+                  solution = setNames(c(2, 2, 2, 1, 1, 1),
+                                      c("y[1]", "y[3]", "y[3]",
+                                        "x[1]", "x[3]", "x[3]")))
+  expect_output(show(solution), "Status: optimal")
+  expect_output(show(solution), "Objective value: 3")
+})
+
