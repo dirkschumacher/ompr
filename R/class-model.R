@@ -13,6 +13,7 @@ bind_expression <- function(var_name, exp, envir, bound_subscripts) {
 ObjectiveFunction <- setClass("ObjectiveFunction",
                               slots = c(
                                 expression = "expression",
+                                original_expression = "expression",
                                 direction = "character"),
                               validity = function(object) {
                                 object@direction %in% c("min", "max")
@@ -77,7 +78,12 @@ setMethod("add_variable",
             exp_class <- class(exp)
             if (exp_class == "name") {
               var_name <- as.character(exp)
-              var <- new("Variable", arity = 0L, type = type, instances = "", lb = lb, ub = ub)
+              var <- new("Variable", arity = 0L,
+                         type = type, instances = "",
+                         lb = lb, ub = ub,
+                         variable_expression = as.expression(substitute(x, list(x = var_name))),
+                         variable_quantifiers = list()
+                         )
               model@variables[[var_name]] <- var
             } else if (exp_class == "call" && exp[[1]] == "[") {
 
@@ -98,11 +104,14 @@ setMethod("add_variable",
                                                function(r) all(!is.na(suppressWarnings(as.integer(r)))))
               stopifnot(only_integer_candidates)
               instances <- apply(candidates, 1, function(row) paste0(as.integer(row), collapse = "_"))
-              var <- new("Variable", arity = arity,
+              var <- new("Variable",
+                         arity = arity,
                          type = type,
                          instances = instances,
                          lb = lb,
-                         ub = ub)
+                         ub = ub,
+                         variable_expression = as.expression(exp),
+                         variable_quantifiers = bound_subscripts)
               model@variables[[var_name]] <- var
             } else {
               stop("Did not recognize variable expression.")
@@ -120,17 +129,50 @@ setGeneric("set_objective", function(model, expression, direction = "max") {
 setMethod("set_objective",
           signature(model = "Model"),
           definition = function(model, expression, direction = "max") {
-            ast <- normalize_expression(model, substitute(expression), parent.frame())
+            obj_ast <- substitute(expression)
+            ast <- normalize_expression(model, obj_ast, parent.frame())
             var_names <- names(model@variables)
             if (is_non_linear(var_names, ast)) {
               stop("The objective is probably non-linear. Currently, only linear functions are supported.")
             }
-            obj <- new("ObjectiveFunction", expression = as.expression(ast),
+            obj <- new("ObjectiveFunction",
+                       expression = as.expression(ast),
+                       original_expression = as.expression(obj_ast),
                        direction = direction)
             model@objective <- obj
             model
           }
 )
+
+#' @export
+setMethod("show", signature(object = "Model"),
+          definition = function(object) {
+            cat("Mixed linear integer optimization problem\n")
+            mapped_vars <- Map(f = function(var) {
+              setNames(length(var@instances), var@type)
+            }, object@variables)
+            var_count <- Reduce(f = function(acc, el) {
+              acc[[names(el)]] <- acc[[names(el)]] + el
+              acc
+            }, mapped_vars, init = list(continuous = 0, integer = 0, binary = 0))
+            cat("Variables:\n")
+            cat("  Continuous:", var_count$continuous, "\n")
+            cat("  Integer:", var_count$integer, "\n")
+            cat("  Binary:", var_count$binary, "\n")
+
+            # obj function
+            objective <- object@objective
+            if (!is.null(objective)) {
+              cat("Search direction:",
+                if (objective@direction == "max") "maximize" else "minimize",
+                "\n")
+            } else {
+              cat("No objective function. \n")
+            }
+
+            # constraints
+            cat("Constraints:", length(object@constraints), "\n")
+          })
 
 #' @export
 setGeneric("add_constraint", function(model, lhs, direction, rhs, ...) {
