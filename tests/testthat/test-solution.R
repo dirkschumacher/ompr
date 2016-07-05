@@ -40,8 +40,9 @@ test_that("export solutions to data.frame with index", {
  expect_s3_class(result, "data.frame")
  expect_equivalent(as.numeric(result$i), c(1, 2, 3))
 })
+
 test_that("export solutions to data.frame with two indexes", {
-  model <- Model() %>%
+  model <- MIPModel() %>%
     add_variable(x[i, j], i = 1:2, j = 1:2, ub = 1)
   solution <- new("Solution",
                   status = "optimal",
