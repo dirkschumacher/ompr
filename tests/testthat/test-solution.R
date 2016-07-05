@@ -1,7 +1,7 @@
 context("solution")
 
 test_that("export single var to numeric", {
- model <- Model() %>%
+ model <- MIPModel() %>%
    add_variable(x, ub = 1) %>%
    add_variable(y, ub = 1) %>%
    add_constraint(x + y, "<=", 1) %>%
@@ -16,7 +16,7 @@ test_that("export single var to numeric", {
 })
 
 test_that("export solutions to data.frame if var is indexed", {
- model <- Model() %>%
+ model <- MIPModel() %>%
    add_variable(x[i], i = 1:3, ub = 1) %>%
    set_objective(sum_exp(x[i], i = 1:3))
  solution <- new("Solution",
@@ -28,7 +28,7 @@ test_that("export solutions to data.frame if var is indexed", {
 })
 
 test_that("export solutions to data.frame with index", {
- model <- Model() %>%
+ model <- MIPModel() %>%
    add_variable(x[i], i = 1:3, ub = 1) %>%
    set_objective(sum_exp(x[i], i = 1:3))
  solution <- new("Solution",
@@ -40,8 +40,9 @@ test_that("export solutions to data.frame with index", {
  expect_s3_class(result, "data.frame")
  expect_equivalent(as.numeric(result$i), c(1, 2, 3))
 })
+
 test_that("export solutions to data.frame with two indexes", {
-  model <- Model() %>%
+  model <- MIPModel() %>%
     add_variable(x[i, j], i = 1:2, j = 1:2, ub = 1)
   solution <- new("Solution",
                   status = "optimal",
@@ -57,7 +58,7 @@ test_that("export solutions to data.frame with two indexes", {
 })
 
 test_that("export infeasible solutions to data.frame", {
-  model <- Model() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     set_objective(sum_exp(x[i], i = 1:3))
   solution <- new("Solution",
@@ -72,7 +73,7 @@ test_that("export infeasible solutions to data.frame", {
 
 
 test_that("export solutions to single value if all indexes bound", {
-  model <- Model() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_exp(x[i], i = 1:3))
@@ -89,7 +90,7 @@ test_that("export solutions to single value if all indexes bound", {
 
 
 test_that("export solutions to data.frame in a model with more than one variable", {
-  model <- Model() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_exp(x[i], i = 1:3))
@@ -105,7 +106,7 @@ test_that("export solutions to data.frame in a model with more than one variable
 })
 
 test_that("model has a nice default output", {
-  model <- Model() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_exp(x[i], i = 1:3))
