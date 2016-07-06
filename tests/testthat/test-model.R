@@ -219,3 +219,11 @@ test_that("model has a nice default output", {
     set_objective(-x + y, direction = "max")
   expect_output(show(m), "Constraints: 1")
 })
+
+test_that("multiplications in constraints", {
+  m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
+    add_variable(y, type = "continuous", ub = 4) %>%
+    add_constraint(x + y, "<=", 10) %>%
+    set_objective(5 * (-x + y), direction = "max")
+  expect_equal(deparse(m@objective@expression[[1]]), "-5 * x + 5 * y")
+})

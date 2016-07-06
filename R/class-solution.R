@@ -71,6 +71,6 @@ setMethod("get_solution",
 setMethod("show", signature(object = "Solution"),
           definition = function(object) {
             cat("Status:", object@status)
-            cat("\\n")
+            cat("\n")
             cat("Objective value:", object@objective_value)
           })

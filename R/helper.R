@@ -182,7 +182,7 @@ standardize_ast <- function(ast, multiply = NULL) {
       if (left_is_num) {
         term <- ast[[3]]
         multiplier <- as.numeric(ast[[2]])
-        if (is.call(term) && as.character(term) != "[") {
+        if (is.call(term) && all(as.character(term) != "[")) {
           return(standardize_ast(term, multiply = multiplier))
         }
       } else if (right_is_num) {
@@ -196,6 +196,12 @@ standardize_ast <- function(ast, multiply = NULL) {
     } else if (as.character(ast[[1]]) %in% c("+", "-")) {
       if (!is.null(multiply)) {
         operator <- ast[[1]]
+        if (operator == "(") {
+          return(standardize_ast(ast[[2]], multiply = multiply))
+        }
+        if (length(ast) == 2 && ast[[1]] == "-") {
+          return(standardize_ast(substitute(-y * x, list(x = ast[[2]], y = multiply))))
+        }
         if (as.character(ast[[1]]) == "+") {
           new_ast <- substitute(x * y + x * z,
                                 list(x = multiply, y = ast[[2]], z = ast[[3]]))

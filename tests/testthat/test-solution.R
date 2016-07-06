@@ -117,7 +117,7 @@ test_that("model has a nice default output", {
                   solution = setNames(c(2, 2, 2, 1, 1, 1),
                                       c("y[1]", "y[3]", "y[3]",
                                         "x[1]", "x[3]", "x[3]")))
-  expect_output(show(solution), "Status: optimal")
+  expect_output(show(solution), "Status: optimal\n")
   expect_output(show(solution), "Objective value: 3")
 })
 
