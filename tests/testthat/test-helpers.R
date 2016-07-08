@@ -29,3 +29,4 @@ test_that("extract_coefficients can extract coefficients", {
   expect_equivalent(10, result$coefficients[["x"]]$coef)
   expect_equivalent(1, result$coefficients[["x[1, 2]"]]$coef)
 })
+

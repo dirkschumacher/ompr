@@ -16,6 +16,7 @@ ObjectiveFunction <- setClass("ObjectiveFunction",
                                 original_expression = "expression",
                                 direction = "character"),
                               validity = function(object) {
+                                length(object@direction) == 1 &&
                                 object@direction %in% c("min", "max")
                               })
 
@@ -62,6 +63,23 @@ setMethod("is_defined",
             }
           })
 
+#' Adds a variable to the model
+#'
+#' A variable can either by a name or an indexed name. See examples.
+#'
+#' @param model the model
+#' @param variable the variable name/definition
+#' @param type must be either continuous, integer or binary
+#' @param lb the lower bound of the variable
+#' @param ub the upper bound of the variable
+#' @param ... quantifiers for the indexed variabled
+#'
+#' @examples
+#' library(magrittr)
+#' MIPModel() %>%
+#'  add_variable(x) %>% # creates 1 variable named x
+#'  add_variable(y[i], i = 1:10) # creates 10 variables
+#'
 #' @export
 setGeneric("add_variable", function(model, variable, type = "continuous", lb = -Inf, ub = Inf, ...) {
   standardGeneric("add_variable")
@@ -120,6 +138,21 @@ setMethod("add_variable",
           }
 )
 
+
+#' Set the model objective
+#'
+#' @param model the model
+#' @param expression the linear objective as a sum of variables and constants
+#' @param direction the optimization direction. Must be either ”max" or "min".
+#'
+#' @return a Model with a new objective function definition
+#' @examples
+#' library(magrittr)
+#' MIPModel() %>%
+#'  add_variable(x, lb = 2) %>%
+#'  add_variable(y, lb = 40) %>%
+#'  set_objective(x + y, direction = "min")
+#'
 #' @export
 setGeneric("set_objective", function(model, expression, direction = "max") {
   standardGeneric("set_objective")
@@ -162,7 +195,7 @@ setMethod("show", signature(object = "Model"),
 
             # obj function
             objective <- object@objective
-            if (!is.null(objective)) {
+            if (length(objective@direction) == 1) {
               cat("Search direction:",
                 if (objective@direction == "max") "maximize" else "minimize",
                 "\n")
