@@ -4,7 +4,7 @@
 \name{ompr}
 \alias{ompr}
 \alias{ompr-package}
-\title{romp}
+\title{ompr}
 \description{
 Implements a DSL to formulate optimization problems.
 }

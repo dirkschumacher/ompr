@@ -227,3 +227,8 @@ test_that("multiplications in constraints", {
     set_objective(5 * (-x + y), direction = "max")
   expect_equal(deparse(m@objective@expression[[1]]), "-5 * x + 5 * y")
 })
+
+test_that("model output works without an obj. function", {
+  m <- add_variable(MIPModel(), x, type = "continuous", lb = 4)
+  expect_output(show(m))
+})

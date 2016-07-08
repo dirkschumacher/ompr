@@ -105,7 +105,7 @@ test_that("export solutions to data.frame in a model with more than one variable
   expect_equivalent(result$value, c(2, 2, 2))
 })
 
-test_that("model has a nice default output", {
+test_that("solution has a nice default output", {
   model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
