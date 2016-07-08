@@ -9,7 +9,8 @@ License: GPL (>= 3) + file LICENSE
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Imports:
- stringr
+ stringr,
+ methods
 Suggests:
  testthat,
  magrittr
