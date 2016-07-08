@@ -8,7 +8,7 @@ Description: A package to model (mixed) integer programs.
 License: GPL (>= 3) + file LICENSE
 LazyData: TRUE
 RoxygenNote: 5.0.1
-Imports:
+Depends:
  stringr
 Suggests:
  testthat,
