@@ -76,8 +76,6 @@ result <- MIPModel() %>%
   add_constraint(sum_exp(x[i,j], j = 1:n), "==", 1, i = 1:n) %>%
   # visit each city
   add_constraint(sum_exp(x[i,j], i = 1:n), "==", 1, j = 1:n) %>%
-  # never travel an arc twice
-  add_constraint(x[i,j] + x[j,i], "<=", 1, i = 1:n, j = 1:n) %>% 
   # ensure no subtours (arc constraints)
   add_constraint(u[1], "==", 1) %>% 
   add_constraint(u[i], ">=", 2, i = 2:n) %>% 
