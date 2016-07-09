@@ -10,15 +10,13 @@ sum_exp <- function(exp, free_vars = c(), ...) {
   ast <- substitute(exp)
   list_of_eval_exps <- apply(subscript_combinations, 1, function(row) {
     binding_env <- as.environment(as.list(row))
-    #parent.env(binding_env) <- parent_frame
     try_eval_exp_rec(ast, binding_env)
   })
   Reduce(f = function(acc, el) {
-    el_eval <- try_eval_exp_rec(el)
     if (is.null(acc)) {
-      return(el_eval)
+      return(el)
     }
-    substitute(x + y, list(x = acc, y = el_eval))
+    substitute(x + y, list(x = acc, y = el))
   }, x = list_of_eval_exps, init = NULL)
 }
 
