@@ -1,19 +1,3 @@
-#' An S4 class to represent a ObjectiveFunction
-#'
-#' @slot expression the expression in standard form
-#' @slot original_expression the original expression as supplied by the user
-#' @slot direction the direction of optimization
-#' @export
-ObjectiveFunction <- setClass("ObjectiveFunction",
-                              slots = c(
-                                expression = "expression",
-                                original_expression = "expression",
-                                direction = "character"),
-                              validity = function(object) {
-                                length(object@direction) == 1 &&
-                                object@direction %in% c("min", "max")
-                              })
-
 #' An S4 class to represent a Model.
 #'
 #' @slot variables a list of S4 Variable objects
@@ -203,7 +187,8 @@ setMethod("show", signature(object = "Model"),
 
             # obj function
             objective <- object@objective
-            if (length(objective@direction) == 1) {
+            if (!is.null(objective) &&
+                length(objective@direction) == 1) {
               cat("Search direction:",
                 if (objective@direction == "max") "maximize" else "minimize",
                 "\n")
