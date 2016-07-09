@@ -1,7 +1,7 @@
 Package: ompr
 Type: Package
 Title: R optimization modelling project
-Version: 0.1.2
+Version: 0.1.3
 Author: Dirk Schumacher
 Maintainer: Dirk Schumacher <mail@dirk-schumacher.net>
 Description: A package to model (mixed) integer programs.
@@ -10,7 +10,8 @@ LazyData: TRUE
 RoxygenNote: 5.0.1
 Imports:
  stringr,
- methods
+ methods,
+ rstackdeque
 Suggests:
  testthat,
  magrittr
