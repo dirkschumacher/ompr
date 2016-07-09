@@ -13,8 +13,8 @@ An S4 class to represent a Model.
 \describe{
 \item{\code{variables}}{a list of S4 Variable objects}
 
-\item{\code{objective}}{-}
+\item{\code{objective}}{the objective function}
 
-\item{\code{constraints}}{-}
+\item{\code{constraints}}{a list of constraints}
 }}
 

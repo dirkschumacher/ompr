@@ -1,30 +1,8 @@
-
-bind_expression <- function(var_name, exp, envir, bound_subscripts) {
-  var_values <- as.list(envir)
-  for(x in c(var_name, names(bound_subscripts))) {
-    var_values[[x]] <- NULL
-  }
-  eval(substitute(substitute(x, var_values), list(x = exp)))
-}
-
-#' An S4 class to represent a ObjectiveFunction
-#'
-#' @export
-ObjectiveFunction <- setClass("ObjectiveFunction",
-                              slots = c(
-                                expression = "expression",
-                                original_expression = "expression",
-                                direction = "character"),
-                              validity = function(object) {
-                                length(object@direction) == 1 &&
-                                object@direction %in% c("min", "max")
-                              })
-
 #' An S4 class to represent a Model.
 #'
 #' @slot variables a list of S4 Variable objects
-#' @slot objective -
-#' @slot constraints -
+#' @slot objective the objective function
+#' @slot constraints a list of constraints
 #' @export
 Model <- setClass("Model",
          slots = c(
@@ -50,12 +28,14 @@ setMethod("is_defined",
               return(var_name %in% names(model@variables))
             } else if (exp_class == "call" && exp[[1]] == "[") {
               var_name <- as.character(exp[[2]])
-              bound_exp <- bind_expression(var_name, exp, parent.frame(), list())
+              bound_exp <- bind_expression(var_name, exp, parent.frame(),
+                                           list())
               if (!var_name %in% names(model@variables)) {
                 return(FALSE)
               }
               var_obj <- model@variables[[var_name]]
-              search_key <- paste0(as.character(bound_exp[3:length(bound_exp)]), collapse = "_")
+              search_key <- paste0(as.character(bound_exp[3:length(bound_exp)])
+                                   , collapse = "_")
               return(search_key %in% var_obj@instances)
             }
             else {
@@ -81,14 +61,16 @@ setMethod("is_defined",
 #'  add_variable(y[i], i = 1:10) # creates 10 variables
 #'
 #' @export
-setGeneric("add_variable", function(model, variable, type = "continuous", lb = -Inf, ub = Inf, ...) {
+setGeneric("add_variable", function(model, variable, type = "continuous",
+                                    lb = -Inf, ub = Inf, ...) {
   standardGeneric("add_variable")
 })
 
 #' @export
 setMethod("add_variable",
           signature(model = "Model"),
-          definition = function(model, variable, type = "continuous", lb = -Inf, ub = Inf, ...) {
+          definition = function(model, variable, type = "continuous",
+                                lb = -Inf, ub = Inf, ...) {
             if (ub < lb) {
               stop("ub must not be smaller than lb.")
             }
@@ -99,8 +81,9 @@ setMethod("add_variable",
               var <- new("Variable", arity = 0L,
                          type = type, instances = "",
                          lb = lb, ub = ub,
-                         variable_expression = as.expression(substitute(x, list(x = var_name))),
-                         variable_quantifiers = list()
+                         variable_expression = as.expression(
+                           substitute(x, list(x = var_name))),
+                           variable_quantifiers = list()
                          )
               model@variables[[var_name]] <- var
             } else if (exp_class == "call" && exp[[1]] == "[") {
@@ -108,20 +91,27 @@ setMethod("add_variable",
               # first we need to bind all variables
               var_name <- as.character(exp[[2]])
               bound_subscripts <- list(...)
-              bound_exp <- bind_expression(var_name, exp, parent.frame(), bound_subscripts)
+              bound_exp <- bind_expression(var_name, exp, parent.frame(),
+                                           bound_subscripts)
               arity <- as.integer(length(bound_exp) - 2)
 
               # then check if all free variables are present in "..."
-              subscripts <- lapply(3:length(bound_exp), function(x) as.character(bound_exp[x]))
-              bound_subscripts <- bound_subscripts[names(bound_subscripts) %in% subscripts]
-              subscripts[subscripts %in% names(bound_subscripts)] <- bound_subscripts
+              subscripts <- lapply(3:length(bound_exp),
+                                   function(x) as.character(bound_exp[x]))
+              bound_subscripts <- bound_subscripts[
+                names(bound_subscripts) %in% subscripts]
+              replacement_idxs <- subscripts %in% names(bound_subscripts)
+              subscripts[replacement_idxs] <- bound_subscripts
 
               # now generate all variables
               candidates <- expand.grid(subscripts)
-              only_integer_candidates <- apply(candidates, 1,
-                                               function(r) all(!is.na(suppressWarnings(as.integer(r)))))
+              only_integer_candidates <- apply(candidates, 1, function(r) {
+                all(!is.na(suppressWarnings(as.integer(r))))
+              })
               stopifnot(only_integer_candidates)
-              instances <- apply(candidates, 1, function(row) paste0(as.integer(row), collapse = "_"))
+              instances <- apply(candidates, 1, function(row) {
+                paste0(as.integer(row), collapse = "_")
+              })
               var <- new("Variable",
                          arity = arity,
                          type = type,
@@ -143,7 +133,7 @@ setMethod("add_variable",
 #'
 #' @param model the model
 #' @param expression the linear objective as a sum of variables and constants
-#' @param direction the optimization direction. Must be either ”max" or "min".
+#' @param direction the optimization direction. Must be either "max" or "min".
 #'
 #' @return a Model with a new objective function definition
 #' @examples
@@ -166,7 +156,8 @@ setMethod("set_objective",
             ast <- normalize_expression(model, obj_ast, parent.frame())
             var_names <- names(model@variables)
             if (is_non_linear(var_names, ast)) {
-              stop("The objective is probably non-linear. Currently, only linear functions are supported.")
+              stop(paste0("The objective is probably non-linear. ",
+                          "Currently, only linear functions are supported."))
             }
             obj <- new("ObjectiveFunction",
                        expression = as.expression(ast),
@@ -187,7 +178,8 @@ setMethod("show", signature(object = "Model"),
             var_count <- Reduce(f = function(acc, el) {
               acc[[names(el)]] <- acc[[names(el)]] + el
               acc
-            }, mapped_vars, init = list(continuous = 0, integer = 0, binary = 0))
+            }, mapped_vars, init = list(continuous = 0, integer = 0,
+                                        binary = 0))
             cat("Variables:\n")
             cat("  Continuous:", var_count$continuous, "\n")
             cat("  Integer:", var_count$integer, "\n")
@@ -195,7 +187,8 @@ setMethod("show", signature(object = "Model"),
 
             # obj function
             objective <- object@objective
-            if (length(objective@direction) == 1) {
+            if (!is.null(objective) &&
+                length(objective@direction) == 1) {
               cat("Search direction:",
                 if (objective@direction == "max") "maximize" else "minimize",
                 "\n")
@@ -218,32 +211,39 @@ setMethod("add_constraint",
           definition = function(model, lhs, direction, rhs, ...) {
             lhs_ast <- substitute(lhs)
             rhs_ast <- substitute(rhs)
-            parent_env = parent.frame()
+            parent_env <- parent.frame()
             add_constraint_internal <- function(envir = parent_env) {
               lhs_ast <- normalize_expression(model, lhs_ast, envir)
               rhs_ast <- normalize_expression(model, rhs_ast, envir)
               var_names <- names(model@variables)
               if (is_non_linear(var_names, lhs_ast)) {
-                stop("The left-hand-side is probably non-linear. Currently, only linear constraints are supported.")
+                stop(paste0("The left-hand-side is probably non-linear. ",
+                            "Currently, only linear constraints are ",
+                            "supported."))
               }
               if (is_non_linear(var_names, rhs_ast)) {
-                stop("The right-hand-side is probably non-linear. Currently, only linear constraints are supported.")
+                stop(paste0("The right-hand-side is probably non-linear. ",
+                            "Currently, only linear constraints are ",
+                            "supported."))
               }
               if (any_unbounded_indexes(lhs_ast)) {
-                stop("Some variable indexes are unbounded left hand expression.")
+                stop(paste0("Some variable indexes are unbounded",
+                            " left hand expression."))
               }
               if (any_unbounded_indexes(rhs_ast)) {
-                stop("Some variable indexes are unbounded in the right hand expression.")
+                stop(paste0("Some variable indexes are unbounded",
+                            " in the right hand expression."))
               }
+              direction <- if (direction == "=") "==" else direction
               new("Constraint", lhs = as.expression(lhs_ast),
                                 rhs = as.expression(rhs_ast),
-                                direction = if (direction == "=") "==" else direction)
+                                direction = direction)
             }
             bound_subscripts <- list(...)
             constraints <- model@constraints
             if (is.list(bound_subscripts) && length(bound_subscripts) > 0) {
-              bound_subscripts <- Filter(function(x) is.integer(x) & length(x) > 0,
-                                         bound_subscripts)
+              filter_fn <- function(x) is.integer(x) & length(x) > 0
+              bound_subscripts <- Filter(filter_fn, bound_subscripts)
               var_combinations <- expand.grid(bound_subscripts)
               new_constraints <- apply(var_combinations, 1, function(row) {
                 calling_env <- as.environment(as.list(row))

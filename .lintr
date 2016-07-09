@@ -1,0 +1,2 @@
+linters: with_defaults(closed_curly_linter = NULL, object_usage_linter = NULL)
+exclude: "# Exclude Linting"

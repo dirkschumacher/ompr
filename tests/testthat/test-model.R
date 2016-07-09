@@ -36,7 +36,7 @@ test_that("variables can be added", {
   expect_equal(m@variables[["x"]]@arity, 1)
 })
 
-test_that("global variables do not interfere with variable names in expressions", {
+test_that("global vars do not interfere with variable names in expressions", {
   x <- "hi"
   m <- add_variable(new("Model"), x[i], i = 1:10, type = "binary")
   expect_false(is.null(m@variables[["x"]]))
@@ -114,9 +114,14 @@ test_that("add_constraint converts = to ==", {
   expect_equal(constraint@direction, "==")
 })
 
-test_that("add_constraint throws an error if constraints are non-linear", {
+test_that("add_constraint throws an error if constraints are non-linear lhs", {
   m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
   expect_error(add_constraint(m, sum_exp(x[i], i = 1:2) * x[3], "==", 1))
+})
+
+test_that("add_constraint throws an error if constraints are non-linear rhs", {
+  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
+  expect_error(add_constraint(m, 1, "==", sum_exp(x[i], i = 1:2) * x[3]))
 })
 
 test_that("set_objective throws an error if it is non-linear", {
@@ -184,6 +189,24 @@ test_that("add_constraint warns about unbouded all quantifier", {
   expect_error(add_constraint(sum_exp(x[i, j], j = 1:3), "==", 1, e = 1:3))
 })
 
+test_that("add_constraint warns about unbouded all quantifier in rhs", {
+  m <- new("Model") %>%
+    add_variable(x[i, j], i = 1:3, j = 1:3)
+  expect_error(add_constraint(1, "==", sum_exp(x[i, j], j = 1:3), e = 1:3))
+})
+
+test_that("add_constraints throws error if unbounded indexes in lhs", {
+  m <- new("Model") %>%
+    add_variable(x[i, j], i = 1:3, j = 1:3)
+  expect_error(add_constraint(x[1, j], "==", 1))
+})
+
+test_that("add_constraints throws error if unbounded indexes in rhs", {
+  m <- new("Model") %>%
+    add_variable(x[i, j], i = 1:3, j = 1:3)
+  expect_error(add_constraint(1, "==", x[1, j]))
+})
+
 test_that("bounded vars in add_constraints should take precedence", {
   m <- new("Model") %>%
     add_variable(x[i, j], i = 1:3, j = 1:3)
@@ -199,10 +222,12 @@ test_that("we can model a tsp", {
   sub_tours <- list(1, 2, 3, c(1, 2), c(1, 3), c(2, 3))
   r <- MIPModel() %>%
     add_variable(x[i, j], i = 1:cities, j = 1:cities, type = "binary") %>%
-    set_objective(sum_exp(distance_matrix[i, j] * x[i, j], i = 1:cities, j = 1:cities), direction = "min") %>%
+    set_objective(sum_exp(distance_matrix[i, j] * x[i, j],
+                          i = 1:cities, j = 1:cities), direction = "min") %>%
     add_constraint(x[i, i], "==", 0, i = 1:cities) %>%
     add_constraint(x[i, j], "==", x[j, i], i = 1:cities, j = 1:cities) %>%
-    add_constraint(sum_exp(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]), "<=", length(sub_tours[s]) - 1, s = 1:length(sub_tours))
+    add_constraint(sum_exp(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]),
+                   "<=", length(sub_tours[s]) - 1, s = 1:length(sub_tours))
 })
 
 test_that("bug 20160701: -x as a formula", {
@@ -220,7 +245,7 @@ test_that("model has a nice default output", {
   expect_output(show(m), "Constraints: 1")
 })
 
-test_that("multiplications in constraints", {
+test_that("multiplications in objective fun", {
   m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y, "<=", 10) %>%
@@ -231,4 +256,12 @@ test_that("multiplications in constraints", {
 test_that("model output works without an obj. function", {
   m <- add_variable(MIPModel(), x, type = "continuous", lb = 4)
   expect_output(show(m))
+})
+
+test_that("devision in objective fun", {
+  m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
+    add_variable(y, type = "continuous", ub = 4) %>%
+    add_constraint(x + y, "<=", 10) %>%
+    set_objective(5 / (-x + y), direction = "max")
+  expect_equal(deparse(m@objective@expression[[1]]), "-0.2 * x + 0.2 * y")
 })
