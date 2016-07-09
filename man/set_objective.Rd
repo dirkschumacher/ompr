@@ -11,7 +11,7 @@ set_objective(model, expression, direction = "max")
 
 \item{expression}{the linear objective as a sum of variables and constants}
 
-\item{direction}{the optimization direction. Must be either ”max" or "min".}
+\item{direction}{the optimization direction. Must be either "max" or "min".}
 }
 \value{
 a Model with a new objective function definition

@@ -9,6 +9,7 @@ Constraint <- setClass("Constraint",
                                 constraint_quantifiers = "list" # e.g. i = 1:n
                               ),
                               validity = function(object) {
-                                # TODO: check that (l|r)hs is in the correct format
+                                # TODO: check that (l|r)hs is in the correct
+                                # format
                                 object@direction %in% c("<=", "==", ">=")
                               })

@@ -8,4 +8,13 @@
 \description{
 An S4 class to represent a ObjectiveFunction
 }
+\section{Slots}{
+
+\describe{
+\item{\code{expression}}{the expression in standard form}
+
+\item{\code{original_expression}}{the original expression as supplied by the user}
+
+\item{\code{direction}}{the direction of optimization}
+}}
 
