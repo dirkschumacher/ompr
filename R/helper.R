@@ -34,7 +34,8 @@ normalize_expression <- function(model, expression, environment) {
 bind_variables <- function(model, ast, calling_env) {
   # clean calling environment
   if (is.list(calling_env)) {
-    calling_env <- calling_env[!(names(calling_env) %in% names(model@variables))]
+    env_filter <- !(names(calling_env) %in% names(model@variables))
+    calling_env <- calling_env[env_filter]
     calling_env <- calling_env[nchar(names(calling_env)) > 0]
   }
   if (is.environment(calling_env)) {
@@ -50,7 +51,7 @@ bind_variables <- function(model, ast, calling_env) {
 any_unbounded_indexes <- function(ast) {
   if (is.call(ast)) {
     if (ast[[1]] == "[") {
-      for(i in 3:length(ast)) {
+      for (i in 3:length(ast)) {
         if (is.name(ast[[i]])) {
           return(TRUE)
         } else {
@@ -61,7 +62,7 @@ any_unbounded_indexes <- function(ast) {
       }
       return(FALSE)
     } else {
-      for(i in 3:length(ast)) {
+      for (i in 3:length(ast)) {
         return(any_unbounded_indexes(ast[[i]]))
       }
     }
@@ -78,10 +79,11 @@ check_expression <- function(model, the_ast) {
                          collapse = "_")
     var <- model@variables[[var_name]]
     if (!is.null(var) && !search_key %in% var@instances) {
-      stop("The expression contains a variable, that is not part of the model.")
+      stop(paste0("The expression contains a variable,",
+                  " that is not part of the model."))
     }
   } else if (is.call(the_ast)) {
-    for(i in 2:length(the_ast)) {
+    for (i in 2:length(the_ast)) {
       check_expression(model, the_ast[[i]])
     }
   }
@@ -112,12 +114,12 @@ try_eval_exp_rec <- function(ast, envir = baseenv()) {
       # we need to evaluate anything from argument 2 onwards
       # e.g. sum_exp(x[i], i = 1:n) <- the n needs to be bound
       le_ast <- new_ast
-      for(i in 3:length(le_ast)) {
+      for (i in 3:length(le_ast)) {
         le_ast[[i]] <- try_eval_exp_rec(le_ast[[i]], envir)
       }
       new_ast <- eval(le_ast)
     }
-    for(i in 2:length(new_ast)) {
+    for (i in 2:length(new_ast)) {
       new_ast[[i]] <- try_eval_exp_rec(new_ast[[i]], envir)
     }
     # let's try to evaluate the whole sub-tree
@@ -134,7 +136,7 @@ try_eval_exp_rec <- function(ast, envir = baseenv()) {
 is_non_linear <- function(var_names, ast) {
   contains_vars <- function(le_ast) {
     if (is.call(le_ast)) {
-      for(i in 2:length(le_ast)) {
+      for (i in 2:length(le_ast)) {
         result <- contains_vars(le_ast[[i]])
         if (result) return(TRUE)
       }
@@ -148,7 +150,7 @@ is_non_linear <- function(var_names, ast) {
   if (is.call(ast) && as.character(ast[[1]]) %in% c("*", "/", "^")) {
     contains_vars(ast[[2]]) && contains_vars(ast[[3]])
   } else if (is.call(ast)) {
-    for(i in 2:length(ast)) {
+    for (i in 2:length(ast)) {
       result <- is_non_linear(var_names, ast[[i]])
       if (result) return(TRUE)
     }
@@ -200,7 +202,8 @@ standardize_ast <- function(ast, multiply = NULL) {
           return(standardize_ast(ast[[2]], multiply = multiply))
         }
         if (length(ast) == 2 && ast[[1]] == "-") {
-          return(standardize_ast(substitute(-y * x, list(x = ast[[2]], y = multiply))))
+          return(standardize_ast(substitute(-y * x, list(x = ast[[2]],
+                                                         y = multiply))))
         }
         if (as.character(ast[[1]]) == "+") {
           new_ast <- substitute(x * y + x * z,
@@ -219,7 +222,8 @@ standardize_ast <- function(ast, multiply = NULL) {
           # convert -x to -1 * x
           standardize_ast(substitute(-1 * x, list(x = ast[[2]])))
         } else if (as.character(ast[[1]]) == "-") {
-          standardize_ast(substitute(x + -1 * y, list(x = ast[[2]], y = ast[[3]])))
+          standardize_ast(substitute(x + -1 * y,
+                                     list(x = ast[[2]], y = ast[[3]])))
         } else {
           new_ast <- ast
           new_ast[[2]] <- standardize_ast(try_eval_exp(new_ast[[2]]))
