@@ -1,24 +1,11 @@
-#' @export
-sum_exp <- function(exp, free_vars = c(), ...) {
-  # TODO: This should probably be moved into the model
-  # TODO: Make sure the input is correct
-  # TODO: Take model and make sure
-  # we do not overwrite any model variables
-  iterators <- list(...)
-  subscript_combinations <- expand.grid(iterators)
-  ast <- substitute(exp)
-  list_of_eval_exps <- apply(subscript_combinations, 1, function(row) {
-    binding_env <- as.environment(as.list(row))
-    try_eval_exp_rec(ast, binding_env)
-  })
-  Reduce(f = function(acc, el) {
-    if (is.null(acc)) {
-      return(el)
-    }
-    substitute(x + y, list(x = acc, y = el))
-  }, x = list_of_eval_exps, init = NULL)
+try_eval_exp <- function(ast, envir = baseenv()) {
+  result <- try(eval(ast, envir = envir), silent = TRUE)
+  if (!is.numeric(result)) {
+    ast
+  } else {
+    result
+  }
 }
-
 
 try_eval_exp_rec <- function(ast, envir = baseenv()) {
   if (!is.call(ast)) {
@@ -118,15 +105,6 @@ check_expression <- function(model, the_ast) {
     for (i in 2:length(the_ast)) {
       check_expression(model, the_ast[[i]])
     }
-  }
-}
-
-try_eval_exp <- function(ast, envir = baseenv()) {
-  result <- try(eval(ast, envir = envir), silent = TRUE)
-  if (!is.numeric(result)) {
-    ast
-  } else {
-    result
   }
 }
 
@@ -314,4 +292,25 @@ extract_coefficients <- function(ast) {
     acc
   }, result$coefficients, init = list())
   result
+}
+
+#' @export
+sum_exp <- function(exp, free_vars = c(), ...) {
+  # TODO: This should probably be moved into the model
+  # TODO: Make sure the input is correct
+  # TODO: Take model and make sure
+  # we do not overwrite any model variables
+  iterators <- list(...)
+  subscript_combinations <- expand.grid(iterators)
+  ast <- substitute(exp)
+  list_of_eval_exps <- apply(subscript_combinations, 1, function(row) {
+    binding_env <- as.environment(as.list(row))
+    try_eval_exp_rec(ast, binding_env)
+  })
+  Reduce(f = function(acc, el) {
+    if (is.null(acc)) {
+      return(el)
+    }
+    substitute(x + y, list(x = acc, y = el))
+  }, x = list_of_eval_exps, init = NULL)
 }
