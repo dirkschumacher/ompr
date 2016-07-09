@@ -1,12 +1,3 @@
-
-bind_expression <- function(var_name, exp, envir, bound_subscripts) {
-  var_values <- as.list(envir)
-  for (x in c(var_name, names(bound_subscripts))) {
-    var_values[[x]] <- NULL
-  }
-  eval(substitute(substitute(x, var_values), list(x = exp)))
-}
-
 #' An S4 class to represent a ObjectiveFunction
 #'
 #' @slot expression the expression in standard form
@@ -258,15 +249,16 @@ setMethod("add_constraint",
                 stop(paste0("Some variable indexes are unbounded",
                             " in the right hand expression."))
               }
+              direction <- if (direction == "=") "==" else direction
               new("Constraint", lhs = as.expression(lhs_ast),
                                 rhs = as.expression(rhs_ast),
-                                direction = if (direction == "=") "==" else direction)
+                                direction = direction)
             }
             bound_subscripts <- list(...)
             constraints <- model@constraints
             if (is.list(bound_subscripts) && length(bound_subscripts) > 0) {
-              bound_subscripts <- Filter(function(x) is.integer(x) & length(x) > 0,
-                                         bound_subscripts)
+              filter_fn <- function(x) is.integer(x) & length(x) > 0
+              bound_subscripts <- Filter(filter_fn, bound_subscripts)
               var_combinations <- expand.grid(bound_subscripts)
               new_constraints <- apply(var_combinations, 1, function(row) {
                 calling_env <- as.environment(as.list(row))

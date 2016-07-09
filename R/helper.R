@@ -4,7 +4,6 @@ sum_exp <- function(exp, free_vars = c(), ...) {
   # TODO: Make sure the input is correct
   # TODO: Take model and make sure
   # we do not overwrite any model variables
-  parent_frame <- parent.frame()
   iterators <- list(...)
   subscript_combinations <- expand.grid(iterators)
   ast <- substitute(exp)
@@ -21,12 +20,47 @@ sum_exp <- function(exp, free_vars = c(), ...) {
 }
 
 
-normalize_expression <- function(model, expression, environment) {
-  ast <- bind_variables(model, expression, environment)
-  ast <- try_eval_exp_rec(ast)
-  check_expression(model, ast)
-  ast <- standardize_ast(ast)
-  ast
+try_eval_exp_rec <- function(ast, envir = baseenv()) {
+  if (!is.call(ast)) {
+    # let's try to evaluate the whole sub-tree
+    new_ast_eval <- try_eval_exp(ast, envir)
+    if (is.numeric(new_ast_eval)) {
+      return(new_ast_eval)
+    }
+    return(ast)
+  } else if (is.call(ast)) {
+    new_ast <- ast
+    if (as.character(new_ast[[1]]) == "sum_exp") {
+      # we have a sum, let's expand it
+      # TODO: detect that automatically
+      # we need to evaluate anything from argument 2 onwards
+      # e.g. sum_exp(x[i], i = 1:n) <- the n needs to be bound
+      le_ast <- new_ast
+      for (i in 3:length(le_ast)) {
+        le_ast[[i]] <- try_eval_exp_rec(le_ast[[i]], envir)
+      }
+      new_ast <- eval(le_ast)
+    }
+    for (i in 2:length(new_ast)) {
+      new_ast[[i]] <- try_eval_exp_rec(new_ast[[i]], envir)
+    }
+    # let's try to evaluate the whole sub-tree
+    new_ast_eval <- try_eval_exp(new_ast, envir)
+    if (is.numeric(new_ast_eval)) {
+      return(new_ast_eval)
+    }
+    return(new_ast)
+  } else {
+    stop("Does not compute.")
+  }
+}
+
+bind_expression <- function(var_name, exp, envir, bound_subscripts) {
+  var_values <- as.list(envir)
+  for (x in c(var_name, names(bound_subscripts))) {
+    var_values[[x]] <- NULL
+  }
+  eval(substitute(substitute(x, var_values), list(x = exp)))
 }
 
 bind_variables <- function(model, ast, calling_env) {
@@ -93,41 +127,6 @@ try_eval_exp <- function(ast, envir = baseenv()) {
     ast
   } else {
     result
-  }
-}
-
-try_eval_exp_rec <- function(ast, envir = baseenv()) {
-  if (!is.call(ast)) {
-    # let's try to evaluate the whole sub-tree
-    new_ast_eval <- try_eval_exp(ast, envir)
-    if (is.numeric(new_ast_eval)) {
-      return(new_ast_eval)
-    }
-    return(ast)
-  } else if (is.call(ast)) {
-    new_ast <- ast
-    if (as.character(new_ast[[1]]) == "sum_exp") {
-      # we have a sum, let's expand it
-      # TODO: detect that automatically
-      # we need to evaluate anything from argument 2 onwards
-      # e.g. sum_exp(x[i], i = 1:n) <- the n needs to be bound
-      le_ast <- new_ast
-      for (i in 3:length(le_ast)) {
-        le_ast[[i]] <- try_eval_exp_rec(le_ast[[i]], envir)
-      }
-      new_ast <- eval(le_ast)
-    }
-    for (i in 2:length(new_ast)) {
-      new_ast[[i]] <- try_eval_exp_rec(new_ast[[i]], envir)
-    }
-    # let's try to evaluate the whole sub-tree
-    new_ast_eval <- try_eval_exp(new_ast, envir)
-    if (is.numeric(new_ast_eval)) {
-      return(new_ast_eval)
-    }
-    return(new_ast)
-  } else {
-    stop("Does not compute.")
   }
 }
 
@@ -239,12 +238,13 @@ standardize_ast <- function(ast, multiply = NULL) {
   }
 }
 
-#standardize_ast(substitute(3 * x[1]))
-#standardize_ast(substitute(3 * (y + x)))
-#standardize_ast(substitute((y + x) * 3))
-#standardize_ast(substitute((y - x + z + 10) * 3))
-#standardize_ast(substitute(((y - x) / 3 + z + 10) * 3))
-#standardize_ast(substitute(-3 * x[3] - 23))
+normalize_expression <- function(model, expression, environment) {
+  ast <- bind_variables(model, expression, environment)
+  ast <- try_eval_exp_rec(ast)
+  check_expression(model, ast)
+  ast <- standardize_ast(ast)
+  ast
+}
 
 # extracts the coefficients out of an ast
 # the expression should be a simple sum
@@ -287,7 +287,7 @@ extract_coefficients <- function(ast) {
         list(constant = 0,
              coefficients = list(list(ast = the_ast, coef = 1)))
       } else {
-        stop(paste0("Unexpected operator '", operator,"' found."))
+        stop(paste0("Unexpected operator '", operator, "' found."))
       }
     } else {
       if (is.numeric(the_ast)) {

@@ -13,7 +13,8 @@ test_that("sum_exp does not evaluate other variables", {
   weights <- c(1, 2, 3)
   n <- 3
   result <- sum_exp(weights[i] * x[i], i = 1:n, free_vars = "x")
-  expect_equal(deparse(result), "weights[1L] * x[1L] + weights[2L] * x[2L] + weights[3L] * x[3L]")
+  expected <- "weights[1L] * x[1L] + weights[2L] * x[2L] + weights[3L] * x[3L]"
+  expect_equal(deparse(result), expected)
 })
 
 test_that("extract_coefficients can extract constant", {
@@ -29,4 +30,3 @@ test_that("extract_coefficients can extract coefficients", {
   expect_equivalent(10, result$coefficients[["x"]]$coef)
   expect_equivalent(1, result$coefficients[["x[1, 2]"]]$coef)
 })
-

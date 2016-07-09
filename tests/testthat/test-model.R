@@ -36,7 +36,7 @@ test_that("variables can be added", {
   expect_equal(m@variables[["x"]]@arity, 1)
 })
 
-test_that("global variables do not interfere with variable names in expressions", {
+test_that("global vars do not interfere with variable names in expressions", {
   x <- "hi"
   m <- add_variable(new("Model"), x[i], i = 1:10, type = "binary")
   expect_false(is.null(m@variables[["x"]]))
@@ -199,10 +199,12 @@ test_that("we can model a tsp", {
   sub_tours <- list(1, 2, 3, c(1, 2), c(1, 3), c(2, 3))
   r <- MIPModel() %>%
     add_variable(x[i, j], i = 1:cities, j = 1:cities, type = "binary") %>%
-    set_objective(sum_exp(distance_matrix[i, j] * x[i, j], i = 1:cities, j = 1:cities), direction = "min") %>%
+    set_objective(sum_exp(distance_matrix[i, j] * x[i, j],
+                          i = 1:cities, j = 1:cities), direction = "min") %>%
     add_constraint(x[i, i], "==", 0, i = 1:cities) %>%
     add_constraint(x[i, j], "==", x[j, i], i = 1:cities, j = 1:cities) %>%
-    add_constraint(sum_exp(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]), "<=", length(sub_tours[s]) - 1, s = 1:length(sub_tours))
+    add_constraint(sum_exp(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]),
+                   "<=", length(sub_tours[s]) - 1, s = 1:length(sub_tours))
 })
 
 test_that("bug 20160701: -x as a formula", {
