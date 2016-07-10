@@ -25,12 +25,9 @@ In this vignette we will construct a TSP with random points within an Euclidean 
 
 ## Setting
 
-```{r, echo=FALSE,include=FALSE}
-library(knitr)
-```
-
 First let us import some librarys
 ```{r, message=FALSE}
+library(knitr)
 library(dplyr)
 library(ggplot2)
 ```
