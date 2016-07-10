@@ -6,10 +6,17 @@ r:
 sudo: false
 cache: packages
 
+addons:
+  apt:
+    packages:
+    - libglpk-dev
+
 r_github_packages:
   - hadley/testthat
   - jimhester/covr
   - jimhester/lintr
+  - dirkschumacher/ompr
+  - dirkschumacher/ompr.roi
 
 notifications:
   email:
