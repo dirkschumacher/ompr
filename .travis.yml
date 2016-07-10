@@ -15,6 +15,8 @@ r_github_packages:
   - hadley/testthat
   - jimhester/covr
   - jimhester/lintr
+  - dirkschumacher/ompr
+  - dirkschumacher/ompr.roi
 
 notifications:
   email:
