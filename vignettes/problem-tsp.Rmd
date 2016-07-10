@@ -120,7 +120,7 @@ library(ROI.plugin.glpk)
 result <- solve_model(model, with_ROI(solver = "glpk", verbose = TRUE))
 ```
 
-To extract the solution we can use `get_solution` that will return a data.frame which we can further use with `tidyverse` packages.
+To extract the solution we can use `get_solution` method that will return a data.frame which we can further be used with `tidyverse` packages.
 
 ```{r, results = 'asis'}
 solution <- get_solution(result, x[i, j]) %>% 
@@ -128,7 +128,7 @@ solution <- get_solution(result, x[i, j]) %>%
 kable(head(solution, 3))
 ```
 
-Now need to link back the inexes in our model with the actual cities.
+Now we need to link back the indexes in our model with the actual cities.
 ```{r}
 paths <- select(solution, i, j) %>% 
   rename(from = i, to = j) %>% 
