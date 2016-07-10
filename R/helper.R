@@ -139,85 +139,133 @@ is_non_linear <- function(var_names, ast) {
 # this function takes an ast and transforms it
 # into a an ast that only constists of either symbols,
 # numerics, or muliplications of (numer & symbol)
-standardize_ast <- function(ast, multiply = NULL) {
-  if (is.call(ast)) {
-    if (ast[[1]] == "/") {
-      multiplier <- if (is.null(multiply)) 1 else multiply
-      left_is_num <-  is.numeric(ast[[2]])
-      right_is_num <-  is.numeric(ast[[3]])
-      if (left_is_num && !right_is_num) {
-        replacement <- list(x = multiplier / ast[[2]], y = ast[[3]])
-        ast <- substitute(x * y, replacement)
-      } else if (!left_is_num && right_is_num) {
-        replacement <- list(x = ast[[2]], y =  multiplier / ast[[3]])
-        ast <- substitute(y * x, replacement)
+# it walks through the ast and changes sub trees
+# iterator based and not recusrive
+standardize_ast <- function(ast) {
+  stack <- rstackdeque::rstack()
+  push <- function(x) stack <<- rstackdeque::insert_top(stack, x)
+  push(list(ast = ast, path = c(), multiplier = NULL))
+  inplace_update_ast <- function(path, value) {
+    # update the ast in place
+    # it constracts a call like ast[[2]][[2]] <<- 42
+    the_call <- substitute(ast)
+    if (length(path > 0)) {
+      for (i in 1:length(path)) {
+        the_call <- substitute(x[[y]], list(x = the_call, y = path[i]))
       }
-      standardize_ast(ast, multiply)
-    } else if (ast[[1]] == "*") {
-      left_is_num <-  is.numeric(ast[[2]])
-      right_is_num <-  is.numeric(ast[[3]])
-      if (left_is_num) {
-        term <- ast[[3]]
-        multiplier <- as.numeric(ast[[2]])
-        if (is.call(term) && all(as.character(term) != "[")) {
-          return(standardize_ast(term, multiply = multiplier))
-        }
-      } else if (right_is_num) {
-        term <- ast[[2]]
-        multiplier <- as.numeric(ast[[3]])
-        if (is.call(term) && as.character(term) != "[") {
-          return(standardize_ast(term, multiply = multiplier))
-        }
-      }
-      ast
-    } else if (as.character(ast[[1]]) %in% c("+", "-")) {
-      if (!is.null(multiply)) {
-        operator <- ast[[1]]
-        if (operator == "(") {
-          return(standardize_ast(ast[[2]], multiply = multiply))
-        }
-        if (length(ast) == 2 && ast[[1]] == "-") {
-          return(standardize_ast(substitute(-y * x, list(x = ast[[2]],
-                                                         y = multiply))))
-        }
-        if (as.character(ast[[1]]) == "+") {
-          new_ast <- substitute(x * y + x * z,
-                                list(x = multiply, y = ast[[2]], z = ast[[3]]))
-        } else {
-          new_ast <- substitute(x1 * y + x2 * z,
-                                list(x1 = multiply, x2 = -1 * multiply,
-                                     y = ast[[2]], z = ast[[3]]))
-        }
-        # also try to evaluate the two branches, maybe it works
-        new_ast[[2]] <- try_eval_exp(new_ast[[2]])
-        new_ast[[3]] <- try_eval_exp(new_ast[[3]])
-        standardize_ast(new_ast)
-      } else {
-        if (length(ast) == 2 && as.character(ast[[1]]) == "-") {
-          # convert -x to -1 * x
-          standardize_ast(substitute(-1 * x, list(x = ast[[2]])))
-        } else if (as.character(ast[[1]]) == "-") {
-          standardize_ast(substitute(x + -1 * y,
-                                     list(x = ast[[2]], y = ast[[3]])))
-        } else {
-          new_ast <- ast
-          new_ast[[2]] <- standardize_ast(try_eval_exp(new_ast[[2]]))
-          new_ast[[3]] <- standardize_ast(try_eval_exp(new_ast[[3]]))
-          new_ast
-        }
-      }
-    } else if (as.character(ast[[1]]) == "(") {
-      standardize_ast(ast[[2]], multiply)
-    } else {
-      ast
     }
-  } else {
-    ast
+    eval(substitute(x <<- substitute(y), list(x = the_call, y = value)))
   }
+
+  # this function pushes a new item to onto the stack
+  push_idx <- function(local_ast, new_path, multiplier = NULL) {
+    push(list(
+      ast = local_ast,
+      path = new_path,
+      multiplier = multiplier
+    ))
+  }
+  continue_traversal <- function(local_ast, path) {
+    stopifnot(length(local_ast) == 3)
+    push_idx(try_eval_exp(local_ast[[2]]), c(path, 2))
+    push_idx(try_eval_exp(local_ast[[3]]), c(path, 3))
+  }
+  while (length(stack) > 0) {
+    element <- rstackdeque::peek_top(stack)
+    stack <- rstackdeque::without_top(stack)
+    local_ast <- element$ast
+    path <- element$path
+    multiplier <- element$multiplier
+    need_multiplication <- is.numeric(multiplier)
+    mult_num <- if (is.numeric(multiplier)) multiplier else 1
+    if (is.call(local_ast)) {
+      operator <- as.character(local_ast[[1]])
+      ast_length <- length(local_ast)
+      if (operator == "(") {
+        push_idx(local_ast[[2]], path, multiplier = multiplier)
+      } else if (operator %in% c("+", "-") && ast_length == 2) {
+        # -x or -(23 + x)
+        if (operator == "-") {
+          new_ast <- substitute(-y * x, list(x = local_ast[[2]], y = mult_num))
+        } else {
+          new_ast <- substitute(y * x, list(x = local_ast[[2]], y = mult_num))
+        }
+        inplace_update_ast(c(path), new_ast)
+        push_idx(new_ast, c(path))
+      } else if (operator %in% c("-", "+")) {
+        # if we have to multiply then we need to do something
+        if (need_multiplication) {
+          if (operator == "+") {
+            new_ast <- substitute(x * y + x * z,
+                                  list(x = multiplier, y = local_ast[[2]],
+                                       z = local_ast[[3]]))
+          } else if (operator == "-") {
+            new_ast <- substitute(x1 * y + x2 * z,
+                                  list(x1 = multiplier, x2 = -1 * multiplier,
+                                       y = local_ast[[2]],
+                                       z = local_ast[[3]]))
+          }
+
+          # also try to evaluate the two branches, maybe we can simplify sth.
+          new_ast[[2]] <- try_eval_exp(new_ast[[2]])
+          new_ast[[3]] <- try_eval_exp(new_ast[[3]])
+
+          # update the ast and continue to traverse
+          inplace_update_ast(c(path), new_ast)
+          push_idx(new_ast, path)
+        } else if (operator == "-") {
+          new_ast <- substitute(x + -1 * y, list(x = local_ast[[2]],
+                                                 y = local_ast[[3]]))
+          inplace_update_ast(c(path), new_ast)
+          push_idx(new_ast, path)
+        } else {
+          continue_traversal(local_ast, path)
+        }
+      } else if (operator %in% c("*", "/")) {
+        left_is_num <-  is.numeric(local_ast[[2]])
+        right_is_num <-  is.numeric(local_ast[[3]])
+        is_multiplication <- operator == "*"
+        if (!left_is_num && !right_is_num) {
+          # this means either it is non-linear
+          # or we need to further evaluate one of the branches
+          continue_traversal(local_ast, path)
+        } else if (left_is_num && right_is_num) {
+          inplace_update_ast(path, try_eval_exp(local_ast))
+        } else if (!is_multiplication ) {
+          # if it is a devision, let's make it a multiplication
+          if (left_is_num && !right_is_num) {
+            replacement <- list(x = mult_num / local_ast[[2]],
+                                y = local_ast[[3]])
+          } else if (!left_is_num && right_is_num) {
+            replacement <- list(x = local_ast[[2]],
+                                y =  mult_num / local_ast[[3]])
+          }
+          new_ast <- substitute(y * x, replacement)
+          push_idx(new_ast, c(path))
+        } else {
+          # multiplication & one of the sides is numeric
+          if (left_is_num) {
+            num_idx <- 2
+            term_idx <- 3
+          } else {
+            num_idx <- 3
+            term_idx <- 2
+          }
+          new_multiplier <- local_ast[[num_idx]]
+          if (!is.null(multiplier)) {
+            new_multiplier <- new_multiplier * multiplier
+          }
+          term <- local_ast[[term_idx]]
+          push_idx(term, path, new_multiplier)
+        }
+      }
+    }
+  }
+  ast
 }
 
-normalize_expression <- function(model, expression, environment) {
-  ast <- bind_variables(model, expression, environment)
+normalize_expression <- function(model, expression, envir) {
+  ast <- bind_variables(model, expression, envir)
   ast <- try_eval_exp_rec(ast)
   check_expression(model, ast)
   ast <- standardize_ast(ast)

@@ -265,3 +265,27 @@ test_that("devision in objective fun", {
     set_objective(5 / (-x + y), direction = "max")
   expect_equal(deparse(m@objective@expression[[1]]), "-0.2 * x + 0.2 * y")
 })
+
+test_that("constraints should be saved with only + operators", {
+  m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
+    add_variable(y, type = "continuous", ub = 4) %>%
+    add_constraint(x - y, "<=", 10) %>%
+    set_objective(5 / (-x + y), direction = "max")
+  expect_equal(deparse(m@constraints[[1]]@lhs[[1]]), "x + -1 * y")
+})
+
+test_that("constraints can have an unary + operator", {
+  m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
+    add_variable(y, type = "continuous", ub = 4) %>%
+    add_constraint(+x - y, "<=", 10) %>%
+    set_objective(5 / (-x + y), direction = "max")
+  expect_equal(deparse(m@constraints[[1]]@lhs[[1]]), "1 * x + -1 * y")
+})
+
+test_that("small to mid sized models should work", {
+  n <- 400
+  result <- MIPModel() %>%
+    add_variable(x[i], i = 1:n, type = "binary") %>%
+    set_objective(sum_exp(x[i], i = 1:n), "max") %>%
+    add_constraint(sum_exp(x[i], i = 1:n), "==", 1)
+})
