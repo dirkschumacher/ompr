@@ -18,12 +18,14 @@ The documentation is incomplete.
 
 Current version: 0.1.3
 
+Please refer to the `vignettes` for more detailed examples (`browseVignettes("ompr")`).
+
 ## Install
 
 To install the current development version use devtools:
 
 ```R 
-devtools::install_github("dirkschumacher/ompr")
+devtools::install_github("dirkschumacher/ompr", build_vignettes = TRUE)
 devtools::install_github("dirkschumacher/ompr.roi")
 ```
 
@@ -142,6 +144,8 @@ Solvers are in different packages. `ompr.ROI` uses the ROI package which offers 
  
 ## Further Examples
 
+Please refer to the `vignettes` for more examples.
+
 ### Knapsack
 
 ```R
@@ -188,4 +192,4 @@ MIPModel() %>%
 
 ## License
 
-Currently GPL because I am not sure if I can license it MIT.
+Currently GPL.
