@@ -13,7 +13,6 @@ install:
 environment:
   global:
     USE_RTOOLS: true
-    WARNINGS_ARE_ERRORS: false
 
   matrix:
   - R_VERSION: stable
