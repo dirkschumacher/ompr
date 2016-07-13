@@ -1,0 +1,90 @@
+---
+title: "Solve Sudokus"
+author: "Dirk Schumacher"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Solve Sudokus}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## Solve Sudokus using MILP
+
+In this vignettes we will solve Sudoku puzzles using MILP. [Sudoku](https://en.wikipedia.org/wiki/Sudoku) in its most popular form is a constraint satistication problem and by setting the objective function to $0$ you transform the optimization problem into a pure constraint satistication problem. In this document we will consider Sudokus in a 9x9 grid with 3x3 sub-matrices.
+
+Of course you can formulate an objective function as well that directs the solver towards solutions maximizing a certain linear function.
+
+## The model
+
+The idea is to introduce a binary variable $x$ with three indexes $i, j, k$ that is $1$ if and only if the number $k$ is in cell $i, j$.
+
+```{r, message=FALSE}
+library(ompr)
+library(dplyr)
+n <- 9
+model <- MIPModel() %>%
+  
+  # The number k stored in position i,j
+  add_variable(x[i, j, k], i = 1:n, j = 1:n, k = 1:9, type = "binary") %>%
+  
+  # no objective
+  set_objective(0) %>%
+  
+  # only one number can be assigned per cell
+  add_constraint(sum_exp(x[i, j, k], k = 1:9), "==", 1, i = 1:n, j = 1:n) %>%
+  
+  # each number is exactly once in a row
+  add_constraint(sum_exp(x[i, j, k], j = 1:n), "==", 1, i = 1:n, k = 1:9) %>%
+  
+  # each number is exactly once in a column
+  add_constraint(sum_exp(x[i, j, k], i = 1:n), "==", 1, j = 1:n, k = 1:9) %>% 
+  
+  # each 3x3 square must have all numbers
+  add_constraint(sum_exp(x[i, j, k], i = 1:3 + sx, j = 1:3 + sy), "==", 1, 
+                 sx = seq(0, n - 3, 3), sy = seq(0, n - 3, 3), k = 1:9)
+model
+```
+
+## Solve the model
+
+We will use `glpk` to solve the above model. Note that we haven't fixed any numbers to specific values. That means that the solver will find a valid sudoku without any prior hints.
+
+```{r}
+library(ompr.roi)
+library(ROI.plugin.glpk)
+result <- solve_model(model, with_ROI(solver = "glpk", verbose = TRUE))
+
+# the following dplyr statement plots a 9x9 matrix
+result %>% 
+  get_solution(x[i,j,k]) %>%
+  filter(value > 0) %>%  
+  select(i, j, k) %>% 
+  tidyr::spread(j, k) %>% 
+  select(-i)
+```
+
+If you want to solve a concrete sudoku you can fix certain cells to specific values. For example here we solve a sudoku that has the sequence from 1 to 9 in the first 3x3 matrix fixed.
+
+
+```{r}
+model_fixed <- model %>% 
+  add_constraint(x[1, 1, 1], "==", 1) %>% 
+  add_constraint(x[1, 2, 2], "==", 1) %>% 
+  add_constraint(x[1, 3, 3], "==", 1) %>% 
+  add_constraint(x[2, 1, 4], "==", 1) %>% 
+  add_constraint(x[2, 2, 5], "==", 1) %>% 
+  add_constraint(x[2, 3, 6], "==", 1) %>% 
+  add_constraint(x[3, 1, 7], "==", 1) %>% 
+  add_constraint(x[3, 2, 8], "==", 1) %>% 
+  add_constraint(x[3, 3, 9], "==", 1)
+result <- solve_model(model_fixed, with_ROI(solver = "glpk", verbose = TRUE))
+
+result %>% 
+  get_solution(x[i,j,k]) %>%
+  filter(value > 0) %>%  
+  select(i, j, k) %>% 
+  tidyr::spread(j, k) %>% 
+  select(-i) 
+```
