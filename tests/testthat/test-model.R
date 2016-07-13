@@ -289,3 +289,9 @@ test_that("small to mid sized models should work", {
     set_objective(sum_exp(x[i], i = 1:n), "max") %>%
     add_constraint(sum_exp(x[i], i = 1:n), "==", 1)
 })
+
+test_that("bug 20160713 #41: quantifiers in constraints in sum_exp", {
+  MIPModel() %>%
+    add_variable(x[i], i = 1:9) %>%
+    add_constraint(sum_exp(x[i], i = 1:3 + y), "==", 1, y = c(0, 3, 6))
+})

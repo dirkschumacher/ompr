@@ -212,6 +212,7 @@ setMethod("add_constraint",
             lhs_ast <- substitute(lhs)
             rhs_ast <- substitute(rhs)
             parent_env <- parent.frame()
+            bound_subscripts <- list(...)
             add_constraint_internal <- function(envir = parent_env) {
               lhs_ast <- normalize_expression(model, lhs_ast, envir)
               rhs_ast <- normalize_expression(model, rhs_ast, envir)
@@ -239,10 +240,9 @@ setMethod("add_constraint",
                                 rhs = as.expression(rhs_ast),
                                 direction = direction)
             }
-            bound_subscripts <- list(...)
             constraints <- model@constraints
             if (is.list(bound_subscripts) && length(bound_subscripts) > 0) {
-              filter_fn <- function(x) is.integer(x) & length(x) > 0
+              filter_fn <- function(x) is.numeric(x) & length(x) > 0
               bound_subscripts <- Filter(filter_fn, bound_subscripts)
               var_combinations <- expand.grid(bound_subscripts)
               new_constraints <- apply(var_combinations, 1, function(row) {
