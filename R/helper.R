@@ -266,7 +266,7 @@ standardize_ast <- function(ast) {
 
 normalize_expression <- function(model, expression, envir) {
   ast <- bind_variables(model, expression, envir)
-  ast <- try_eval_exp_rec(ast)
+  ast <- try_eval_exp_rec(ast, envir)
   check_expression(model, ast)
   ast <- standardize_ast(ast)
   ast
