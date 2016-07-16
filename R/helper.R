@@ -1,3 +1,36 @@
+
+
+# this is a generic function to iterativly traverse an AST
+# in a pre-order way.
+ast_walker <- function(ast, on_element) {
+  # TODO: do not save ast in element
+  # rather just use the path to query ast on demand
+  stack <- rstackdeque::rstack()
+  push <- function(x) stack <<- rstackdeque::insert_top(stack, x)
+  push(list(ast = ast, path = c(), multiplier = NULL))
+  get_ast_value <- function(path) {
+    if (length(path) > 0) {
+      ast[[path]]
+    } else {
+      ast
+    }
+  }
+  inplace_update_ast <- function(path, value) {
+    # update the ast in place
+    if (length(path) > 0) {
+      ast[[path]] <<- value
+    } else {
+      ast <<- value
+    }
+  }
+  while (length(stack) > 0) {
+    element <- rstackdeque::peek_top(stack)
+    stack <- rstackdeque::without_top(stack)
+    on_element(push, inplace_update_ast, get_ast_value, element)
+  }
+  ast
+}
+
 try_eval_exp <- function(ast, envir = baseenv()) {
   result <- try(eval(ast, envir = envir), silent = TRUE)
   if (!is.numeric(result)) {
@@ -7,39 +40,65 @@ try_eval_exp <- function(ast, envir = baseenv()) {
   }
 }
 
-try_eval_exp_rec <- function(ast, envir = baseenv()) {
-  if (!is.call(ast)) {
-    # let's try to evaluate the whole sub-tree
-    new_ast_eval <- try_eval_exp(ast, envir)
-    if (is.numeric(new_ast_eval)) {
-      return(new_ast_eval)
+try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
+  on_element <- function(push, inplace_update_ast, get_ast_value, element) {
+    path <- element$path
+    ast <- if (is.null(element$ast)) get_ast_value(path) else element$ast
+    stop_traversal <- element$stop_traversal
+    is_final_sum_exp_call <- element$is_final_sum_exp_call
+    if (is.null(stop_traversal)) {
+      stop_traversal <- FALSE
     }
-    return(ast)
-  } else if (is.call(ast)) {
-    new_ast <- ast
-    if (as.character(new_ast[[1]]) == "sum_exp") {
-      # we have a sum, let's expand it
-      # TODO: detect that automatically
-      # we need to evaluate anything from argument 2 onwards
-      # e.g. sum_exp(x[i], i = 1:n) <- the n needs to be bound
-      le_ast <- new_ast
-      for (i in 3:length(le_ast)) {
-        le_ast[[i]] <- try_eval_exp_rec(le_ast[[i]], envir)
+    if (is.null(is_final_sum_exp_call)) {
+      is_final_sum_exp_call <- FALSE
+    }
+    if (!is.call(ast)) {
+      # let's try to evaluate the whole sub-tree
+      new_ast_eval <- try_eval_exp(ast, envir)
+      if (is.numeric(new_ast_eval)) {
+        inplace_update_ast(path, new_ast_eval)
       }
-      new_ast <- eval(le_ast)
+    } else if (is.call(ast)) {
+      if (as.character(ast[[1]]) == "sum_exp") {
+        # we have a sum, let's expand it
+        # TODO: detect that automatically
+        # we need to evaluate anything from argument 2 onwards
+        # e.g. sum_exp(x[i], i = 1:n) <- the n needs to be bound
+        if (!is_final_sum_exp_call) {
+          push(list(path = path, is_final_sum_exp_call = TRUE))
+          for (i in 3:length(ast)) {
+            new_element <- list(
+              ast = ast[[i]],
+              path = c(path, i)
+            )
+            push(new_element)
+          }
+        } else {
+          # this expands the sum_exp expression
+          # and triggers a reevaluation
+          expanded_ast <- eval(ast)
+          inplace_update_ast(path, expanded_ast)
+          push(list(ast = expanded_ast, path = path))
+        }
+      } else if (!stop_traversal) {
+        # we need to revisit the same node after the updates
+        push(list(ast = ast, path = path, stop_traversal = TRUE))
+        for (i in 2:length(ast)) {
+          new_element <- list(ast = ast[[i]],
+                              path = c(path, i))
+          push(new_element)
+        }
+      } else {
+        new_ast_eval <- try_eval_exp(ast, envir)
+        if (is.numeric(new_ast_eval)) {
+          inplace_update_ast(path, new_ast_eval)
+        }
+      }
+    } else {
+      stop("Does not compute.")
     }
-    for (i in 2:length(new_ast)) {
-      new_ast[[i]] <- try_eval_exp_rec(new_ast[[i]], envir)
-    }
-    # let's try to evaluate the whole sub-tree
-    new_ast_eval <- try_eval_exp(new_ast, envir)
-    if (is.numeric(new_ast_eval)) {
-      return(new_ast_eval)
-    }
-    return(new_ast)
-  } else {
-    stop("Does not compute.")
   }
+  ast_walker(base_ast, on_element)
 }
 
 bind_expression <- function(var_name, exp, envir, bound_subscripts) {
@@ -91,50 +150,65 @@ any_unbounded_indexes <- function(ast) {
 }
 
 check_expression <- function(model, the_ast) {
-  if (is.call(the_ast) && the_ast[[1]] == "[" &&
-      class(the_ast[[2]]) == "name") {
-    var_name <- as.character(the_ast[[2]])
-    search_key <- paste0(as.character(the_ast[3:length(the_ast)]),
-                         collapse = "_")
-    var <- model@variables[[var_name]]
-    if (!is.null(var) && !search_key %in% var@instances) {
-      stop(paste0("The expression contains a variable,",
-                  " that is not part of the model."))
-    }
-  } else if (is.call(the_ast)) {
-    for (i in 2:length(the_ast)) {
-      check_expression(model, the_ast[[i]])
+  on_element <- function(push, inplace_update_ast, get_ast_value, element) {
+    ast <- element$ast
+    path <- element$path
+    if (is.call(ast) && ast[[1]] == "[" &&
+        class(ast[[2]]) == "name") {
+      var_name <- as.character(ast[[2]])
+      search_key <- paste0(as.character(ast[3:length(ast)]),
+                           collapse = "_")
+      var <- model@variables[[var_name]]
+      if (!is.null(var) && !search_key %in% var@instances) {
+        stop(paste0("The expression contains a variable,",
+                    " that is not part of the model."))
+      }
+    } else if (is.call(ast)) {
+      for (i in 2:length(ast)) {
+        push(list(ast = ast[[i]], path = c(path, i)))
+      }
     }
   }
+  invisible(ast_walker(the_ast, on_element))
 }
 
 is_non_linear <- function(var_names, ast) {
   contains_vars <- function(le_ast) {
-    if (is.call(le_ast)) {
-      for (i in 2:length(le_ast)) {
-        result <- contains_vars(le_ast[[i]])
-        if (result) return(TRUE)
+    vars_found <- FALSE
+    on_element <- function(push, inplace_update_ast, get_ast_value, element) {
+      local_ast <- element$ast
+      path <- element$path
+      if (is.call(local_ast) && !vars_found) {
+        for (i in 2:length(local_ast)) {
+          push(list(ast = local_ast[[i]], path = c(path, i)))
+        }
+      } else if (is.name(local_ast) && !vars_found) {
+        vars_found <<- all(as.character(local_ast) %in% var_names)
       }
-      return(FALSE)
-    } else if (is.name(le_ast)) {
-      as.character(le_ast) %in% var_names
-    } else {
-      FALSE
+    }
+    ast_walker(le_ast, on_element)
+    vars_found
+  }
+  non_linear <- FALSE
+  on_element <- function(push, inplace_update_ast, get_ast_value, element) {
+    local_ast <- element$ast
+    path <- element$path
+    if (non_linear) {
+      return()
+    }
+    if (is.call(local_ast) &&
+        as.character(local_ast[[1]]) %in% c("*", "/", "^")) {
+      non_linear <<- contains_vars(local_ast[[2]]) &&
+        contains_vars(local_ast[[3]])
+    } else if (is.call(local_ast)) {
+      for (i in 2:length(local_ast)) {
+        push(list(ast = local_ast[[i]], path = c(path, i)))
+      }
     }
   }
-  if (is.call(ast) && as.character(ast[[1]]) %in% c("*", "/", "^")) {
-    contains_vars(ast[[2]]) && contains_vars(ast[[3]])
-  } else if (is.call(ast)) {
-    for (i in 2:length(ast)) {
-      result <- is_non_linear(var_names, ast[[i]])
-      if (result) return(TRUE)
-    }
-    return(FALSE)
-  } else {
-    FALSE
-  }
+  ast_walker(ast, on_element)
+  non_linear
 }
-
 
 # this function takes an ast and transforms it
 # into a an ast that only constists of either symbols,
@@ -142,37 +216,21 @@ is_non_linear <- function(var_names, ast) {
 # it walks through the ast and changes sub trees
 # iterator based and not recusrive
 standardize_ast <- function(ast) {
-  stack <- rstackdeque::rstack()
-  push <- function(x) stack <<- rstackdeque::insert_top(stack, x)
-  push(list(ast = ast, path = c(), multiplier = NULL))
-  inplace_update_ast <- function(path, value) {
-    # update the ast in place
-    # it constracts a call like ast[[2]][[2]] <<- 42
-    the_call <- substitute(ast)
-    if (length(path > 0)) {
-      for (i in 1:length(path)) {
-        the_call <- substitute(x[[y]], list(x = the_call, y = path[i]))
-      }
-    }
-    eval(substitute(x <<- substitute(y), list(x = the_call, y = value)))
-  }
+  on_element <- function(push, inplace_update_ast, get_ast_value, element) {
 
-  # this function pushes a new item to onto the stack
-  push_idx <- function(local_ast, new_path, multiplier = NULL) {
-    push(list(
-      ast = local_ast,
-      path = new_path,
-      multiplier = multiplier
-    ))
-  }
-  continue_traversal <- function(local_ast, path) {
-    stopifnot(length(local_ast) == 3)
-    push_idx(try_eval_exp(local_ast[[2]]), c(path, 2))
-    push_idx(try_eval_exp(local_ast[[3]]), c(path, 3))
-  }
-  while (length(stack) > 0) {
-    element <- rstackdeque::peek_top(stack)
-    stack <- rstackdeque::without_top(stack)
+    # this function pushes a new item to onto the stack
+    push_idx <- function(local_ast, new_path, multiplier = NULL) {
+      push(list(
+        ast = local_ast,
+        path = new_path,
+        multiplier = multiplier
+      ))
+    }
+    continue_traversal <- function(local_ast, path) {
+      stopifnot(length(local_ast) == 3)
+      push_idx(try_eval_exp(local_ast[[2]]), c(path, 2))
+      push_idx(try_eval_exp(local_ast[[3]]), c(path, 3))
+    }
     local_ast <- element$ast
     path <- element$path
     multiplier <- element$multiplier
@@ -261,12 +319,14 @@ standardize_ast <- function(ast) {
       }
     }
   }
-  ast
+  ast_walker(ast, on_element)
 }
 
 normalize_expression <- function(model, expression, envir) {
   ast <- bind_variables(model, expression, envir)
-  ast <- try_eval_exp_rec(ast, envir)
+  if (!is.environment(envir)) {
+    ast <- try_eval_exp_rec(ast, envir)
+  } # otherwise this has been done in bind_variables
   check_expression(model, ast)
   ast <- standardize_ast(ast)
   ast
