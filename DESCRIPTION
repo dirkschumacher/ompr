@@ -1,7 +1,7 @@
 Package: ompr
 Type: Package
 Title: R optimization modelling project
-Version: 0.1.5
+Version: 0.1.6
 Author: Dirk Schumacher
 Authors@R: person("Dirk", "Schumacher", email = "mail@dirk-schumacher.net",
             role = c("aut", "cre"))

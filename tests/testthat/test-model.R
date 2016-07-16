@@ -295,3 +295,11 @@ test_that("bug 20160713 #41: quantifiers in constraints in sum_exp", {
     add_variable(x[i], i = 1:9) %>%
     add_constraint(sum_exp(x[i], i = 1:3 + y), "==", 1, y = c(0, 3, 6))
 })
+
+test_that("small to mid sized model should work #2", {
+  n <- 40
+  coef <- matrix(1:(n ^ 2), ncol = 2)
+  MIPModel() %>%
+    add_variable(x[i, j], i = 1:n, j = 1:n) %>%
+    add_constraint(sum_exp(coef[i, j] * x[i, j], i = 1:n, j = 1:n), "==", 1)
+})
