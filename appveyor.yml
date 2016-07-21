@@ -10,10 +10,27 @@ init:
 install:
   ps: Bootstrap
 
+environment:
+  global:
+    USE_RTOOLS: true
+
+  matrix:
+  - R_VERSION: stable
+
+  - R_VERSION: patched
+
+  - R_VERSION: oldrel
+
+  - R_VERSION: devel
+
+
 # Adapt as necessary starting from here
 
 build_script:
   - travis-tool.sh install_deps
+  - travis-tool.sh install_r stringi
+  - travis-tool.sh install_github dirkschumacher/ompr
+  - travis-tool.sh install_github dirkschumacher/ompr.roi
 
 test_script:
   - travis-tool.sh run_tests
