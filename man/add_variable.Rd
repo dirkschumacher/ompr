@@ -21,7 +21,7 @@ add_variable(model, variable, type = "continuous", lb = -Inf, ub = Inf,
 \item{...}{quantifiers for the indexed variabled}
 }
 \description{
-A variable can either by a name or an indexed name. See examples.
+A variable can either be a name or an indexed name. See examples.
 }
 \examples{
 library(magrittr)

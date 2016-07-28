@@ -1,3 +1,4 @@
+#' A class representing a constraint
 #' @export
 Constraint <- setClass("Constraint",
                               slots = c(

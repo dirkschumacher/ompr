@@ -4,6 +4,9 @@
 #' @slot type the type of the variable must be one of (binary, continuous, integer). Default is continuous.
 #' @slot lb an optional lower bound. No value means unbounded.
 #' @slot ub an optional upper bound. No value means unbounded.
+#' @slot instances a character vector with an entry for each variable instance.
+#' @slot variable_expression the original variable expression as an ast
+#' @slot variable_quantifiers the variable quantifiers.
 #' @export
 Variable <- setClass("Variable",
   slots = c(

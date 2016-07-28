@@ -18,5 +18,11 @@ An S4 class to represent a Variable.
 \item{\code{lb}}{an optional lower bound. No value means unbounded.}
 
 \item{\code{ub}}{an optional upper bound. No value means unbounded.}
+
+\item{\code{instances}}{a character vector with an entry for each variable instance.}
+
+\item{\code{variable_expression}}{the original variable expression as an ast}
+
+\item{\code{variable_quantifiers}}{the variable quantifiers.}
 }}
 
