@@ -26,7 +26,7 @@ Please refer to the `vignettes` for more detailed examples (`browseVignettes("om
 To install the current development version use devtools:
 
 ```R 
-devtools::install_github("dirkschumacher/ompr", build_vignettes = TRUE)
+devtools::install_github("dirkschumacher/ompr")
 devtools::install_github("dirkschumacher/ompr.roi")
 ```
 
