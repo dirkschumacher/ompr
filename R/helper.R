@@ -333,10 +333,21 @@ normalize_expression <- function(model, expression, envir) {
 }
 
 # extracts the coefficients out of an ast
-# the expression should be a simple sum
-# only multiplication and + operators are allowed
-# for each multiplication operation, one operand must be a numeric
-# the other a non-numeric
+#' Extracts the coefficients out of an ast
+#'
+#' Should only be used if you intentd to develop your own solver.
+#'
+#' The expression should be a simple sum.
+#' Only multiplication and + operators are allowed.
+#' For each multiplication operation, one operand must be a numeric
+#' the other a non-numeric.
+#'
+#' @param ast the ast
+#'
+#' @examples
+#' extract_coefficients(substitute(5 * x + 1))
+#'
+#' @return a list with values for constants and coefficients
 #' @export
 extract_coefficients <- function(ast) {
   result <- list()
