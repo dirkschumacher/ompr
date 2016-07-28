@@ -339,20 +339,21 @@ normalize_expression <- function(model, expression, envir) {
 # the other a non-numeric
 #' @export
 extract_coefficients <- function(ast) {
-  extr_coef_internal <- function(the_ast) {
-    if (is.call(the_ast)) {
-      operator <- the_ast[[1]]
+  result <- list()
+  on_element <- function(push, inplace_update_ast, get_ast_value, element) {
+    path <- element$path
+    local_ast <- if (is.null(element$ast)) get_ast_value(path) else element$ast
+    if (is.call(local_ast)) {
+      operator <- local_ast[[1]]
       if (as.character(operator) == "+") {
-        left <- extr_coef_internal(try_eval_exp(the_ast[[2]]))
-        right <- extr_coef_internal(try_eval_exp(the_ast[[3]]))
-        list(
-          constant = left$constant + right$constant,
-          coefficients = c(left$coefficients, right$coefficients)
-        )
+        push(list(ast = try_eval_exp(local_ast[[2]]),
+                  path = c(path, 2)))
+        push(list(ast = try_eval_exp(local_ast[[3]]),
+                  path = c(path, 3)))
       } else if (as.character(operator) == "*") {
-        the_ast[[2]] <- try_eval_exp(the_ast[[2]])
-        the_ast[[3]] <- try_eval_exp(the_ast[[3]])
-        left_is_numeric <- is.numeric(the_ast[[2]])
+        local_ast[[2]] <- try_eval_exp(local_ast[[2]])
+        local_ast[[3]] <- try_eval_exp(local_ast[[3]])
+        left_is_numeric <- is.numeric(local_ast[[2]])
         if (left_is_numeric) {
           numeric_idx <- 2
           expr_idx <- 3
@@ -360,34 +361,39 @@ extract_coefficients <- function(ast) {
           numeric_idx <- 3
           expr_idx <- 2
         }
+
         # What the hell
-        coef <- try(as.numeric(the_ast[[numeric_idx]]), silent = TRUE)
+        coef <- try(as.numeric(local_ast[[numeric_idx]]), silent = TRUE)
         if (!is.numeric(coef)) coef <- 0
-        coefficent <- list(ast = the_ast[[expr_idx]],
-                                   coef = coef)
-        list(
+        coefficent <- list(ast = local_ast[[expr_idx]],
+                           coef = coef)
+        result <<- c(result, list(list(
           constant = 0,
           coefficients = list(coefficent)
-        )
+        )))
       } else if (as.character(operator) == "[") {
-        list(constant = 0,
-             coefficients = list(list(ast = the_ast, coef = 1)))
+        result <<- c(result, list(list(constant = 0,
+             coefficients = list(list(ast = local_ast, coef = 1)))))
       } else {
         stop(paste0("Unexpected operator '", operator, "' found."))
       }
     } else {
-      if (is.numeric(the_ast)) {
-        list(constant = as.numeric(the_ast), coefficients = list())
+      if (is.numeric(local_ast)) {
+        result <<- c(result,
+                     list(list(constant = as.numeric(local_ast),
+                          coefficients = list())))
       } else {
-        list(constant = 0,
-             coefficients = list(list(ast = the_ast, coef = 1)))
+        result <<- c(result, list(list(constant = 0,
+             coefficients = list(list(ast = local_ast, coef = 1)))))
       }
     }
   }
-  result <- extr_coef_internal(ast)
+
+  ast_walker(ast = ast, on_element = on_element)
+  return_tuple <- list()
 
   # last step is to reduce the coefficients
-  result$coefficients <- Reduce(function(acc, el) {
+  return_tuple$coefficients <- Reduce(function(acc, el) {
     key <- deparse(el$ast)
     value <- el$coef
     if (is.null(acc[[key]])) {
@@ -398,8 +404,13 @@ extract_coefficients <- function(ast) {
       acc[[key]] <- old_list
     }
     acc
-  }, result$coefficients, init = list())
-  result
+  }, unlist(lapply(result, function (x) x$coefficients),
+            recursive = FALSE), init = list())
+
+  # sum over all constants
+  return_tuple$constant <- Reduce("+", lapply(result, function (x) x$constant))
+
+  return_tuple
 }
 
 #' @export
