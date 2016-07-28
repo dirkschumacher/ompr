@@ -413,8 +413,18 @@ extract_coefficients <- function(ast) {
   return_tuple
 }
 
+#' Constructs a sum expression
+#'
+#' @param exp an expression that can be repeated to a sum
+#' @param ... bind variables in exp using dots. See examples.
+#'
+#' @return the expanded sum as an AST
+#'
+#' @examples
+#' sum_exp(x[i], i = 1:10)
+#'
 #' @export
-sum_exp <- function(exp, free_vars = c(), ...) {
+sum_exp <- function(exp, ...) {
   # TODO: This should probably be moved into the model
   # TODO: Make sure the input is correct
   # TODO: Take model and make sure
