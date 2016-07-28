@@ -332,7 +332,6 @@ normalize_expression <- function(model, expression, envir) {
   ast
 }
 
-# extracts the coefficients out of an ast
 #' Extracts the coefficients out of an ast
 #'
 #' Should only be used if you intentd to develop your own solver.
