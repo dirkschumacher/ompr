@@ -19,7 +19,7 @@ Solution <- setClass("Solution",
 #'
 #' @return a data.frame. One row for each variable instance
 #'         and a column for each index.
-#' @import stringr
+#' @importFrom stringr str_match
 #' @export
 setGeneric("get_solution", function(solution, exp) {
   ast <- substitute(exp)
