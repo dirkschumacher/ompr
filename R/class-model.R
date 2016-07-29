@@ -168,7 +168,7 @@ setGeneric("set_objective", function(model, expression, direction = "max") {
 #' Outputs the model to the console
 #'
 #' @param object the model object
-#'
+#' @importFrom stats setNames
 #' @export
 setMethod("show", signature(object = "Model"),
           definition = function(object) {
