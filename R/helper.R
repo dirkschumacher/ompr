@@ -117,6 +117,17 @@ bind_variables <- function(model, ast, calling_env) {
     calling_env <- calling_env[nchar(names(calling_env)) > 0]
   }
   if (is.environment(calling_env)) {
+    if (exists(names(model@variables), calling_env)) {
+      problematic_vars <- mapply(function(x) {
+        exists(x, calling_env)
+      }, names(model@variables))
+      problematic_vars <- names(model@variables)[problematic_vars]
+      warning(paste0("There variables in your environment that interfere",
+                      " with your defined model variables: ",
+                     paste0(problematic_vars, collapse = ","),
+                      ". This can lead",
+                      " to unexpected behaviour."))
+    }
     return(try_eval_exp_rec(ast, calling_env))
   }
 
