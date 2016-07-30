@@ -280,8 +280,8 @@ standardize_ast <- function(ast) {
           continue_traversal(local_ast, path)
         }
       } else if (operator %in% c("*", "/")) {
-        left_is_num <-  is.numeric(local_ast[[2]])
-        right_is_num <-  is.numeric(local_ast[[3]])
+        left_is_num <- is.numeric(try_eval_exp(local_ast[[2]]))
+        right_is_num <- is.numeric(try_eval_exp(local_ast[[3]]))
         is_multiplication <- operator == "*"
         if (!left_is_num && !right_is_num) {
           # this means either it is non-linear
@@ -289,7 +289,7 @@ standardize_ast <- function(ast) {
           continue_traversal(local_ast, path)
         } else if (left_is_num && right_is_num) {
           inplace_update_ast(path, try_eval_exp(local_ast))
-        } else if (!is_multiplication ) {
+        } else if (!is_multiplication) {
           # if it is a devision, let's make it a multiplication
           if (left_is_num && !right_is_num) {
             replacement <- list(x = mult_num / local_ast[[2]],
@@ -309,7 +309,7 @@ standardize_ast <- function(ast) {
             num_idx <- 3
             term_idx <- 2
           }
-          new_multiplier <- local_ast[[num_idx]]
+          new_multiplier <- try_eval_exp(local_ast[[num_idx]])
           if (!is.null(multiplier)) {
             new_multiplier <- new_multiplier * multiplier
           }
