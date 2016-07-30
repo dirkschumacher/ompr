@@ -303,3 +303,20 @@ test_that("small to mid sized model should work #2", {
     add_variable(x[i, j], i = 1:n, j = 1:n) %>%
     add_constraint(sum_exp(coef[i, j] * x[i, j], i = 1:n, j = 1:n), "==", 1)
 })
+
+test_that("bug 20160729: two sum_exp on one side", {
+  m <- MIPModel() %>%
+    add_variable(x[j], j = 1:4) %>%
+    add_constraint(sum_exp(x[j], j = 1:2) - sum_exp(x[j], j = 3:4), "==", 0)
+  expect_equal(deparse(m@constraints[[1]]@lhs[[1]]),
+               "x[1L] + x[2L] + (-1 * x[3L] + -1 * x[4L])")
+})
+
+test_that("bug 20160729_2: external var binding", {
+  x <- 1:10
+  m <- MIPModel() %>%
+    add_variable(x[j], j = 1:2)
+  expect_warning(add_constraint(m, sum_exp(x[j], j = 1:2), "==", 0))
+  expect_warning(add_constraint(m, sum_exp(x[j], j = 1:2), "==", 0),
+                 regexp = "x")
+})
