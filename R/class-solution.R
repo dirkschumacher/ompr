@@ -56,7 +56,10 @@ setGeneric("get_solution", function(solution, exp) {
       var_index <- var_index[!na_rows, ]
       var_values <- solution@solution[grepl(names(solution@solution),
                                             pattern = instance_pattern)]
-      result_df <- as.data.frame(var_index[, 2:ncol(var_index)])
+      result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
+      for (x in colnames(result_df)) {
+        result_df[[x]] <- as.integer(result_df[[x]])
+      }
       result_df$value <- var_values
       result_df$variable <- var_name
       colnames(result_df) <- c(free_vars, "value", "variable")
