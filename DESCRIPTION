@@ -22,7 +22,6 @@ Suggests:
   magrittr,
   knitr,
   rmarkdown,
-  dplyr,
   tidyr,
   ggplot2,
   ROI,
