@@ -133,7 +133,22 @@ test_that("solution indexes should not be factors", {
                   model = model,
                   objective_value = 3,
                   solution = setNames(c(2, 2, 2, 1, 1, 1),
-                                      c("y[1]", "y[3]", "y[3]",
-                                        "x[1]", "x[3]", "x[3]")))
+                                      c("y[1]", "y[2]", "y[3]",
+                                        "x[1]", "x[2]", "x[3]")))
   expect_equal(class(get_solution(solution, y[i])$i), "integer")
+})
+
+test_that("bug 20160908: solution indexes mixed up", {
+  model <- MIPModel() %>%
+    add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
+    set_objective(sum_exp(x[10, i], i = 10:12))
+  solution <- new("Solution",
+                  status = "optimal",
+                  model = model,
+                  objective_value = 3,
+                  solution = setNames(c(2, 2, 2, 1, 1, 1),
+                                      c("x[10,10]", "x[10,11]", "x[10,12]",
+                                        "x[11,10]", "x[11,11]", "x[11,12]")))
+  sol <- get_solution(solution, x[i, j])
+  expect_equal(sol$i, c(10, 10, 10, 11, 11, 11))
 })

@@ -58,7 +58,7 @@ setGeneric("get_solution", function(solution, exp) {
                                             pattern = instance_pattern)]
       result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
       for (x in colnames(result_df)) {
-        result_df[[x]] <- as.integer(result_df[[x]])
+        result_df[[x]] <- as.integer(as.character(result_df[[x]]))
       }
       result_df$value <- var_values
       result_df$variable <- var_name
