@@ -282,7 +282,9 @@ setGeneric("add_constraint", function(model,
       calling_env <- as.environment(as.list(row))
       parent.env(calling_env) <- parent_env
       constraint <- add_constraint_internal(calling_env)
-      p$pause(0.1)$tick()$print()
+      if (.show_progress_bar) {
+        p$pause(0.1)$tick()$print()
+      }
       constraint
     })
     constraints <- c(constraints, new_constraints)
