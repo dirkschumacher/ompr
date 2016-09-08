@@ -280,6 +280,10 @@ setGeneric("add_constraint", function(model, lhs, direction, rhs, ...) {
 #'
 #' @export
 setGeneric("solve_model", function(model, solver) {
+  if (!is.function(solver)) {
+    stop(paste0("Solver is not a function Model -> Solution.\n",
+                "Take a look at one of the vignettes on how to call solve_model."))
+  }
   solver(model)
 })
 

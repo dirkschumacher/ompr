@@ -320,3 +320,8 @@ test_that("bug 20160729_2: external var binding", {
   expect_warning(add_constraint(m, sum_exp(x[j], j = 1:2), "==", 0),
                  regexp = "x")
 })
+
+test_that("solve_model warns about wrong arguments", {
+  m <- MIPModel()
+  expect_error(solve_model(m, not_a_fun <- 0), regexp = "function")
+})
