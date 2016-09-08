@@ -18,6 +18,9 @@ r_github_packages:
   - dirkschumacher/ompr
   - dirkschumacher/ompr.roi
 
+r_packages:
+  - slam
+
 notifications:
   email:
     on_success: change
