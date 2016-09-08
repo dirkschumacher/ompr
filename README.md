@@ -17,7 +17,7 @@ This is just a first pre-alpha version to test the DSL and with probably a lot o
 
 The documentation is incomplete.
 
-Current version: 0.2.1
+Current version: 0.2.2
 
 Please refer to the `vignettes` for more detailed examples (`browseVignettes("ompr")`).
 
