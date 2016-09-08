@@ -304,7 +304,8 @@ setGeneric("add_constraint", function(model,
 setGeneric("solve_model", function(model, solver) {
   if (!is.function(solver)) {
     stop(paste0("Solver is not a function Model -> Solution.\n",
-                "Take a look at one of the vignettes on how to call solve_model."))
+                "Take a look at one of the vignettes on how to call",
+                " solve_model."))
   }
   solver(model)
 })
