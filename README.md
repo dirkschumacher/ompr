@@ -13,7 +13,7 @@ Here are some problems you could solve with this package:
   
 The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives a good starting point if you would like to learn more about the topic.
 
-This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analysis. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
+This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
 
 Current version: 0.2.2
 
