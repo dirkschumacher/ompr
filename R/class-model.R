@@ -216,6 +216,8 @@ setMethod("show", signature(object = "Model"),
 
 #' Add a constraint
 #'
+#' Add one or more constraints to the model using quantifiers.
+#'
 #' @param model the model
 #' @param lhs the linear objective as a sum of variables and constants
 #' @param direction either "<=", ">=" or "=="

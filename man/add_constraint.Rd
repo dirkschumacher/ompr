@@ -25,7 +25,7 @@ bound variables a new constraint is created.}
 a Model with new constraints added
 }
 \description{
-Add a constraint
+Add one or more constraints to the model using quantifiers.
 }
 \examples{
 library(magrittr)
