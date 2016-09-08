@@ -310,3 +310,7 @@ setGeneric("solve_model", function(model, solver) {
 #' Creates a new MIP Model
 #' @export
 MIPModel <- function() Model()
+
+#' Creates a new MILP Model
+#' @export
+MILPModel <- function() Model()
