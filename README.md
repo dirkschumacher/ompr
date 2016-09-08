@@ -13,9 +13,7 @@ Here are some problems you could solve with this package:
   
 The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives a good starting point if you would like to learn more about the topic.
 
-This is just a first pre-alpha version to test the DSL and with probably a lot of bugs. It is currently quite slow for realworld applications but I am working on it. Any feedback is greatly appreciated.
-
-The documentation is incomplete.
+This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analysis. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
 
 Current version: 0.2.2
 
@@ -133,7 +131,7 @@ m
 These functions currently form the public API. Anything else is even more unstable:
 
 ### DSL
-* `MIPModel()` create an empty model
+* `MILPModel()` create an empty mixed integer linear model
 * `add_variable` adds variables to a model
 * `set_objective` sets the objective function of a model
 * `add_constraint` add constraints
@@ -165,7 +163,7 @@ library(ompr.roi)
 max_capacity <- 5
 n <- 10
 weights <- runif(n, max = max_capacity)
-MIPModel() %>%
+MILPModel() %>%
   add_variable(x[i], i = 1:n, type = "binary") %>%
   set_objective(sum_exp(weights[i] * x[i], i = 1:n), "max") %>%
   add_constraint(sum_exp(weights[i] * x[i], i = 1:n), "<=", max_capacity) %>%
@@ -186,7 +184,7 @@ max_bins <- 10
 bin_size <- 3
 n <- 10
 weights <- runif(n, max = bin_size)
-MIPModel() %>%
+MILPModel() %>%
   add_variable(y[i], i = 1:max_bins, type = "binary") %>%
   add_variable(x[i, j], i = 1:max_bins, j = 1:n, type = "binary") %>%
   set_objective(sum_exp(y[i], i = 1:max_bins), "min") %>%
