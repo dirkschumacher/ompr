@@ -4,7 +4,7 @@
 \alias{add_constraint}
 \title{Add a constraint}
 \usage{
-add_constraint(model, lhs, direction, rhs, ...)
+add_constraint(model, lhs, direction, rhs, .show_progress_bar = TRUE, ...)
 }
 \arguments{
 \item{model}{the model}
@@ -14,6 +14,9 @@ add_constraint(model, lhs, direction, rhs, ...)
 \item{direction}{either "<=", ">=" or "=="}
 
 \item{rhs}{the linear objective as a sum of variables and constants}
+
+\item{.show_progress_bar}{displays a progressbar when adding multiple
+constraints}
 
 \item{...}{quantifiers for the indexed variables. For all combinations of
 bound variables a new constraint is created.}
