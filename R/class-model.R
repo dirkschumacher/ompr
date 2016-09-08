@@ -79,7 +79,17 @@ setGeneric("is_defined", function(model, variable) {
 setGeneric("add_variable", function(model, variable, type = "continuous",
                                     lb = -Inf, ub = Inf, ...) {
   if (ub < lb) {
-    stop("ub must not be smaller than lb.")
+    stop("The upper bound must not be smaller than the lower bound.")
+  }
+  if (length(lb) != 1 || length(ub) != 1) {
+    stop("lb and ub must be of length 1. I.e. just a single number.")
+  }
+  if (!is.numeric(lb) || !is.numeric(ub)) {
+    stop("lb and ub must be a number.")
+  }
+  if (length(type) != 1 || !type %in% c("continuous", "binary", "integer")) {
+    stop(paste0("The type of a variable needs to be either",
+                " continuous, binary or integer."))
   }
   exp <- substitute(variable)
   exp_class <- class(exp)
@@ -129,7 +139,9 @@ setGeneric("add_variable", function(model, variable, type = "continuous",
                variable_quantifiers = bound_subscripts)
     model@variables[[var_name]] <- var
   } else {
-    stop("Did not recognize variable expression.")
+    stop(paste0("The variable definition does not seem to be right.",
+                "Take a look at the vignettes if you need examples on how",
+                " to formulate variables"))
   }
   model
 })
