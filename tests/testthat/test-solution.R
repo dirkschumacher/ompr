@@ -122,3 +122,18 @@ test_that("solution has a nice default output", {
   expect_output(show(solution), "Status: optimal\n")
   expect_output(show(solution), "Objective value: 3")
 })
+
+test_that("solution indexes should not be factors", {
+  model <- MIPModel() %>%
+    add_variable(x[i], i = 1:3, ub = 1) %>%
+    add_variable(y[i], i = 1:3, ub = 1) %>%
+    set_objective(sum_exp(x[i], i = 1:3))
+  solution <- new("Solution",
+                  status = "optimal",
+                  model = model,
+                  objective_value = 3,
+                  solution = setNames(c(2, 2, 2, 1, 1, 1),
+                                      c("y[1]", "y[3]", "y[3]",
+                                        "x[1]", "x[3]", "x[3]")))
+  expect_equal(class(get_solution(solution, y[i])$i), "integer")
+})

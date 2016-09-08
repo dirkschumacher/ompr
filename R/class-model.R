@@ -79,7 +79,17 @@ setGeneric("is_defined", function(model, variable) {
 setGeneric("add_variable", function(model, variable, type = "continuous",
                                     lb = -Inf, ub = Inf, ...) {
   if (ub < lb) {
-    stop("ub must not be smaller than lb.")
+    stop("The upper bound must not be smaller than the lower bound.")
+  }
+  if (length(lb) != 1 || length(ub) != 1) {
+    stop("lb and ub must be of length 1. I.e. just a single number.")
+  }
+  if (!is.numeric(lb) || !is.numeric(ub)) {
+    stop("lb and ub must be a number.")
+  }
+  if (length(type) != 1 || !type %in% c("continuous", "binary", "integer")) {
+    stop(paste0("The type of a variable needs to be either",
+                " continuous, binary or integer."))
   }
   exp <- substitute(variable)
   exp_class <- class(exp)
@@ -129,7 +139,9 @@ setGeneric("add_variable", function(model, variable, type = "continuous",
                variable_quantifiers = bound_subscripts)
     model@variables[[var_name]] <- var
   } else {
-    stop("Did not recognize variable expression.")
+    stop(paste0("The variable definition does not seem to be right.",
+                "Take a look at the vignettes if you need examples on how",
+                " to formulate variables"))
   }
   model
 })
@@ -204,10 +216,14 @@ setMethod("show", signature(object = "Model"),
 
 #' Add a constraint
 #'
+#' Add one or more constraints to the model using quantifiers.
+#'
 #' @param model the model
 #' @param lhs the linear objective as a sum of variables and constants
 #' @param direction either "<=", ">=" or "=="
 #' @param rhs the linear objective as a sum of variables and constants
+#' @param .show_progress_bar displays a progressbar when adding multiple
+#'                           constraints
 #' @param ... quantifiers for the indexed variables. For all combinations of
 #'            bound variables a new constraint is created.
 #'
@@ -220,7 +236,9 @@ setMethod("show", signature(object = "Model"),
 #'  add_constraint(x[i], ">=", 1, i = 1:5) # creates 5 constraints
 #'
 #' @export
-setGeneric("add_constraint", function(model, lhs, direction, rhs, ...) {
+setGeneric("add_constraint", function(model,
+                                      lhs, direction, rhs,
+                                      .show_progress_bar = TRUE, ...) {
   lhs_ast <- substitute(lhs)
   rhs_ast <- substitute(rhs)
   parent_env <- parent.frame()
@@ -257,10 +275,16 @@ setGeneric("add_constraint", function(model, lhs, direction, rhs, ...) {
     filter_fn <- function(x) is.numeric(x) & length(x) > 0
     bound_subscripts <- Filter(filter_fn, bound_subscripts)
     var_combinations <- expand.grid(bound_subscripts)
+
+    # let's init a progress bar
+    p <- dplyr::progress_estimated(nrow(var_combinations), min_time = 2)
     new_constraints <- apply(var_combinations, 1, function(row) {
       calling_env <- as.environment(as.list(row))
       parent.env(calling_env) <- parent_env
       constraint <- add_constraint_internal(calling_env)
+      if (.show_progress_bar) {
+        p$pause(0.1)$tick()$print()
+      }
       constraint
     })
     constraints <- c(constraints, new_constraints)
@@ -280,9 +304,18 @@ setGeneric("add_constraint", function(model, lhs, direction, rhs, ...) {
 #'
 #' @export
 setGeneric("solve_model", function(model, solver) {
+  if (!is.function(solver)) {
+    stop(paste0("Solver is not a function Model -> Solution.\n",
+                "Take a look at one of the vignettes on how to call",
+                " solve_model."))
+  }
   solver(model)
 })
 
 #' Creates a new MIP Model
 #' @export
 MIPModel <- function() Model()
+
+#' Creates a new MILP Model
+#' @export
+MILPModel <- function() Model()
