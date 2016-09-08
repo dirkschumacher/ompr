@@ -1,6 +1,5 @@
 language: r
 r:
-  - oldrel
   - release
   - devel
 sudo: false
@@ -17,9 +16,6 @@ r_github_packages:
   - jimhester/lintr
   - dirkschumacher/ompr
   - dirkschumacher/ompr.roi
-
-r_packages:
-  - slam
 
 notifications:
   email:
