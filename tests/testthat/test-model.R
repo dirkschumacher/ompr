@@ -317,3 +317,8 @@ test_that("solve_model warns about wrong arguments", {
   m <- MIPModel()
   expect_error(solve_model(m, not_a_fun <- 0), regexp = "function")
 })
+
+test_that("add_constraint only accepts linear inequalities", {
+  m <- add_variable(new("Model"), x, type = "binary")
+  expect_error(add_constraint(m, x))
+})
