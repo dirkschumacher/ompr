@@ -135,31 +135,6 @@ bind_variables <- function(model, ast, calling_env) {
   eval(substitute(substitute(x, calling_env), list(x = ast)))
 }
 
-# checks if an ast has unbounded index
-# i.e. unevaluated ones
-any_unbounded_indexes <- function(ast) {
-  unbounded_indexes <- FALSE
-  on_element <- function(push, inplace_update_ast, get_ast_value, element) {
-    local_ast <- element$ast
-    path <- element$path
-    if (is.call(local_ast)) {
-      if (local_ast[[1]] == "[") {
-        for (i in 3:length(local_ast)) {
-          if (is.name(local_ast[[i]])) {
-            return(unbounded_indexes <<- TRUE)
-          }
-        }
-      } else if (!unbounded_indexes) {
-        for (i in 3:length(local_ast)) {
-          push(list(ast = local_ast[[i]], path = c(path, i)))
-        }
-      }
-    }
-  }
-  ast_walker(ast, on_element)
-  unbounded_indexes
-}
-
 check_expression <- function(model, the_ast) {
   on_element <- function(push, inplace_update_ast, get_ast_value, element) {
     ast <- element$ast

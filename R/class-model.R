@@ -219,9 +219,8 @@ setMethod("show", signature(object = "Model"),
 #' Add one or more constraints to the model using quantifiers.
 #'
 #' @param model the model
-#' @param lhs the linear objective as a sum of variables and constants
-#' @param direction either "<=", ">=" or "=="
-#' @param rhs the linear objective as a sum of variables and constants
+#' @param constraint_expr the constraint. Must be a linear (in)equality with
+#'        operator "<=", "==" or ">=".
 #' @param .show_progress_bar displays a progressbar when adding multiple
 #'                           constraints
 #' @param ... quantifiers for the indexed variables. For all combinations of
@@ -233,14 +232,22 @@ setMethod("show", signature(object = "Model"),
 #' library(magrittr)
 #' MIPModel() %>%
 #'  add_variable(x[i], i = 1:5) %>%
-#'  add_constraint(x[i], ">=", 1, i = 1:5) # creates 5 constraints
+#'  add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
 #'
 #' @export
 setGeneric("add_constraint", function(model,
-                                      lhs, direction, rhs,
+                                      constraint_expr,
                                       .show_progress_bar = TRUE, ...) {
-  lhs_ast <- substitute(lhs)
-  rhs_ast <- substitute(rhs)
+  constraint_ast <- substitute(constraint_expr)
+  if (length(constraint_ast) != 3) {
+    stop("constraint not well formed. Must be a linear (in)equality.")
+  }
+  direction <- as.character(constraint_ast[[1]])
+  if (!direction %in% c(">=", "<=", "==")) {
+    stop("Does not recognize constraint expr. Missing the constraint relation")
+  }
+  lhs_ast <- constraint_ast[[2]]
+  rhs_ast <- constraint_ast[[3]]
   parent_env <- parent.frame()
   bound_subscripts <- list(...)
   add_constraint_internal <- function(envir = parent_env) {
@@ -256,14 +263,6 @@ setGeneric("add_constraint", function(model,
       stop(paste0("The right-hand-side is probably non-linear. ",
                   "Currently, only linear constraints are ",
                   "supported."))
-    }
-    if (any_unbounded_indexes(lhs_ast)) {
-      stop(paste0("Some variable indexes are unbounded",
-                  " left hand expression."))
-    }
-    if (any_unbounded_indexes(rhs_ast)) {
-      stop(paste0("Some variable indexes are unbounded",
-                  " in the right hand expression."))
     }
     direction <- if (direction == "=") "==" else direction
     new("Constraint", lhs = as.expression(lhs_ast),

@@ -15,7 +15,7 @@ The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives
 
 This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
 
-Current version: 0.2.2
+Current version: 0.3.0
 
 Please refer to the `vignettes` for more detailed examples (`browseVignettes("ompr")`).
 
@@ -48,7 +48,7 @@ result <- MIPModel() %>%
   add_variable(x, type = "integer") %>%
   add_variable(y, type = "continuous") %>%
   set_objective(x + y, "max") %>%
-  add_constraint(x + y, "<=", 11.25) %>%
+  add_constraint(x + y <= 11.25) %>%
   solve_model(with_ROI(solver = "glpk")) 
 get_solution(result, x)
 get_solution(result, y)
@@ -81,13 +81,13 @@ result <- MIPModel() %>%
   # you cannot go to the same city
   add_constraint(x[i,i], "==", 0, i = 1:n) %>%
   # leave each city
-  add_constraint(sum_exp(x[i,j], j = 1:n), "==", 1, i = 1:n) %>%
+  add_constraint(sum_exp(x[i,j], j = 1:n) == 1, i = 1:n) %>%
   # visit each city
-  add_constraint(sum_exp(x[i,j], i = 1:n), "==", 1, j = 1:n) %>%
+  add_constraint(sum_exp(x[i,j], i = 1:n) == 1, j = 1:n) %>%
   # ensure no subtours (arc constraints)
-  add_constraint(u[1], "==", 1) %>% 
-  add_constraint(u[i], ">=", 2, i = 2:n) %>% 
-  add_constraint(u[i] - u[j] + 1, "<=", n * (1 - x[i,j]), i = 2:n, j = 2:n) %>% 
+  add_constraint(u[1] == 1) %>% 
+  add_constraint(u[i] >= 2, i = 2:n) %>% 
+  add_constraint(u[i] - u[j] + 1 <= n * (1 - x[i,j]), i = 2:n, j = 2:n) %>% 
   # solve it with GLPK
   solve_model(with_ROI(solver = "glpk", verbose = TRUE)) %>% 
   # get the solution
@@ -166,9 +166,10 @@ weights <- runif(n, max = max_capacity)
 MILPModel() %>%
   add_variable(x[i], i = 1:n, type = "binary") %>%
   set_objective(sum_exp(weights[i] * x[i], i = 1:n), "max") %>%
-  add_constraint(sum_exp(weights[i] * x[i], i = 1:n), "<=", max_capacity) %>%
+  add_constraint(sum_exp(weights[i] * x[i], i = 1:n) <= max_capacity) %>%
   solve_model(with_ROI(solver = "glpk")) %>% 
-  get_solution(x[i])
+  get_solution(x[i]) %>% 
+  filter(value > 0)
 ```
 
 ### Bin Packing
@@ -188,9 +189,9 @@ MILPModel() %>%
   add_variable(y[i], i = 1:max_bins, type = "binary") %>%
   add_variable(x[i, j], i = 1:max_bins, j = 1:n, type = "binary") %>%
   set_objective(sum_exp(y[i], i = 1:max_bins), "min") %>%
-  add_constraint(sum_exp(weights[j] * x[i, j], j = 1:n), "<=", y[i] * bin_size, i = 1:max_bins) %>%
-  add_constraint(sum_exp(x[i, j], i = 1:max_bins), "==", 1, j = 1:n) %>%
-  solve_model(with_ROI(solver = "symphony")) %>% 
+  add_constraint(sum_exp(weights[j] * x[i, j], j = 1:n) <= y[i] * bin_size, i = 1:max_bins) %>%
+  add_constraint(sum_exp(x[i, j], i = 1:max_bins) == 1, j = 1:n) %>%
+  solve_model(with_ROI(solver = "symphony", verbose = TRUE)) %>% 
   get_solution(x[i, j]) %>%
   filter(value > 0) %>%
   arrange(i)

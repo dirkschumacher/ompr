@@ -5,10 +5,6 @@ test_that("sum_exp returns an ast", {
   expect_equal(deparse(result), "x[1L] + x[2L] + x[3L]")
 })
 
-test_that("any_unbounded_indexes detects unbound vars", {
-  expect_true(any_unbounded_indexes(substitute(x[2, i])))
-})
-
 test_that("sum_exp does not evaluate other variables", {
   weights <- c(1, 2, 3)
   n <- 3

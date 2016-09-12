@@ -4,16 +4,13 @@
 \alias{add_constraint}
 \title{Add a constraint}
 \usage{
-add_constraint(model, lhs, direction, rhs, .show_progress_bar = TRUE, ...)
+add_constraint(model, constraint_expr, .show_progress_bar = TRUE, ...)
 }
 \arguments{
 \item{model}{the model}
 
-\item{lhs}{the linear objective as a sum of variables and constants}
-
-\item{direction}{either "<=", ">=" or "=="}
-
-\item{rhs}{the linear objective as a sum of variables and constants}
+\item{constraint_expr}{the constraint. Must be a linear (in)equality with
+operator "<=", "==" or ">=".}
 
 \item{.show_progress_bar}{displays a progressbar when adding multiple
 constraints}
@@ -31,7 +28,7 @@ Add one or more constraints to the model using quantifiers.
 library(magrittr)
 MIPModel() \%>\%
  add_variable(x[i], i = 1:5) \%>\%
- add_constraint(x[i], ">=", 1, i = 1:5) # creates 5 constraints
+ add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
 
 }
 
