@@ -4,7 +4,7 @@ test_that("export single var to numeric", {
  model <- MIPModel() %>%
    add_variable(x, ub = 1) %>%
    add_variable(y, ub = 1) %>%
-   add_constraint(x + y, "<=", 1) %>%
+   add_constraint(x + y <= 1) %>%
    set_objective(x + y)
  solution <- new("Solution",
                              status = "optimal",

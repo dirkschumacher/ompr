@@ -90,17 +90,17 @@ model <- MIPModel() %>%
   set_objective(sum_exp(distance[i, j] * x[i, j], i = 1:n, j = 1:n), "min") %>%
   
   # you cannot go to the same city
-  add_constraint(x[i, i], "==", 0, i = 1:n) %>%
+  add_constraint(x[i, i] == 0, i = 1:n) %>%
   
   # leave each city
-  add_constraint(sum_exp(x[i, j], j = 1:n), "==", 1, i = 1:n) %>%
+  add_constraint(sum_exp(x[i, j], j = 1:n) == 1, i = 1:n) %>%
   
   # visit each city
-  add_constraint(sum_exp(x[i, j], i = 1:n), "==", 1, j = 1:n) %>%
+  add_constraint(sum_exp(x[i, j], i = 1:n) == 1, j = 1:n) %>%
   
   # ensure no subtours (arc constraints)
-  add_constraint(u[i], ">=", 2, i = 2:n) %>% 
-  add_constraint(u[i] - u[j] + 1, "<=", (n - 1) * (1 - x[i, j]), i = 2:n, j = 2:n)
+  add_constraint(u[i] >= 2, i = 2:n) %>% 
+  add_constraint(u[i] - u[j] + 1 <= (n - 1) * (1 - x[i, j]), i = 2:n, j = 2:n)
 model
 ```
 
