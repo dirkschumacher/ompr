@@ -239,12 +239,12 @@ setGeneric("add_constraint", function(model,
                                       constraint_expr,
                                       .show_progress_bar = TRUE, ...) {
   constraint_ast <- substitute(constraint_expr)
+  if (length(constraint_ast) != 3) {
+    stop("constraint not well formed. Must be a linear (in)equality.")
+  }
   direction <- as.character(constraint_ast[[1]])
   if (!direction %in% c(">=", "<=", "==")) {
     stop("Does not recognize constraint expr. Missing the constraint relation")
-  }
-  if (length(constraint_ast) != 3) {
-    stop("constraint not well formed. Must be a linear (in)equality.")
   }
   lhs_ast <- constraint_ast[[2]]
   rhs_ast <- constraint_ast[[3]]
@@ -263,14 +263,6 @@ setGeneric("add_constraint", function(model,
       stop(paste0("The right-hand-side is probably non-linear. ",
                   "Currently, only linear constraints are ",
                   "supported."))
-    }
-    if (any_unbounded_indexes(lhs_ast)) {
-      stop(paste0("Some variable indexes are unbounded",
-                  " left hand expression."))
-    }
-    if (any_unbounded_indexes(rhs_ast)) {
-      stop(paste0("Some variable indexes are unbounded",
-                  " in the right hand expression."))
     }
     direction <- if (direction == "=") "==" else direction
     new("Constraint", lhs = as.expression(lhs_ast),
