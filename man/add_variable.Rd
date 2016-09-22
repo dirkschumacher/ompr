@@ -2,6 +2,7 @@
 % Please edit documentation in R/class-model.R
 \name{add_variable}
 \alias{add_variable}
+\alias{add_variable_}
 \title{Adds a variable to the model}
 \usage{
 add_variable(model, variable, type = "continuous", lb = -Inf, ub = Inf,
