@@ -2,9 +2,10 @@
 % Please edit documentation in R/class-model.R
 \name{set_objective}
 \alias{set_objective}
+\alias{set_objective_}
 \title{Set the model objective}
 \usage{
-set_objective(model, expression, direction = "max")
+set_objective(model, expression, direction = c("max", "min"))
 }
 \arguments{
 \item{model}{the model}

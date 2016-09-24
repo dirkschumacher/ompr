@@ -2,9 +2,11 @@
 % Please edit documentation in R/class-model.R
 \name{add_constraint}
 \alias{add_constraint}
+\alias{add_constraint_}
 \title{Add a constraint}
 \usage{
-add_constraint(model, constraint_expr, .show_progress_bar = TRUE, ...)
+add_constraint(model, constraint_expr, .show_progress_bar, ...)
+add_constraint_(model, constraint_expr, .show_progress_bar, ...)
 }
 \arguments{
 \item{model}{the model}

@@ -1,7 +1,7 @@
 Package: ompr
 Type: Package
 Title: R optimization modelling project
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: person("Dirk", "Schumacher", email = "mail@dirk-schumacher.net",
             role = c("aut", "cre"))
 Maintainer: Dirk Schumacher <mail@dirk-schumacher.net>
@@ -15,6 +15,7 @@ Depends: R (>= 3.1.0)
 Imports:
  stringr,
  methods,
+ lazyeval,
  rstackdeque,
  dplyr
 Suggests:

@@ -75,8 +75,15 @@ setGeneric("is_defined", function(model, variable) {
 #'  add_variable(x) %>% # creates 1 variable named x
 #'  add_variable(y[i], i = 1:10) # creates 10 variables
 #'
+#' @aliases add_variable_
 #' @export
 setGeneric("add_variable", function(model, variable, type = "continuous",
+                                     lb = -Inf, ub = Inf, ...) {
+  add_variable_(model, lazyeval::lazy(variable), type, lb, ub, ...)
+})
+
+#' @export
+setGeneric("add_variable_", function(model, variable, type = "continuous",
                                     lb = -Inf, ub = Inf, ...) {
   if (ub < lb) {
     stop("The upper bound must not be smaller than the lower bound.")
@@ -91,7 +98,8 @@ setGeneric("add_variable", function(model, variable, type = "continuous",
     stop(paste0("The type of a variable needs to be either",
                 " continuous, binary or integer."))
   }
-  exp <- substitute(variable)
+  stopifnot("lazy" %in% class(variable))
+  exp <- variable$expr
   exp_class <- class(exp)
   if (exp_class == "name") {
     var_name <- as.character(exp)
@@ -108,7 +116,7 @@ setGeneric("add_variable", function(model, variable, type = "continuous",
     # first we need to bind all variables
     var_name <- as.character(exp[[2]])
     bound_subscripts <- list(...)
-    bound_exp <- bind_expression(var_name, exp, parent.frame(),
+    bound_exp <- bind_expression(var_name, exp, variable$env,
                                  bound_subscripts)
     arity <- as.integer(length(bound_exp) - 2)
 
@@ -160,10 +168,22 @@ setGeneric("add_variable", function(model, variable, type = "continuous",
 #'  add_variable(y, lb = 40) %>%
 #'  set_objective(x + y, direction = "min")
 #'
+#' @aliases set_objective_
 #' @export
-setGeneric("set_objective", function(model, expression, direction = "max") {
-  obj_ast <- substitute(expression)
-  ast <- normalize_expression(model, obj_ast, parent.frame())
+setGeneric("set_objective", function(model, expression,
+                                     direction = c("max", "min")) {
+  set_objective_(model, expression = lazyeval::lazy(expression),
+                 direction = direction)
+})
+
+#' @export
+setGeneric("set_objective_", function(model, expression,
+                                      direction = c("max", "min")) {
+  stopifnot(length(expression) != 1)
+  stopifnot("lazy" %in% class(expression))
+  direction <- match.arg(direction)
+  obj_ast <- expression$expr
+  ast <- normalize_expression(model, obj_ast, expression$env)
   var_names <- names(model@variables)
   if (is_non_linear(var_names, ast)) {
     stop(paste0("The objective is probably non-linear. ",
@@ -227,18 +247,30 @@ setMethod("show", signature(object = "Model"),
 #'            bound variables a new constraint is created.
 #'
 #' @return a Model with new constraints added
-#'
+#' @usage
+#' add_constraint(model, constraint_expr, .show_progress_bar, ...)
+#' add_constraint_(model, constraint_expr, .show_progress_bar, ...)
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
 #'  add_variable(x[i], i = 1:5) %>%
 #'  add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
 #'
+#' @aliases add_constraint_
 #' @export
 setGeneric("add_constraint", function(model,
                                       constraint_expr,
                                       .show_progress_bar = TRUE, ...) {
-  constraint_ast <- substitute(constraint_expr)
+  add_constraint_(model, lazyeval::lazy(constraint_expr),
+                  .show_progress_bar, ...)
+})
+
+#' @export
+setGeneric("add_constraint_", function(model,
+                                      constraint_expr,
+                                      .show_progress_bar = TRUE, ...) {
+  stopifnot("lazy" %in% class(constraint_expr))
+  constraint_ast <- constraint_expr$expr
   if (length(constraint_ast) != 3) {
     stop("constraint not well formed. Must be a linear (in)equality.")
   }
@@ -248,7 +280,7 @@ setGeneric("add_constraint", function(model,
   }
   lhs_ast <- constraint_ast[[2]]
   rhs_ast <- constraint_ast[[3]]
-  parent_env <- parent.frame()
+  parent_env <- constraint_expr$env
   bound_subscripts <- list(...)
   add_constraint_internal <- function(envir = parent_env) {
     lhs_ast <- normalize_expression(model, lhs_ast, envir)
