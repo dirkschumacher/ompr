@@ -314,7 +314,7 @@ setGeneric("add_constraint_", function(model,
       parent.env(calling_env) <- parent_env
       constraint <- add_constraint_internal(calling_env)
       if (.show_progress_bar) {
-        p$pause(0.1)$tick()$print()
+        p$tick()$print()
       }
       constraint
     })
