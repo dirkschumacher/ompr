@@ -38,7 +38,7 @@ Model <- setClass("Model",
 setGeneric("is_defined", function(model, variable) {
   exp <- substitute(variable)
   exp_class <- class(exp)
-  if (exp_class == "name") {
+  if (lazyeval::is_name(exp)) {
     var_name <- as.character(exp)
     return(var_name %in% names(model@variables))
   } else if (exp_class == "call" && exp[[1]] == "[") {
@@ -100,8 +100,7 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
   }
   variable <- lazyeval::as.lazy(variable)
   exp <- variable$expr
-  exp_class <- class(exp)
-  if (exp_class == "name") {
+  if (lazyeval::is_name(exp)) {
     var_name <- as.character(exp)
     var <- new("Variable", arity = 0L,
                type = type, instances = "",
@@ -111,7 +110,7 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
                  variable_quantifiers = list()
                )
     model@variables[[var_name]] <- var
-  } else if (exp_class == "call" && exp[[1]] == "[") {
+  } else if (lazyeval::is_call(exp) && exp[[1]] == "[") {
 
     # first we need to bind all variables
     var_name <- as.character(exp[[2]])
