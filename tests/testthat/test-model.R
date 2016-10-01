@@ -322,3 +322,21 @@ test_that("add_constraint only accepts linear inequalities", {
   m <- add_variable(new("Model"), x, type = "binary")
   expect_error(add_constraint(m, x))
 })
+
+test_that("add_constraint_ supports standard eval.", {
+  m <- MIPModel()
+  m <- add_variable(m, x)
+  add_constraint_(m, ~x <= 10)
+})
+
+test_that("add_variable_ supports standard eval.", {
+  m <- MIPModel()
+  add_variable_(m, ~x)
+})
+
+test_that("set_objective_ supports standard eval.", {
+  m <- MIPModel()
+  m <- add_variable_(m, ~x)
+  m <- set_objective_(m, ~x)
+
+})

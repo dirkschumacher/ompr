@@ -98,7 +98,7 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
     stop(paste0("The type of a variable needs to be either",
                 " continuous, binary or integer."))
   }
-  stopifnot("lazy" %in% class(variable))
+  variable <- lazyeval::as.lazy(variable)
   exp <- variable$expr
   exp_class <- class(exp)
   if (exp_class == "name") {
@@ -180,7 +180,7 @@ setGeneric("set_objective", function(model, expression,
 setGeneric("set_objective_", function(model, expression,
                                       direction = c("max", "min")) {
   stopifnot(length(expression) != 1)
-  stopifnot("lazy" %in% class(expression))
+  expression <- lazyeval::as.lazy(expression)
   direction <- match.arg(direction)
   obj_ast <- expression$expr
   ast <- normalize_expression(model, obj_ast, expression$env)
@@ -269,7 +269,7 @@ setGeneric("add_constraint", function(model,
 setGeneric("add_constraint_", function(model,
                                       constraint_expr,
                                       .show_progress_bar = TRUE, ...) {
-  stopifnot("lazy" %in% class(constraint_expr))
+  constraint_expr <- lazyeval::as.lazy(constraint_expr)
   constraint_ast <- constraint_expr$expr
   if (length(constraint_ast) != 3) {
     stop("constraint not well formed. Must be a linear (in)equality.")
