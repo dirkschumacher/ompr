@@ -79,7 +79,7 @@ result <- MIPModel() %>%
   # minimize travel time
   set_objective(sum_exp(cities[i,j] * x[i,j], i = 1:n, j = 1:n), "min") %>%
   # you cannot go to the same city
-  add_constraint(x[i,i], "==", 0, i = 1:n) %>%
+  add_constraint(x[i,i] == 0, i = 1:n) %>%
   # leave each city
   add_constraint(sum_exp(x[i,j], j = 1:n) == 1, i = 1:n) %>%
   # visit each city
