@@ -338,5 +338,28 @@ test_that("set_objective_ supports standard eval.", {
   m <- MIPModel()
   m <- add_variable_(m, ~x)
   m <- set_objective_(m, ~x)
+})
 
+test_that("is_defined throws error if expression is not well formed", {
+  m <- MILPModel()
+  m <- add_variable_(m, ~x)
+  expect_error(is_defined(m, 1 + 1))
+})
+
+test_that("add_variable throws error when lb or ub is of length > 1", {
+  m <- MILPModel()
+  expect_error(add_variable_(m, ~x, lb = c(5, 2), ub = 10))
+  expect_error(add_variable_(m, ~x, lb = 2, ub = c(10, 10)))
+})
+
+test_that("add_variable throws error when lb or ub is not numeric", {
+  m <- MILPModel()
+  expect_error(add_variable_(m, ~x, lb = "5"))
+  expect_error(add_variable_(m, ~x, ub = "5"))
+})
+
+test_that("add_variable throws error when type is wrong", {
+  m <- MILPModel()
+  expect_error(add_variable_(m, ~x, lb = 5, type = "wat"))
+  expect_error(add_variable_(m, ~x, lb = 5, type = c("integer", "binary")))
 })

@@ -85,11 +85,11 @@ setGeneric("add_variable", function(model, variable, type = "continuous",
 #' @export
 setGeneric("add_variable_", function(model, variable, type = "continuous",
                                     lb = -Inf, ub = Inf, ...) {
-  if (ub < lb) {
-    stop("The upper bound must not be smaller than the lower bound.")
-  }
   if (length(lb) != 1 || length(ub) != 1) {
     stop("lb and ub must be of length 1. I.e. just a single number.")
+  }
+  if (ub < lb) {
+    stop("The upper bound must not be smaller than the lower bound.")
   }
   if (!is.numeric(lb) || !is.numeric(ub)) {
     stop("lb and ub must be a number.")
