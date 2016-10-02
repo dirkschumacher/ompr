@@ -295,7 +295,6 @@ setGeneric("add_constraint_", function(model,
                   "Currently, only linear constraints are ",
                   "supported."))
     }
-    direction <- if (direction == "=") "==" else direction
     new("Constraint", lhs = as.expression(lhs_ast),
                       rhs = as.expression(rhs_ast),
                       direction = direction)
