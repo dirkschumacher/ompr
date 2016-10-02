@@ -38,7 +38,7 @@ Model <- setClass("Model",
 setGeneric("is_defined", function(model, variable) {
   exp <- substitute(variable)
   exp_class <- class(exp)
-  if (exp_class == "name") {
+  if (lazyeval::is_name(exp)) {
     var_name <- as.character(exp)
     return(var_name %in% names(model@variables))
   } else if (exp_class == "call" && exp[[1]] == "[") {
@@ -85,11 +85,11 @@ setGeneric("add_variable", function(model, variable, type = "continuous",
 #' @export
 setGeneric("add_variable_", function(model, variable, type = "continuous",
                                     lb = -Inf, ub = Inf, ...) {
-  if (ub < lb) {
-    stop("The upper bound must not be smaller than the lower bound.")
-  }
   if (length(lb) != 1 || length(ub) != 1) {
     stop("lb and ub must be of length 1. I.e. just a single number.")
+  }
+  if (ub < lb) {
+    stop("The upper bound must not be smaller than the lower bound.")
   }
   if (!is.numeric(lb) || !is.numeric(ub)) {
     stop("lb and ub must be a number.")
@@ -98,20 +98,18 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
     stop(paste0("The type of a variable needs to be either",
                 " continuous, binary or integer."))
   }
-  stopifnot("lazy" %in% class(variable))
+  variable <- lazyeval::as.lazy(variable)
   exp <- variable$expr
-  exp_class <- class(exp)
-  if (exp_class == "name") {
+  if (lazyeval::is_name(exp)) {
     var_name <- as.character(exp)
     var <- new("Variable", arity = 0L,
                type = type, instances = "",
                lb = lb, ub = ub,
-               variable_expression = as.expression(
-                 substitute(x, list(x = var_name))),
-                 variable_quantifiers = list()
+               variable_expression = as.expression(as.symbol(var_name)),
+               variable_quantifiers = list()
                )
     model@variables[[var_name]] <- var
-  } else if (exp_class == "call" && exp[[1]] == "[") {
+  } else if (lazyeval::is_call(exp) && exp[[1]] == "[") {
 
     # first we need to bind all variables
     var_name <- as.character(exp[[2]])
@@ -180,7 +178,7 @@ setGeneric("set_objective", function(model, expression,
 setGeneric("set_objective_", function(model, expression,
                                       direction = c("max", "min")) {
   stopifnot(length(expression) != 1)
-  stopifnot("lazy" %in% class(expression))
+  expression <- lazyeval::as.lazy(expression)
   direction <- match.arg(direction)
   obj_ast <- expression$expr
   ast <- normalize_expression(model, obj_ast, expression$env)
@@ -269,7 +267,7 @@ setGeneric("add_constraint", function(model,
 setGeneric("add_constraint_", function(model,
                                       constraint_expr,
                                       .show_progress_bar = TRUE, ...) {
-  stopifnot("lazy" %in% class(constraint_expr))
+  constraint_expr <- lazyeval::as.lazy(constraint_expr)
   constraint_ast <- constraint_expr$expr
   if (length(constraint_ast) != 3) {
     stop("constraint not well formed. Must be a linear (in)equality.")
@@ -296,7 +294,6 @@ setGeneric("add_constraint_", function(model,
                   "Currently, only linear constraints are ",
                   "supported."))
     }
-    direction <- if (direction == "=") "==" else direction
     new("Constraint", lhs = as.expression(lhs_ast),
                       rhs = as.expression(rhs_ast),
                       direction = direction)
