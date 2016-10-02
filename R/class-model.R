@@ -105,9 +105,8 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
     var <- new("Variable", arity = 0L,
                type = type, instances = "",
                lb = lb, ub = ub,
-               variable_expression = as.expression(
-                 substitute(x, list(x = var_name))),
-                 variable_quantifiers = list()
+               variable_expression = as.expression(as.symbol(var_name)),
+               variable_quantifiers = list()
                )
     model@variables[[var_name]] <- var
   } else if (lazyeval::is_call(exp) && exp[[1]] == "[") {
