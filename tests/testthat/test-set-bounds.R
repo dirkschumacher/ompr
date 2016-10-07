@@ -85,6 +85,16 @@ test_that("bound quantifiers can have length 1 or > 1", {
   expect_equal(m@variables[["x"]]@ub[2], 2)
 })
 
+test_that("bug 20161007: bound indexes can be reused", {
+  m <- MIPModel()
+  m <- add_variable(MIPModel(), x[i, j], i = 1:3, j = 1:10)
+  m <- set_bounds(m, x[i, i], lb = 1, ub = 2, i = c(1, 2))
+  expect_equal(m@variables[["x"]]@lb[1], 1)
+  expect_equal(m@variables[["x"]]@ub[1], 2)
+  expect_equal(m@variables[["x"]]@lb[5], 1)
+  expect_equal(m@variables[["x"]]@ub[5], 2)
+})
+
 test_that("bounds can be changed of a two-index variable with standard eval", {
   m <- add_variable(MIPModel(), x[i, j], i = 1:3, j = 1:10)
   m <- set_bounds_(m, ~x[i, j], lb = 1, ub = 2, i = c(1, 2), j = c(1, 2))

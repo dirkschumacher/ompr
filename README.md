@@ -15,7 +15,7 @@ The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives
 
 This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
 
-Current version: [0.3.2](https://github.com/dirkschumacher/ompr/tree/v0.3.2)
+Current version: [0.3.3](https://github.com/dirkschumacher/ompr/tree/v0.3.3)
 
 Please refer to the `vignettes` for more detailed examples (`browseVignettes("ompr")`).
 
@@ -24,8 +24,8 @@ Please refer to the `vignettes` for more detailed examples (`browseVignettes("om
 To install the current development version use devtools:
 
 ```R 
-devtools::install_github("dirkschumacher/ompr", ref = "v0.3.2")
-devtools::install_github("dirkschumacher/ompr.roi", ref = "v0.3.2")
+devtools::install_github("dirkschumacher/ompr", ref = "v0.3.3")
+devtools::install_github("dirkschumacher/ompr.roi", ref = "v0.3.3")
 ```
 
 ## Available solver bindings

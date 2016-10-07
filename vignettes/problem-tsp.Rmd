@@ -81,7 +81,7 @@ library(ompr)
 model <- MIPModel() %>%
   
   # we create a variable that is 1 iff we travel from city i to j
-  add_variable(x[i, j], i = 1:n, j = 1:n, type = "binary") %>%
+  add_variable(x[i, j], i = 1:n, j = 1:n, type = "integer", lb = 0, ub = 1) %>%
   
   # a helper variable for the MTZ formulation of the tsp
   add_variable(u[i], i = 1:n, lb = 1, ub = n) %>% 
@@ -90,7 +90,7 @@ model <- MIPModel() %>%
   set_objective(sum_exp(distance[i, j] * x[i, j], i = 1:n, j = 1:n), "min") %>%
   
   # you cannot go to the same city
-  add_constraint(x[i, i] == 0, i = 1:n) %>%
+  set_bounds(x[i, i], lb = 0, ub = 0, i = 1:n) %>%
   
   # leave each city
   add_constraint(sum_exp(x[i, j], j = 1:n) == 1, i = 1:n) %>%
