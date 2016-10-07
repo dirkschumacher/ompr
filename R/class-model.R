@@ -82,18 +82,23 @@ setGeneric("add_variable", function(model, variable, type = "continuous",
   add_variable_(model, lazyeval::lazy(variable), type, lb, ub, ...)
 })
 
+# helper function to check variable bounds
+check_bounds <- function(lb, ub) {
+  if (any(ub < lb)) {
+    stop("The upper bound must not be smaller than the lower bound.")
+  }
+  if (any(!is.numeric(lb) | !is.numeric(ub))) {
+    stop("lb and ub must be a number.")
+  }
+}
+
 #' @export
 setGeneric("add_variable_", function(model, variable, type = "continuous",
                                     lb = -Inf, ub = Inf, ...) {
   if (length(lb) != 1 || length(ub) != 1) {
     stop("lb and ub must be of length 1. I.e. just a single number.")
   }
-  if (ub < lb) {
-    stop("The upper bound must not be smaller than the lower bound.")
-  }
-  if (!is.numeric(lb) || !is.numeric(ub)) {
-    stop("lb and ub must be a number.")
-  }
+  check_bounds(lb, ub)
   if (length(type) != 1 || !type %in% c("continuous", "binary", "integer")) {
     stop(paste0("The type of a variable needs to be either",
                 " continuous, binary or integer."))
@@ -128,6 +133,7 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
 
     # now generate all variables
     candidates <- expand.grid(subscripts)
+    n_vars <- nrow(candidates)
     only_integer_candidates <- apply(candidates, 1, function(r) {
       all(!is.na(suppressWarnings(as.integer(r))))
     })
@@ -139,8 +145,8 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
                arity = arity,
                type = type,
                instances = instances,
-               lb = lb,
-               ub = ub,
+               lb = rep.int(lb, n_vars),
+               ub = rep.int(ub, n_vars),
                variable_expression = as.expression(exp),
                variable_quantifiers = bound_subscripts)
     model@variables[[var_name]] <- var
@@ -148,6 +154,95 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
     stop(paste0("The variable definition does not seem to be right.",
                 "Take a look at the vignettes if you need examples on how",
                 " to formulate variables"))
+  }
+  model
+})
+
+
+#' Sets the bounds of a variable
+#'
+#' Change the lower and upper bounds of a named variable,
+#' indexed variable or a group of variables.
+#'
+#' @usage
+#' set_bounds(model, variable, lb = NULL, ub = NULL, ...)
+#' set_bounds_(model, variable, lb = NULL, ub = NULL, ...)
+#'
+#' @param model the model
+#' @param variable the variable name/definition
+#' @param lb the lower bound of the variable
+#' @param ub the upper bound of the variable
+#' @param ... quantifiers for the indexed variabled
+#'
+#' @aliases set_bounds_
+#' @export
+setGeneric("set_bounds", function(model, variable, lb = NULL, ub = NULL, ...) {
+  set_bounds_(model, lazyeval::lazy(variable), lb, ub, ...)
+})
+
+#' @export
+setGeneric("set_bounds_", function(model, variable, lb = NULL, ub = NULL, ...) {
+  if (is.numeric(lb) && is.numeric(ub)) {
+    check_bounds(lb, ub)
+  }
+  variable <- lazyeval::as.lazy(variable)
+  is_single_variable <- lazyeval::is_name(variable$expr)
+  is_indexed_variable <- lazyeval::is_call(variable$expr) &&
+                          variable$expr[[1]] == "[" &&
+                          length(variable$expr) >= 3
+  model_variable_names <- names(model@variables)
+  replace_lb <- !is.null(lb) && is.numeric(lb)
+  replace_ub <- !is.null(ub) && is.numeric(ub)
+  if (is_single_variable) {
+    var_name <- as.character(variable$expr)
+    if (!var_name %in% model_variable_names) {
+      stop("Variable does not exists in model")
+    }
+    variable <- model@variables[[var_name]]
+    if (replace_lb) {
+      variable@lb <- lb
+    }
+    if (replace_ub) {
+      variable@ub <- ub
+    }
+    model@variables[[var_name]] <- variable
+  } else if (is_indexed_variable) {
+    var_name <- as.character(variable$expr[[2]])
+    if (!var_name %in% model_variable_names) {
+      stop("Variable does not exists in model")
+    }
+    index_names <- sapply(3:length(variable$expr), function(i) {
+      as.character(variable$expr[i])
+    })
+    indexes <- suppressWarnings(as.integer(index_names))
+    quantified_indexes <- !is.integer(indexes) || any(is.na(indexes))
+    if (quantified_indexes) {
+      bound_subscripts <- list(...)
+      filter_fn <- function(x) is.numeric(x) & length(x) > 0
+      bound_subscripts <- Filter(filter_fn, bound_subscripts)
+      if (!all(index_names %in% names(bound_subscripts))) {
+        stop("Not all index variables are bound by quantifiers.")
+      }
+      bound_subscripts <- as.data.frame(bound_subscripts)
+      indexes <- apply(bound_subscripts, 1, as.list)
+    } else {
+      indexes <- list(indexes)
+    }
+    instance_keys <- sapply(indexes, function(x) {
+      paste0(x, collapse = "_")
+    })
+    variable <- model@variables[[var_name]]
+    var_indexes <- which(variable@instances %in% instance_keys)
+    if (any(!instance_keys %in% variable@instances)) {
+      stop("Indexed variable out of bounds.")
+    }
+    if (replace_lb) {
+      variable@lb[var_indexes] <- lb
+    }
+    if (replace_ub) {
+      variable@ub[var_indexes] <- ub
+    }
+    model@variables[[var_name]] <- variable
   }
   model
 })
