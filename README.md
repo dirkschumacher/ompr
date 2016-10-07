@@ -24,8 +24,8 @@ Please refer to the `vignettes` for more detailed examples (`browseVignettes("om
 To install the current development version use devtools:
 
 ```R 
-devtools::install_github("dirkschumacher/ompr")
-devtools::install_github("dirkschumacher/ompr.roi")
+devtools::install_github("dirkschumacher/ompr", ref = "v0.3.2")
+devtools::install_github("dirkschumacher/ompr.roi", ref = "v0.3.2")
 ```
 
 ## Available solver bindings
@@ -134,6 +134,7 @@ These functions currently form the public API. Anything else is even more unstab
 * `MILPModel()` create an empty mixed integer linear model
 * `add_variable` adds variables to a model
 * `set_objective` sets the objective function of a model
+* `set_bounds`sets bounds of variables
 * `add_constraint` add constraints
 * `solve_model` solves a model with a given solver
 * `get_solution` returns the solution of a solved model for a given variable or group of variables
