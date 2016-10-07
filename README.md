@@ -202,3 +202,10 @@ MILPModel() %>%
 ## License
 
 Currently GPL.
+
+## Contributing
+
+As long as the package is under initial development please post an issue first before sending a PR.
+
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+
