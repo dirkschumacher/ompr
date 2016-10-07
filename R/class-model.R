@@ -223,6 +223,10 @@ setGeneric("set_bounds_", function(model, variable, lb = NULL, ub = NULL, ...) {
       if (!all(index_names %in% names(bound_subscripts))) {
         stop("Not all index variables are bound by quantifiers.")
       }
+      bound_subscripts <- setNames(lapply(index_names, function(x) {
+        bound_subscripts[[x]]
+      }), index_names)
+
       bound_subscripts <- as.data.frame(bound_subscripts)
       indexes <- apply(bound_subscripts, 1, as.list)
     } else {
