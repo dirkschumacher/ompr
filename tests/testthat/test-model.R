@@ -36,6 +36,15 @@ test_that("variables can be added", {
   expect_equal(m@variables[["x"]]@arity, 1)
 })
 
+test_that("variables bounds get replicated for var. groups", {
+  m <- add_variable(new("Model"), x[i], i = 1:3,
+                    lb = 1, ub = 2,
+                    type = "binary")
+  expect_false(is.null(m@variables[["x"]]))
+  expect_equal(m@variables[["x"]]@lb, c(1, 1, 1))
+  expect_equal(m@variables[["x"]]@ub, c(2, 2, 2))
+})
+
 test_that("global vars do not interfere with variable names in expressions", {
   x <- "hi"
   m <- add_variable(new("Model"), x[i], i = 1:10, type = "binary")
