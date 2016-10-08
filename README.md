@@ -16,7 +16,7 @@ The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives
 
 This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
 
-Current version: [0.4.0](https://github.com/dirkschumacher/ompr/tree/v0.4.0)
+Current version: [0.3.4](https://github.com/dirkschumacher/ompr/tree/v0.3.4)
 
 
 ## Install
