@@ -29,8 +29,6 @@ environment:
 build_script:
   - travis-tool.sh install_deps
   - travis-tool.sh install_r stringi
-  - travis-tool.sh install_github dirkschumacher/ompr
-  - travis-tool.sh install_github dirkschumacher/ompr.roi
 
 test_script:
   - travis-tool.sh run_tests

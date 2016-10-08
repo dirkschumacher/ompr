@@ -1,7 +1,7 @@
 Package: ompr
 Type: Package
 Title: R optimization modelling project
-Version: 0.3.3
+Version: 0.3.4
 Authors@R: person("Dirk", "Schumacher", email = "mail@dirk-schumacher.net",
             role = c("aut", "cre"))
 Maintainer: Dirk Schumacher <mail@dirk-schumacher.net>
@@ -20,13 +20,5 @@ Imports:
   dplyr
 Suggests:
   testthat,
-  magrittr,
-  knitr,
-  rmarkdown,
-  tidyr,
-  ggplot2,
-  ROI,
-  ROI.plugin.glpk,
-  ompr.roi
-VignetteBuilder: knitr
+  magrittr
 ByteCompile: Yes

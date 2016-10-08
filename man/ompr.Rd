@@ -8,4 +8,5 @@
 \description{
 Implements a DSL to formulate optimization problems.
 }
+\keyword{package}
 

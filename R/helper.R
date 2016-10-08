@@ -2,6 +2,7 @@
 
 # this is a generic function to iterativly traverse an AST
 # in a pre-order way.
+#' @noRd
 ast_walker <- function(ast, on_element) {
   # TODO: do not save ast in element
   # rather just use the path to query ast on demand
@@ -31,6 +32,7 @@ ast_walker <- function(ast, on_element) {
   ast
 }
 
+#' @noRd
 try_eval_exp <- function(ast, envir = baseenv()) {
   result <- try(eval(ast, envir = envir), silent = TRUE)
   if (!is.numeric(result)) {
@@ -40,6 +42,7 @@ try_eval_exp <- function(ast, envir = baseenv()) {
   }
 }
 
+#' @noRd
 try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
   on_element <- function(push, inplace_update_ast, get_ast_value, element) {
     path <- element$path
@@ -101,6 +104,7 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
   ast_walker(base_ast, on_element)
 }
 
+#' @noRd
 bind_expression <- function(var_name, exp, envir, bound_subscripts) {
   var_values <- as.list(envir)
   for (x in c(var_name, names(bound_subscripts))) {
@@ -109,6 +113,7 @@ bind_expression <- function(var_name, exp, envir, bound_subscripts) {
   eval(substitute(substitute(x, var_values), list(x = exp)))
 }
 
+#' @noRd
 bind_variables <- function(model, ast, calling_env) {
   # clean calling environment
   if (is.list(calling_env)) {
@@ -158,6 +163,7 @@ check_expression <- function(model, the_ast) {
   invisible(ast_walker(the_ast, on_element))
 }
 
+#' @noRd
 is_non_linear <- function(var_names, ast) {
   contains_vars <- function(le_ast) {
     vars_found <- FALSE
@@ -201,6 +207,7 @@ is_non_linear <- function(var_names, ast) {
 # numerics, or muliplications of (numer & symbol)
 # it walks through the ast and changes sub trees
 # iterator based and not recusrive
+#' @noRd
 standardize_ast <- function(ast) {
   on_element <- function(push, inplace_update_ast, get_ast_value, element) {
 
@@ -308,6 +315,7 @@ standardize_ast <- function(ast) {
   ast_walker(ast, on_element)
 }
 
+#' @noRd
 normalize_expression <- function(model, expression, envir) {
   ast <- bind_variables(model, expression, envir)
   if (!is.environment(envir)) {
