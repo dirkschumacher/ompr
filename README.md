@@ -16,17 +16,16 @@ The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives
 
 This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
 
-Current version: [0.3.3](https://github.com/dirkschumacher/ompr/tree/v0.3.3)
+Current version: [0.4.0](https://github.com/dirkschumacher/ompr/tree/v0.4.0)
 
-Please refer to the `vignettes` for more detailed examples (`browseVignettes("ompr")`).
 
 ## Install
 
 To install the current development version use devtools:
 
 ```R 
-devtools::install_github("dirkschumacher/ompr", ref = "v0.3.3")
-devtools::install_github("dirkschumacher/ompr.roi", ref = "v0.3.3")
+devtools::install_github("dirkschumacher/ompr", ref = "v0.3.4")
+devtools::install_github("dirkschumacher/ompr.roi", ref = "v0.4.0")
 ```
 
 ## Available solver bindings
@@ -56,81 +55,9 @@ get_solution(result, x)
 get_solution(result, y)
 ```
 
-## Roundtrip through the US
-
-Inspired by Randal Olson's [blog post](http://www.randalolson.com/2015/03/10/computing-the-optimal-road-trip-across-europe/) let's calculate the *optimal* trip through a couple of US cities. The data comes from the `psyc` package and has distances between 11 US cities.
-
-```R
-
-library(dplyr)
-library(ROI)
-library(ROI.plugin.glpk)
-library(ompr)
-library(ompr.roi)
-library(psych) # for the cities matrix
-data(cities)
-n <- ncol(cities)
-
-# we model the TSP with the MTZ formulation
-# https://www.unc.edu/~pataki/papers/teachtsp.pdf
-result <- MIPModel() %>%
-  # we create a variable that is 1 iff we travel from city i to j
-  add_variable(x[i,j], i = 1:n, j = 1:n, type = "binary") %>%
-  # a helper variable for the MTZ formulation of the tsp
-  add_variable(u[i], i = 1:n, lb = 1, ub = n) %>% 
-  # minimize travel time
-  set_objective(sum_exp(cities[i,j] * x[i,j], i = 1:n, j = 1:n), "min") %>%
-  # you cannot go to the same city
-  add_constraint(x[i,i] == 0, i = 1:n) %>%
-  # leave each city
-  add_constraint(sum_exp(x[i,j], j = 1:n) == 1, i = 1:n) %>%
-  # visit each city
-  add_constraint(sum_exp(x[i,j], i = 1:n) == 1, j = 1:n) %>%
-  # ensure no subtours (arc constraints)
-  add_constraint(u[1] == 1) %>% 
-  add_constraint(u[i] >= 2, i = 2:n) %>% 
-  add_constraint(u[i] - u[j] + 1 <= n * (1 - x[i,j]), i = 2:n, j = 2:n) %>% 
-  # solve it with GLPK
-  solve_model(with_ROI(solver = "glpk", verbose = TRUE)) %>% 
-  # get the solution
-  get_solution(x[i,j]) %>% 
-  # filter only arcs that are used
-  filter(value > 0) %>% 
-  # join it back with the city names
-  mutate(i = as.integer(as.character(i)), j = as.integer(as.character(j)), 
-         from = rownames(cities)[i], to = colnames(cities)[j]) %>% 
-  select(from, to) %>% ungroup
-```
-
-Let's geo code the airports and put them on a map.
-```R
-# geo coded places
-geocoded_cities <- Map(function(x) {
-  Sys.sleep(0.5)
-  if (x == "DEN") x <- "Denver" # DEN does not work
-  cbind(city = x, ggmap::geocode(paste0(x, ", USA")))
-}, colnames(cities)) %>% bind_rows %>% 
-  mutate(city = ifelse(city == "Denver", "DEN", city))
-trips <- result %>% 
-  mutate(trip_id = row_number()) %>% 
-  tidyr::gather(key, city, to, from) %>% 
-  inner_join(geocoded_cities, by = c("city")) %>% 
-  arrange(trip_id, key)
-
-library(leaflet)
-m <- leaflet(geocoded_cities) %>% 
-  addTiles() %>% 
-  addMarkers(popup = geocoded_cities$city)
-for(trip in unique(trips$trip_id)) {
-  m <- addPolylines(m, data = filter(trips, trip_id == trip), lng = ~lon, lat = ~lat, group = ~trip_id)
-}
-m
-```
-![Map of the optimal trip](https://s3.eu-central-1.amazonaws.com/b6196ceb34f793115675a4bdb7757770/optimal_trip.png)
-
 ## API
 
-These functions currently form the public API. Anything else is even more unstable:
+These functions currently form the public API. More detailed docs and examples will follow.
 
 ### DSL
 * `MILPModel()` create an empty mixed integer linear model
