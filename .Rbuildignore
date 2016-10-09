@@ -4,3 +4,5 @@
 ^\.travis\.yml$
 ^\.lintr$
 ^CONDUCT\.md$
+^vignettes
+^docs
