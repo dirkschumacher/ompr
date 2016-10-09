@@ -2,14 +2,16 @@
 % Please edit documentation in R/class-solution.R
 \name{get_solution}
 \alias{get_solution}
+\alias{get_solution_}
 \title{Extracts variable values from a solution}
 \usage{
-get_solution(solution, exp)
+get_solution(solution, expr)
+get_solution_(solution, expr)
 }
 \arguments{
 \item{solution}{the solution object}
 
-\item{exp}{a variable expression. You can partially bind indexes.}
+\item{expr}{a variable expression. You can partially bind indexes.}
 }
 \value{
 a data.frame. One row for each variable instance
@@ -33,5 +35,6 @@ solution <- get_solution(result, x[i])
 solution2 <- get_solution(result, y[i, 1])
 solution3 <- get_solution(result, y[i, j])
 }
+
 }
 

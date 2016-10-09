@@ -1,10 +1,9 @@
 Package: ompr
 Type: Package
 Title: R optimization modelling project
-Version: 0.3.4
+Version: 0.4.0
 Authors@R: person("Dirk", "Schumacher", email = "mail@dirk-schumacher.net",
             role = c("aut", "cre"))
-Maintainer: Dirk Schumacher <mail@dirk-schumacher.net>
 Description: A package to model (mixed) integer programs.
 License: GPL (>= 3) + file LICENSE
 LazyData: TRUE

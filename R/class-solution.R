@@ -18,11 +18,15 @@ Solution <- setClass("Solution",
 #' Extracts variable values from a solution
 #'
 #' @param solution the solution object
-#' @param exp a variable expression. You can partially bind indexes.
+#' @param expr a variable expression. You can partially bind indexes.
 #'
 #' @return a data.frame. One row for each variable instance
 #'         and a column for each index.
 #'         Unless it is a single variable, then it returns a single number.
+#'
+#' @usage
+#' get_solution(solution, expr)
+#' get_solution_(solution, expr)
 #'
 #' @examples
 #' \dontrun{
@@ -38,9 +42,17 @@ Solution <- setClass("Solution",
 #' solution2 <- get_solution(result, y[i, 1])
 #' solution3 <- get_solution(result, y[i, j])
 #' }
+#'
+#' @aliases get_solution_
 #' @export
-setGeneric("get_solution", function(solution, exp) {
-  ast <- substitute(exp)
+setGeneric("get_solution", function(solution, expr) {
+  get_solution_(solution, lazyeval::lazy(expr))
+})
+
+#' @export
+setGeneric("get_solution_", function(solution, expr) {
+  expr <- lazyeval::as.lazy(expr)
+  ast <- expr$expr
   is_indexed_var <- is.call(ast)
   stopifnot(!is_indexed_var || ast[[1]] == "[" && length(ast) >= 3)
   var_name <- as.character(if (is_indexed_var) ast[[2]] else ast)
