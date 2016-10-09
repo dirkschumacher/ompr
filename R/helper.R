@@ -419,7 +419,7 @@ extract_coefficients <- function(ast) {
 
 #' Constructs a sum expression
 #'
-#' @param exp an expression that can be repeated to a sum
+#' @param exp an expression that can be expanded to a sum
 #' @param ... bind variables in exp using dots. See examples.
 #'
 #' @return the expanded sum as an AST

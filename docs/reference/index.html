@@ -12,8 +12,8 @@
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -74,13 +74,13 @@
       </header>
 
       <div class="page-header">
-  <h1>Function reference <small>version&nbsp;0.3.4</small></h1>
+  <h1>Function reference <small>version&nbsp;0.4.0</small></h1>
 </div>
 
 <div class="row">
   <div class="col-md-9">
     <div class="section ">
-      <h2>All functions</h2>
+      <h2>Build a model</h2>
       <p class="section-desc"></p>
 
       <dl class="dl-horizontal">
@@ -88,40 +88,34 @@
         <dd>Add a constraint</dd>
         <dt><a href="add_variable.html">add_variable</a></dt><dt><a href="add_variable.html">add_variable_</a></dt>
         <dd>Adds a variable to the model</dd>
-        <dt><a href="Constraint-class.html">Constraint</a></dt><dt><a href="Constraint-class.html">Constraint-class</a></dt>
-        <dd>A class representing a constraint</dd>
-        <dt><a href="extract_coefficients.html">extract_coefficients</a></dt>
-        <dd>Extracts the coefficients out of an ast</dd>
-        <dt><a href="get_solution.html">get_solution</a></dt>
-        <dd>Extracts variable values from a solution</dd>
-        <dt><a href="is_defined.html">is_defined</a></dt>
-        <dd>Check if variable is defined in model</dd>
         <dt><a href="MILPModel.html">MILPModel</a></dt>
         <dd>Creates a new MILP Model</dd>
-        <dt><a href="MIPModel.html">MIPModel</a></dt>
-        <dd>Creates a new MIP Model</dd>
-        <dt><a href="Model-class.html">Model</a></dt><dt><a href="Model-class.html">Model-class</a></dt>
-        <dd>An S4 class to represent a Model.</dd>
-        <dt><a href="ObjectiveFunction-class.html">ObjectiveFunction</a></dt><dt><a href="ObjectiveFunction-class.html">ObjectiveFunction-class</a></dt>
-        <dd>An S4 class to represent a ObjectiveFunction</dd>
-        <dt><a href="ompr.html">ompr</a></dt><dt><a href="ompr.html">ompr-package</a></dt>
-        <dd>ompr</dd>
         <dt><a href="set_bounds.html">set_bounds</a></dt><dt><a href="set_bounds.html">set_bounds_</a></dt>
         <dd>Sets the bounds of a variable</dd>
         <dt><a href="set_objective.html">set_objective</a></dt><dt><a href="set_objective.html">set_objective_</a></dt>
-        <dd>Set the model objective</dd>
-        <dt><a href="show-Model-method.html">show,Model-method</a></dt>
-        <dd>Outputs the model to the console</dd>
-        <dt><a href="show-Solution-method.html">show,Solution-method</a></dt>
-        <dd>Outputs a model summary to the console.</dd>
-        <dt><a href="Solution-class.html">Solution</a></dt><dt><a href="Solution-class.html">Solution-class</a></dt>
-        <dd>An S4 class to encode a solution</dd>
-        <dt><a href="solve_model.html">solve_model</a></dt>
-        <dd>Solve a model</dd>
+        <dd>Sets the model objective</dd>
         <dt><a href="sum_exp.html">sum_exp</a></dt>
         <dd>Constructs a sum expression</dd>
-        <dt><a href="Variable-class.html">Variable</a></dt><dt><a href="Variable-class.html">Variable-class</a></dt>
-        <dd>An S4 class to represent a Variable.</dd>
+      </dl>
+    </div>
+    <div class="section ">
+      <h2>Solve a model</h2>
+      <p class="section-desc"></p>
+
+      <dl class="dl-horizontal">
+        <dt><a href="get_solution.html">get_solution</a></dt><dt><a href="get_solution.html">get_solution_</a></dt>
+        <dd>Extracts variable values from a solution</dd>
+        <dt><a href="solve_model.html">solve_model</a></dt>
+        <dd>Solve a model</dd>
+      </dl>
+    </div>
+    <div class="section ">
+      <h2>Helper functions</h2>
+      <p class="section-desc"></p>
+
+      <dl class="dl-horizontal">
+        <dt><a href="extract_coefficients.html">extract_coefficients</a></dt>
+        <dd>Extracts the coefficients out of an ast</dd>
       </dl>
     </div>
   </div>

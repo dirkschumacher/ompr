@@ -23,4 +23,12 @@ set_bounds_(model, variable, lb = NULL, ub = NULL, ...)
 Change the lower and upper bounds of a named variable,
 indexed variable or a group of variables.
 }
+\examples{
+library(magrittr)
+MIPModel() \%>\%
+ add_variable(x[i], i = 1:5) \%>\%
+ add_constraint(x[i] >= 1, i = 1:5) \%>\% # creates 5 constraints
+ set_bounds(x[i], lb = 3, i = 1:3)
+
+}
 

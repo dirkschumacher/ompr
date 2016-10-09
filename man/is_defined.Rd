@@ -2,7 +2,7 @@
 % Please edit documentation in R/class-model.R
 \name{is_defined}
 \alias{is_defined}
-\title{Check if variable is defined in model}
+\title{Checks if variable is defined in model}
 \usage{
 is_defined(model, variable)
 }
@@ -15,6 +15,6 @@ is_defined(model, variable)
 TRUE iff the variable is part of the model
 }
 \description{
-Check if variable is defined in model
+Checks if variable is defined in model
 }
 

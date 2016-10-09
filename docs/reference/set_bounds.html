@@ -12,8 +12,8 @@
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -100,7 +100,22 @@ indexed variable or a group of variables.</p>
       <dt>...</dt>
       <dd>quantifiers for the indexed variabled</dd>
     </dl>
-          </div>
+        
+    <h2 id="examples">Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
+<span class='fu'>MIPModel</span>() <span class='kw'>%&gt;%</span>
+ <span class='fu'>add_variable</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>) <span class='kw'>%&gt;%</span>
+ <span class='fu'>add_constraint</span>(<span class='no'>x</span>[<span class='no'>i</span>] <span class='kw'>&gt;=</span> <span class='fl'>1</span>, <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>) <span class='kw'>%&gt;%</span> <span class='co'># creates 5 constraints</span>
+ <span class='fu'>set_bounds</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>lb</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)</div><div class='output co'>#&gt; Mixed linear integer optimization problem
+#&gt; Variables:
+#&gt;   Continuous: 5 
+#&gt;   Integer: 0 
+#&gt;   Binary: 0 
+#&gt; No objective function. 
+#&gt; Constraints: 5 
+#&gt; </div><div class='input'>
+</div></pre>
+  </div>
   <div class="col-md-3">
   </div>
 </div>

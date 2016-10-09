@@ -7,7 +7,7 @@
 sum_exp(exp, ...)
 }
 \arguments{
-\item{exp}{an expression that can be repeated to a sum}
+\item{exp}{an expression that can be expanded to a sum}
 
 \item{...}{bind variables in exp using dots. See examples.}
 }

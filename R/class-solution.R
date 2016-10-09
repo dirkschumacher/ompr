@@ -1,5 +1,8 @@
 #' An S4 class to encode a solution
-#' @export
+#'
+#' This is class should only be used if you develop your own solver.
+#'
+#' @noRd
 Solution <- setClass("Solution",
                               slots = c(
                                 objective_value = "numeric",
@@ -15,14 +18,41 @@ Solution <- setClass("Solution",
 #' Extracts variable values from a solution
 #'
 #' @param solution the solution object
-#' @param exp a variable expression. You can partially bind indexes.
+#' @param expr a variable expression. You can partially bind indexes.
 #'
 #' @return a data.frame. One row for each variable instance
 #'         and a column for each index.
-#' @importFrom stringr str_match
+#'         Unless it is a single variable, then it returns a single number.
+#'
+#' @usage
+#' get_solution(solution, expr)
+#' get_solution_(solution, expr)
+#'
+#' @examples
+#' \dontrun{
+#' library(magrittr)
+#' result <- MIPModel() %>%
+#'      add_variable(x[i], i = 1:5) %>%
+#'      add_variable(y[i, j], i = 1:5, j = 1:5) %>%
+#'      add_constraint(x[i] >= 1, i = 1:5) %>%
+#'      set_bounds(x[i], lb = 3, i = 1:3) %>%
+#'      set_objective(0) %>%
+#'      solve_model(with_ROI("glpk"))
+#' solution <- get_solution(result, x[i])
+#' solution2 <- get_solution(result, y[i, 1])
+#' solution3 <- get_solution(result, y[i, j])
+#' }
+#'
+#' @aliases get_solution_
 #' @export
-setGeneric("get_solution", function(solution, exp) {
-  ast <- substitute(exp)
+setGeneric("get_solution", function(solution, expr) {
+  get_solution_(solution, lazyeval::lazy(expr))
+})
+
+#' @export
+setGeneric("get_solution_", function(solution, expr) {
+  expr <- lazyeval::as.lazy(expr)
+  ast <- expr$expr
   is_indexed_var <- is.call(ast)
   stopifnot(!is_indexed_var || ast[[1]] == "[" && length(ast) >= 3)
   var_name <- as.character(if (is_indexed_var) ast[[2]] else ast)
