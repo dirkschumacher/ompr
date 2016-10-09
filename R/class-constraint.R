@@ -1,5 +1,7 @@
 #' A class representing a constraint
-#' @export
+#'
+#'
+#' @noRd
 Constraint <- setClass("Constraint",
                               slots = c(
                                 lhs = "expression",

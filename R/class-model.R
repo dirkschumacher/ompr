@@ -3,7 +3,7 @@
 #' @slot expression the expression in standard form
 #' @slot original_expression the original expression as supplied by the user
 #' @slot direction the direction of optimization
-#' @export
+#' @noRd
 ObjectiveFunction <- setClass("ObjectiveFunction", # Exclude Linting
                               slots = c(
                                 expression = "expression",
@@ -19,7 +19,7 @@ ObjectiveFunction <- setClass("ObjectiveFunction", # Exclude Linting
 #' @slot variables a list of S4 Variable objects
 #' @slot objective the objective function
 #' @slot constraints a list of constraints
-#' @export
+#' @noRd
 Model <- setClass("Model",
          slots = c(
            "variables" = "list",
@@ -28,7 +28,7 @@ Model <- setClass("Model",
          ),
          validity = function(object) TRUE)
 
-#' Check if variable is defined in model
+#' Checks if variable is defined in model
 #'
 #' @param model a model object
 #' @param variable the variable expression to check
@@ -175,6 +175,13 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
 #' @param ... quantifiers for the indexed variabled
 #'
 #' @aliases set_bounds_
+#' @examples
+#' library(magrittr)
+#' MIPModel() %>%
+#'  add_variable(x[i], i = 1:5) %>%
+#'  add_constraint(x[i] >= 1, i = 1:5) %>% # creates 5 constraints
+#'  set_bounds(x[i], lb = 3, i = 1:3)
+#'
 #' @export
 setGeneric("set_bounds", function(model, variable, lb = NULL, ub = NULL, ...) {
   set_bounds_(model, lazyeval::lazy(variable), lb, ub, ...)
@@ -251,7 +258,7 @@ setGeneric("set_bounds_", function(model, variable, lb = NULL, ub = NULL, ...) {
   model
 })
 
-#' Set the model objective
+#' Sets the model objective
 #'
 #' @param model the model
 #' @param expression the linear objective as a sum of variables and constants
@@ -440,9 +447,11 @@ setGeneric("solve_model", function(model, solver) {
 })
 
 #' Creates a new MIP Model
+#' @seealso MILPModel
 #' @export
 MIPModel <- function() Model()
 
 #' Creates a new MILP Model
+#' @seealso MIPModel
 #' @export
 MILPModel <- function() Model()

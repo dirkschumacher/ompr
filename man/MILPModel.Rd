@@ -9,4 +9,7 @@ MILPModel()
 \description{
 Creates a new MILP Model
 }
+\seealso{
+MIPModel
+}
 

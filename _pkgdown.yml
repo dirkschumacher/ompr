@@ -1,0 +1,22 @@
+title: ompr
+
+template:
+  bootswatch: cerulean
+
+reference:
+  - title: Build a model
+    contents:
+    - MILPModel
+    - add_variable
+    - set_objective
+    - add_constraint
+    - set_bounds
+    - sum_exp
+  - title: Solve a model
+    contents:
+    - solve_model
+    - get_solution
+  - title: Helper functions
+    contents:
+    - extract_coefficients
+    - render_page
