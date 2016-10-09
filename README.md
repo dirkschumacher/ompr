@@ -80,7 +80,7 @@ Solvers are in different packages. `ompr.ROI` uses the ROI package which offers 
  
 ## Further Examples
 
-Please refer to the `vignettes` for more examples.
+Please take a look at the [vignettes](https://dirkschumacher.github.io/ompr/articles/index.html) for bigger examples.
 
 ### Knapsack
 
