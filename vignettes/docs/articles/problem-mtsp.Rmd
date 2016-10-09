@@ -150,7 +150,7 @@ And plot it:
 ```{r, fig.align='center', fig.width=7, warning=FALSE}
 ggplot(cities, aes(x, y)) + 
   geom_point(aes(size = is_depot)) + 
-  geom_line(data = paths, aes(group = trip_id, color = salesman)) + 
+  geom_line(data = paths, aes(group = trip_id, color = factor(salesman))) + 
   ggtitle(paste0("Optimal route with cost: ", round(result@objective_value, 2))) +
   scale_y_continuous(limits = c(0, max_y)) + 
   scale_x_continuous(limits = c(0, max_x))
