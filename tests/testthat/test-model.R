@@ -384,8 +384,12 @@ test_that("add_variable throws error when type is wrong", {
 
 test_that("add_variable warns if binary var's bound is not 0/1", {
   m <- MILPModel()
-  expect_warning({x <- add_variable_(m, ~x, lb = 10, type = "binary")})
-  expect_warning({y <- add_variable_(m, ~x, ub = 110, type = "binary")})
+  expect_warning({
+    x <- add_variable_(m, ~x, lb = 10, type = "binary")
+  })
+  expect_warning({
+    y <- add_variable_(m, ~x, ub = 110, type = "binary")
+  })
   expect_equal(0, x@variables[[1]]@lb)
   expect_equal(1, x@variables[[1]]@ub)
 })
