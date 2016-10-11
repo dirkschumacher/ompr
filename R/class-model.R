@@ -103,6 +103,24 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
     stop(paste0("The type of a variable needs to be either",
                 " continuous, binary or integer."))
   }
+  if (type == "binary") {
+    if (is.infinite(lb)) {
+      lb <- 0
+    }
+    if (is.infinite(ub)) {
+      ub <- 1
+    }
+    if (!lb %in% c(0, 1)) {
+      warning(paste0("lower bound of binary variable can ",
+              "either be 0 or 1. Setting it to 0"))
+      lb <- 0
+    }
+    if (!ub %in% c(0, 1)) {
+      warning(paste0("upper bound of binary variable can ",
+                     "either be 0 or 1. Setting it to 1"))
+      ub <- 1
+    }
+  }
   variable <- lazyeval::as.lazy(variable)
   exp <- variable$expr
   if (lazyeval::is_name(exp)) {

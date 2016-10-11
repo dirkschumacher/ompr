@@ -38,11 +38,11 @@ test_that("variables can be added", {
 
 test_that("variables bounds get replicated for var. groups", {
   m <- add_variable(new("Model"), x[i], i = 1:3,
-                    lb = 1, ub = 2,
+                    lb = 0, ub = 1,
                     type = "binary")
   expect_false(is.null(m@variables[["x"]]))
-  expect_equal(m@variables[["x"]]@lb, c(1, 1, 1))
-  expect_equal(m@variables[["x"]]@ub, c(2, 2, 2))
+  expect_equal(m@variables[["x"]]@lb, c(0, 0, 0))
+  expect_equal(m@variables[["x"]]@ub, c(1, 1, 1))
 })
 
 test_that("global vars do not interfere with variable names in expressions", {
@@ -246,6 +246,15 @@ test_that("model has a nice default output", {
   expect_output(show(m), "Constraints: 1")
 })
 
+test_that("bug 20161011 #83: bounds of binary vars are not 0/1", {
+  model <- add_variable(MIPModel(), x, type = "binary") %>%
+    add_constraint(x <= 10) %>%
+    set_objective(-x, direction = "max")
+  expect_equal(0, model@variables[[1]]@lb)
+  expect_equal(1, model@variables[[1]]@ub)
+})
+
+
 test_that("multiplications in objective fun", {
   m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
@@ -371,4 +380,12 @@ test_that("add_variable throws error when type is wrong", {
   m <- MILPModel()
   expect_error(add_variable_(m, ~x, lb = 5, type = "wat"))
   expect_error(add_variable_(m, ~x, lb = 5, type = c("integer", "binary")))
+})
+
+test_that("add_variable warns if binary var's bound is not 0/1", {
+  m <- MILPModel()
+  expect_warning({x <- add_variable_(m, ~x, lb = 10, type = "binary")})
+  expect_warning({y <- add_variable_(m, ~x, ub = 110, type = "binary")})
+  expect_equal(0, x@variables[[1]]@lb)
+  expect_equal(1, x@variables[[1]]@ub)
 })
