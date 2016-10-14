@@ -393,3 +393,10 @@ test_that("add_variable warns if binary var's bound is not 0/1", {
   expect_equal(0, x@variables[[1]]@lb)
   expect_equal(1, x@variables[[1]]@ub)
 })
+
+test_that("bug 20161014: division with number in rhs", {
+  m <- MILPModel() %>%
+    add_variable(x) %>%
+    add_constraint(x / 5 <= 1)
+  expect_equal("0.2 * x", as.character(m@constraints[[1]]@lhs))
+})

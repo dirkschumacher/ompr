@@ -292,7 +292,8 @@ standardize_ast <- function(ast) {
                                 y =  mult_num / local_ast[[3]])
           }
           new_ast <- substitute(y * x, replacement)
-          push_idx(new_ast, c(path))
+          inplace_update_ast(c(path), new_ast)
+          push_idx(new_ast, path)
         } else {
           # multiplication & one of the sides is numeric
           if (left_is_num) {
