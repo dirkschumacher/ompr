@@ -5,13 +5,15 @@
 \alias{add_variable_}
 \title{Adds a variable to the model}
 \usage{
-add_variable(model, variable, type = "continuous", lb = -Inf, ub = Inf,
-  ...)
+add_variable(model, variable, ..., type = "continuous", lb = -Inf,
+  ub = Inf)
 }
 \arguments{
 \item{model}{the model}
 
 \item{variable}{the variable name/definition}
+
+\item{...}{quantifiers for the indexed variabled. Including filters}
 
 \item{type}{must be either continuous, integer or binary}
 
@@ -19,7 +21,7 @@ add_variable(model, variable, type = "continuous", lb = -Inf, ub = Inf,
 
 \item{ub}{the upper bound of the variable}
 
-\item{...}{quantifiers for the indexed variabled}
+\item{.dots}{Used to work around non-standard evaluation.}
 }
 \description{
 A variable can either be a name or an indexed name. See examples.
@@ -28,7 +30,8 @@ A variable can either be a name or an indexed name. See examples.
 library(magrittr)
 MIPModel() \%>\%
  add_variable(x) \%>\% # creates 1 variable named x
- add_variable(y[i], i = 1:10) # creates 10 variables
+ add_variable(y[i], i = 1:10, i \%\% 2 == 0,
+               type = "binary") # creates 4 variables
 
 }
 

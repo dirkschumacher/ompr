@@ -64,22 +64,25 @@ setGeneric("is_defined", function(model, variable) {
 #'
 #' @param model the model
 #' @param variable the variable name/definition
+#' @param ... quantifiers for the indexed variabled. Including filters
 #' @param type must be either continuous, integer or binary
 #' @param lb the lower bound of the variable
 #' @param ub the upper bound of the variable
-#' @param ... quantifiers for the indexed variabled
+#' @param .dots Used to work around non-standard evaluation.
 #'
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
 #'  add_variable(x) %>% # creates 1 variable named x
-#'  add_variable(y[i], i = 1:10) # creates 10 variables
+#'  add_variable(y[i], i = 1:10, i %% 2 == 0,
+#'                type = "binary") # creates 4 variables
 #'
 #' @aliases add_variable_
 #' @export
-setGeneric("add_variable", function(model, variable, type = "continuous",
-                                     lb = -Inf, ub = Inf, ...) {
-  add_variable_(model, lazyeval::lazy(variable), type, lb, ub, ...)
+setGeneric("add_variable", function(model, variable, ..., type = "continuous",
+                                     lb = -Inf, ub = Inf) {
+  add_variable_(model, lazyeval::lazy(variable), type = type,
+                lb = lb, ub = ub, .dots = lazyeval::lazy_dots(...))
 })
 
 # helper function to check variable bounds
@@ -93,8 +96,8 @@ check_bounds <- function(lb, ub) {
 }
 
 #' @export
-setGeneric("add_variable_", function(model, variable, type = "continuous",
-                                    lb = -Inf, ub = Inf, ...) {
+setGeneric("add_variable_", function(model, variable, ..., type = "continuous",
+                                    lb = -Inf, ub = Inf, .dots) {
   if (length(lb) != 1 || length(ub) != 1) {
     stop("lb and ub must be of length 1. I.e. just a single number.")
   }
@@ -136,7 +139,15 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
 
     # first we need to bind all variables
     var_name <- as.character(exp[[2]])
-    bound_subscripts <- list(...)
+
+    lazy_dots <- lazyeval::lazy_dots(...)
+    if (!missing(.dots)) {
+      lazy_dots <- c(lazyeval::as.lazy_dots(.dots), lazy_dots)
+    }
+
+    classified_quantifiers <- classify_quantifiers(lazy_dots)
+    bound_subscripts <- lapply(classified_quantifiers$quantifiers,
+                               lazyeval::lazy_eval)
     bound_exp <- bind_expression(var_name, exp, variable$env,
                                  bound_subscripts)
     arity <- as.integer(length(bound_exp) - 2)
@@ -150,12 +161,13 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
     subscripts[replacement_idxs] <- bound_subscripts
 
     # now generate all variables
-    candidates <- expand.grid(subscripts)
+    candidates <- build_quantifier_candidates(subscripts,
+                                              names(bound_subscripts),
+                                              classified_quantifiers$filters)
+    zero_vars_msg <- paste0("The number of different indexes for variable ",
+                        var_name, " is 0.")
+    validate_quantifier_candidates(candidates, zero_vars_msg)
     n_vars <- nrow(candidates)
-    only_integer_candidates <- apply(candidates, 1, function(r) {
-      all(!is.na(suppressWarnings(as.integer(r))))
-    })
-    stopifnot(only_integer_candidates)
     instances <- apply(candidates, 1, function(row) {
       paste0(as.integer(row), collapse = "_")
     })
@@ -183,14 +195,15 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
 #' indexed variable or a group of variables.
 #'
 #' @usage
-#' set_bounds(model, variable, lb = NULL, ub = NULL, ...)
-#' set_bounds_(model, variable, lb = NULL, ub = NULL, ...)
+#' set_bounds(model, variable, ..., lb = NULL, ub = NULL)
+#' set_bounds_(model, variable, ..., lb = NULL, ub = NULL, .dots)
 #'
 #' @param model the model
 #' @param variable the variable name/definition
+#' @param ... quantifiers for the indexed variabled
 #' @param lb the lower bound of the variable
 #' @param ub the upper bound of the variable
-#' @param ... quantifiers for the indexed variabled
+#' @param .dots Used to work around non-standard evaluation.
 #'
 #' @aliases set_bounds_
 #' @examples
@@ -201,12 +214,13 @@ setGeneric("add_variable_", function(model, variable, type = "continuous",
 #'  set_bounds(x[i], lb = 3, i = 1:3)
 #'
 #' @export
-setGeneric("set_bounds", function(model, variable, lb = NULL, ub = NULL, ...) {
-  set_bounds_(model, lazyeval::lazy(variable), lb, ub, ...)
+setGeneric("set_bounds", function(model, variable, ..., lb = NULL, ub = NULL) {
+  set_bounds_(model, lazyeval::lazy(variable), lb = lb, ub = ub,
+              .dots = lazyeval::lazy_dots(...))
 })
 
 #' @export
-setGeneric("set_bounds_", function(model, variable, lb = NULL, ub = NULL, ...) {
+setGeneric("set_bounds_", function(model, variable, ..., lb = NULL, ub = NULL, .dots) {
   if (is.numeric(lb) && is.numeric(ub)) {
     check_bounds(lb, ub)
   }
@@ -236,42 +250,60 @@ setGeneric("set_bounds_", function(model, variable, lb = NULL, ub = NULL, ...) {
     if (!var_name %in% model_variable_names) {
       stop("Variable does not exists in model")
     }
+    model_variable <- model@variables[[var_name]]
     index_names <- sapply(3:length(variable$expr), function(i) {
       as.character(variable$expr[i])
     })
     indexes <- suppressWarnings(as.integer(index_names))
     quantified_indexes <- !is.integer(indexes) || any(is.na(indexes))
-    if (quantified_indexes) {
-      bound_subscripts <- list(...)
-      filter_fn <- function(x) is.numeric(x) & length(x) > 0
-      bound_subscripts <- Filter(filter_fn, bound_subscripts)
-      if (!all(index_names %in% names(bound_subscripts))) {
-        stop("Not all index variables are bound by quantifiers.")
-      }
-      bound_subscripts <- setNames(lapply(index_names, function(x) {
-        bound_subscripts[[x]]
-      }), index_names)
-
-      bound_subscripts <- as.data.frame(bound_subscripts)
-      indexes <- apply(bound_subscripts, 1, as.list)
-    } else {
-      indexes <- list(indexes)
+    lazy_dots <- lazyeval::lazy_dots(...)
+    if (!missing(.dots)) {
+      lazy_dots <- c(lazyeval::as.lazy_dots(.dots), lazy_dots)
     }
+    classified_quantifiers <- classify_quantifiers(lazy_dots)
+    bound_subscripts <- lapply(classified_quantifiers$quantifiers,
+                             lazyeval::lazy_eval)
+    quantifier_combinations <- build_quantifier_candidates(bound_subscripts,
+                                            names(bound_subscripts),
+                                            classified_quantifiers$filters)
+    zero_vars_msg <- paste0("The number of different indexes for set_bounds ",
+                      "for variable ", var_name, " is 0.")
+    if (quantified_indexes) {
+      validate_quantifier_candidates(quantifier_combinations, zero_vars_msg)
+    }
+
+    # now we have a pool of quantifiers
+    # let's now generate combinations of variable indexes
+    bound_subscripts <- setNames(lapply(index_names, function(x) {
+      index_value <- suppressWarnings(as.integer(x))
+      if (is.integer(index_value) && !is.na(index_value)) {
+        index_value
+      } else {
+        i_name <- as.character(x)
+        if (!i_name %in% colnames(quantifier_combinations)) {
+          stop(paste0("Index ", i_name, " not bound by quantifier"))
+        }
+        quantifier_combinations[[i_name]]
+      }
+    }), index_names)
+
+    bound_subscripts <- as.data.frame(bound_subscripts)
+    indexes <- apply(bound_subscripts, 1, as.list)
+
     instance_keys <- sapply(indexes, function(x) {
       paste0(x, collapse = "_")
     })
-    variable <- model@variables[[var_name]]
-    var_indexes <- which(variable@instances %in% instance_keys)
-    if (any(!instance_keys %in% variable@instances)) {
+    var_indexes <- which(model_variable@instances %in% instance_keys)
+    if (any(!instance_keys %in% model_variable@instances)) {
       stop("Indexed variable out of bounds.")
     }
     if (replace_lb) {
-      variable@lb[var_indexes] <- lb
+      model_variable@lb[var_indexes] <- lb
     }
     if (replace_ub) {
-      variable@ub[var_indexes] <- ub
+      model_variable@ub[var_indexes] <- ub
     }
-    model@variables[[var_name]] <- variable
+    model@variables[[var_name]] <- model_variable
   }
   model
 })
@@ -366,12 +398,13 @@ setMethod("show", signature(object = "Model"),
 #' @param .show_progress_bar displays a progressbar when adding multiple
 #'                           constraints
 #' @param ... quantifiers for the indexed variables. For all combinations of
-#'            bound variables a new constraint is created.
+#'            bound variables a new constraint is created. In addition
+#'            you can add filter expressions
 #'
 #' @return a Model with new constraints added
 #' @usage
-#' add_constraint(model, constraint_expr, .show_progress_bar, ...)
-#' add_constraint_(model, constraint_expr, .show_progress_bar, ...)
+#' add_constraint(model, constraint_expr, ..., .show_progress_bar)
+#' add_constraint_(model, constraint_expr, ..., .dots, .show_progress_bar)
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
@@ -382,15 +415,19 @@ setMethod("show", signature(object = "Model"),
 #' @export
 setGeneric("add_constraint", function(model,
                                       constraint_expr,
-                                      .show_progress_bar = TRUE, ...) {
+                                      ...,
+                                      .show_progress_bar = TRUE) {
   add_constraint_(model, lazyeval::lazy(constraint_expr),
-                  .show_progress_bar, ...)
+                  .dots = lazyeval::lazy_dots(...),
+                  .show_progress_bar = .show_progress_bar)
 })
 
 #' @export
 setGeneric("add_constraint_", function(model,
                                       constraint_expr,
-                                      .show_progress_bar = TRUE, ...) {
+                                      ...,
+                                      .dots,
+                                      .show_progress_bar = TRUE) {
   constraint_expr <- lazyeval::as.lazy(constraint_expr)
   constraint_ast <- constraint_expr$expr
   if (length(constraint_ast) != 3) {
@@ -403,7 +440,13 @@ setGeneric("add_constraint_", function(model,
   lhs_ast <- constraint_ast[[2]]
   rhs_ast <- constraint_ast[[3]]
   parent_env <- constraint_expr$env
-  bound_subscripts <- list(...)
+  lazy_dots <- lazyeval::lazy_dots(...)
+  if (!missing(.dots)) {
+    lazy_dots <- c(lazyeval::as.lazy_dots(.dots), lazy_dots)
+  }
+  classified_quantifiers <- classify_quantifiers(lazy_dots)
+  bound_subscripts <- lapply(classified_quantifiers$quantifiers,
+                             lazyeval::lazy_eval)
   add_constraint_internal <- function(envir = parent_env) {
     lhs_ast <- normalize_expression(model, lhs_ast, envir)
     rhs_ast <- normalize_expression(model, rhs_ast, envir)
@@ -426,7 +469,11 @@ setGeneric("add_constraint_", function(model,
   if (is.list(bound_subscripts) && length(bound_subscripts) > 0) {
     filter_fn <- function(x) is.numeric(x) & length(x) > 0
     bound_subscripts <- Filter(filter_fn, bound_subscripts)
-    var_combinations <- expand.grid(bound_subscripts)
+    var_combinations <- build_quantifier_candidates(bound_subscripts,
+                                              names(bound_subscripts),
+                                              classified_quantifiers$filters)
+    zero_vars_msg <- "The number of different indexes is 0 for this constraint"
+    validate_quantifier_candidates(var_combinations, zero_vars_msg)
 
     # let's init a progress bar
     p <- dplyr::progress_estimated(nrow(var_combinations), min_time = 2)

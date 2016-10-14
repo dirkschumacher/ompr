@@ -1,65 +1,4 @@
-context("Model")
-
-test_that("is_defined works with single variables", {
-  m <- add_variable(new("Model"), x, type = "binary")
-  expect_true(is_defined(m, x))
-})
-
-test_that("is_defined works with subscripts", {
-  m <- add_variable(new("Model"), x[i], i = 1:10, type = "binary")
-  expect_true(is_defined(m, x[3]))
-})
-
-test_that("only accept valid models", {
-  expect_error(add_variable(mtcars, x[i], i = 1:10))
-})
-
-test_that("subscripts must be present in variable expression", {
-  expect_error(add_variable(Model(), x[i], j = 1:10))
-})
-test_that("variable must not be a complex expression", {
-  expect_error(add_variable(Model(), x[i] + 4, i = 1:10))
-})
-
-test_that("variables with arity 0 can be added", {
-  m <- Model()
-  m_new <- add_variable(m, x, type = "binary")
-  expect_false(is.null(m_new@variables[["x"]]))
-  expect_equal(m_new@variables[["x"]]@type, "binary")
-  expect_equal(m_new@variables[["x"]]@arity, 0)
-})
-
-test_that("variables can be added", {
-  m <- add_variable(new("Model"), x[i], i = 1:10, type = "binary")
-  expect_false(is.null(m@variables[["x"]]))
-  expect_equal(m@variables[["x"]]@type, "binary")
-  expect_equal(m@variables[["x"]]@arity, 1)
-})
-
-test_that("variables bounds get replicated for var. groups", {
-  m <- add_variable(new("Model"), x[i], i = 1:3,
-                    lb = 0, ub = 1,
-                    type = "binary")
-  expect_false(is.null(m@variables[["x"]]))
-  expect_equal(m@variables[["x"]]@lb, c(0, 0, 0))
-  expect_equal(m@variables[["x"]]@ub, c(1, 1, 1))
-})
-
-test_that("global vars do not interfere with variable names in expressions", {
-  x <- "hi"
-  m <- add_variable(new("Model"), x[i], i = 1:10, type = "binary")
-  expect_false(is.null(m@variables[["x"]]))
-  expect_true(is.null(m@variables[["hi"]]))
-})
-
-test_that("variables can be added with bound indexes", {
-  j <- 3
-  m <- add_variable(new("Model"), x[i, j], i = 1:10, type = "binary")
-  expect_false(is.null(m@variables[["x"]]))
-  expect_equal(m@variables[["x"]]@arity, 2)
-  expect_true(is_defined(m, x[1, 3]))
-  expect_false(is_defined(m, x[1, 2]))
-})
+context("model")
 
 test_that("one can set an objective function", {
   m <- new("Model")
@@ -88,43 +27,6 @@ test_that("obj. function can bind external variables", {
   expect_equal(deparse(m@objective@expression[[1]]), "1 * x[1]")
 })
 
-test_that("we can add constraints", {
-  m <- new("Model")
-  m <- add_variable(m, x[i], i = 1:10, type = "binary")
-  m <- add_constraint(m, x[3] <= x[6])
-})
-
-test_that("add_constraint only allows a fixed set of directions", {
-  m <- new("Model")
-  m <- add_variable(m, x[i], i = 1:10, type = "binary")
-  add_constraint(m, x[3] <= x[6])
-  add_constraint(m, x[3] >= x[6])
-  add_constraint(m, x[3] == x[6])
-  expect_error(add_constraint(m, x[3] < x[6]))
-  expect_error(add_constraint(m, x[3] > x[6]))
-  expect_error(add_constraint(m, x[3] + x[6]))
-})
-
-test_that("we can add complicated constraints", {
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
-  m <- add_constraint(m, sum_exp(x[i], i = 1:2) + x[3] == 1)
-  expect_equal(length(m@constraints), 1)
-  constraint <- m@constraints[[1]]
-  expect_equal(constraint@rhs[[1]], 1)
-  expect_equal(constraint@direction, "==")
-  expect_equal(deparse(constraint@lhs[[1]]), "x[1L] + x[2L] + x[3]")
-})
-
-test_that("add_constraint throws an error if constraints are non-linear lhs", {
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
-  expect_error(add_constraint(m, sum_exp(x[i], i = 1:2) * x[3] == 1))
-})
-
-test_that("add_constraint throws an error if constraints are non-linear rhs", {
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
-  expect_error(add_constraint(m, 1 == sum_exp(x[i], i = 1:2) * x[3]))
-})
-
 test_that("set_objective throws an error if it is non-linear", {
   m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
   expect_error(set_objective(m, sum_exp(x[i], i = 1:2) * x[3]))
@@ -149,72 +51,11 @@ test_that("it works with magrittr pipes", {
   expect_equal(length(m@variables), 1)
 })
 
-test_that("binding variables works with magrittr", {
-  y <- 1
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary") %>%
-    set_objective(x[1] * y)
-  expect_equal(deparse(m@objective@expression[[1]]), "x[1] * 1")
-})
-
 test_that("set_object passes external values to sum_exp", {
   max_bins <- 5
   m <- new("Model")
   m <- add_variable(m, y[i], i = 1:max_bins, type = "binary")
   m <- set_objective(m, sum_exp(y[i], i = 1:max_bins), "min")
-})
-
-
-test_that("one can set bounds on variables", {
-  max_bins <- 5
-  m <- new("Model")
-  m1 <- add_variable(m, x, type = "continuous", lb = 40)
-  m2 <- add_variable(m, x, type = "continuous", ub = 40)
-  expect_equal(m1@variables[["x"]]@lb, 40)
-  expect_equal(m2@variables[["x"]]@ub, 40)
-})
-
-test_that("throw error if lower bound > upper bound", {
-  expect_error(add_variable(new("Model"), x, lb = 5, ub = 4))
-})
-
-test_that("add_constraint can handle a for all quantifier", {
-  m <- new("Model") %>%
-    add_variable(x[i, j], i = 1:3, j = 1:3) %>%
-    add_constraint(sum_exp(x[i, j], j = 1:3) == 1, i = 1:3)
-  expect_equal(length(m@constraints), 3)
-})
-
-test_that("add_constraint warns about unbouded all quantifier", {
-  m <- new("Model") %>%
-    add_variable(x[i, j], i = 1:3, j = 1:3)
-  expect_error(add_constraint(sum_exp(x[i, j], j = 1:3) == 1, e = 1:3))
-})
-
-test_that("add_constraint warns about unbouded all quantifier in rhs", {
-  m <- new("Model") %>%
-    add_variable(x[i, j], i = 1:3, j = 1:3)
-  expect_error(add_constraint(1 == sum_exp(x[i, j], j = 1:3), e = 1:3))
-})
-
-test_that("add_constraints throws error if unbounded indexes in lhs", {
-  m <- new("Model") %>%
-    add_variable(x[i, j], i = 1:3, j = 1:3)
-  expect_error(add_constraint(x[1, j] == 1))
-})
-
-test_that("add_constraints throws error if unbounded indexes in rhs", {
-  m <- new("Model") %>%
-    add_variable(x[i, j], i = 1:3, j = 1:3)
-  expect_error(add_constraint(1 == x[1, j]))
-})
-
-test_that("bounded vars in add_constraints should take precedence", {
-  m <- new("Model") %>%
-    add_variable(x[i, j], i = 1:3, j = 1:3)
-  j <- 1
-  i <- 1
-  m <- add_constraint(m, sum_exp(x[i, j], j = 3) == 1)
-  expect_equal(m@constraints[[1]]@lhs, expression(x[1, 3]))
 })
 
 test_that("we can model a tsp", {
@@ -254,7 +95,6 @@ test_that("bug 20161011 #83: bounds of binary vars are not 0/1", {
   expect_equal(1, model@variables[[1]]@ub)
 })
 
-
 test_that("multiplications in objective fun", {
   m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
@@ -274,22 +114,6 @@ test_that("devision in objective fun", {
     add_constraint(x + y <= 10) %>%
     set_objective(5 / (-x + y), direction = "max")
   expect_equal(deparse(m@objective@expression[[1]]), "-0.2 * x + 0.2 * y")
-})
-
-test_that("constraints should be saved with only + operators", {
-  m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
-    add_variable(y, type = "continuous", ub = 4) %>%
-    add_constraint(x - y <= 10) %>%
-    set_objective(5 / (-x + y), direction = "max")
-  expect_equal(deparse(m@constraints[[1]]@lhs[[1]]), "x + -1 * y")
-})
-
-test_that("constraints can have an unary + operator", {
-  m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
-    add_variable(y, type = "continuous", ub = 4) %>%
-    add_constraint(+x - y <= 10) %>%
-    set_objective(5 / (-x + y), direction = "max")
-  expect_equal(deparse(m@constraints[[1]]@lhs[[1]]), "1 * x + -1 * y")
 })
 
 test_that("small to mid sized models should work", {
@@ -336,22 +160,6 @@ test_that("solve_model warns about wrong arguments", {
   expect_error(solve_model(m, not_a_fun <- 0), regexp = "function")
 })
 
-test_that("add_constraint only accepts linear inequalities", {
-  m <- add_variable(new("Model"), x, type = "binary")
-  expect_error(add_constraint(m, x))
-})
-
-test_that("add_constraint_ supports standard eval.", {
-  m <- MIPModel()
-  m <- add_variable(m, x)
-  add_constraint_(m, ~x <= 10)
-})
-
-test_that("add_variable_ supports standard eval.", {
-  m <- MIPModel()
-  add_variable_(m, ~x)
-})
-
 test_that("set_objective_ supports standard eval.", {
   m <- MIPModel()
   m <- add_variable_(m, ~x)
@@ -362,34 +170,4 @@ test_that("is_defined throws error if expression is not well formed", {
   m <- MILPModel()
   m <- add_variable_(m, ~x)
   expect_error(is_defined(m, 1 + 1))
-})
-
-test_that("add_variable throws error when lb or ub is of length > 1", {
-  m <- MILPModel()
-  expect_error(add_variable_(m, ~x, lb = c(5, 2), ub = 10))
-  expect_error(add_variable_(m, ~x, lb = 2, ub = c(10, 10)))
-})
-
-test_that("add_variable throws error when lb or ub is not numeric", {
-  m <- MILPModel()
-  expect_error(add_variable_(m, ~x, lb = "5"))
-  expect_error(add_variable_(m, ~x, ub = "5"))
-})
-
-test_that("add_variable throws error when type is wrong", {
-  m <- MILPModel()
-  expect_error(add_variable_(m, ~x, lb = 5, type = "wat"))
-  expect_error(add_variable_(m, ~x, lb = 5, type = c("integer", "binary")))
-})
-
-test_that("add_variable warns if binary var's bound is not 0/1", {
-  m <- MILPModel()
-  expect_warning({
-    x <- add_variable_(m, ~x, lb = 10, type = "binary")
-  })
-  expect_warning({
-    y <- add_variable_(m, ~x, ub = 110, type = "binary")
-  })
-  expect_equal(0, x@variables[[1]]@lb)
-  expect_equal(1, x@variables[[1]]@ub)
 })

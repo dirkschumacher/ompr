@@ -433,8 +433,15 @@ sum_exp <- function(exp, ...) {
   # TODO: Make sure the input is correct
   # TODO: Take model and make sure
   # we do not overwrite any model variables
-  iterators <- list(...)
-  subscript_combinations <- expand.grid(iterators)
+  lazy_dots <- lazyeval::lazy_dots(...)
+  classified_quantifiers <- classify_quantifiers(lazy_dots)
+  bound_subscripts <- lapply(classified_quantifiers$quantifiers,
+                             lazyeval::lazy_eval)
+  subscript_combinations <- build_quantifier_candidates(bound_subscripts,
+                                              names(bound_subscripts),
+                                              classified_quantifiers$filters)
+  zero_vars_msg <- paste0("The number of different indexes for sum_exp is 0.")
+  validate_quantifier_candidates(subscript_combinations, zero_vars_msg)
   ast <- substitute(exp)
   list_of_eval_exps <- apply(subscript_combinations, 1, function(row) {
     binding_env <- as.environment(as.list(row))
@@ -446,4 +453,35 @@ sum_exp <- function(exp, ...) {
     }
     substitute(x + y, list(x = acc, y = el))
   }, x = list_of_eval_exps, init = NULL)
+}
+
+# extracts quantifiers and filters from lazydots
+classify_quantifiers <- function(lazy_dots) {
+  assignments <- names(lazy_dots) != ""
+  list(
+    quantifiers = lazy_dots[assignments],
+    filters = lazy_dots[!assignments]
+  )
+}
+
+# construct a quantifier candidate table
+build_quantifier_candidates <- function(subscripts,
+                                        subscript_names, filter_dots) {
+  candidates <- expand.grid(subscripts)
+  names(candidates) <- subscript_names
+  if (length(filter_dots) > 0) {
+    candidates <- dplyr::filter_(candidates, .dots = filter_dots)
+  }
+  candidates
+}
+
+# validates a set of quantifier candidates
+validate_quantifier_candidates <- function(candidates, zero_vars_msg) {
+  if (nrow(candidates) == 0) {
+    stop(zero_vars_msg)
+  }
+  only_integer_candidates <- apply(candidates, 1, function(r) {
+    all(!is.na(suppressWarnings(as.integer(r))))
+  })
+  stopifnot(only_integer_candidates)
 }

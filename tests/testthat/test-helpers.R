@@ -13,6 +13,11 @@ test_that("sum_exp does not evaluate other variables", {
   expect_equal(deparse(result), expected)
 })
 
+test_that("sum_exp supports filter expressions", {
+  result <- sum_exp(x[i], i = 1:3, i >= 3)
+  expect_equal(deparse(result), "x[3L]")
+})
+
 test_that("extract_coefficients can extract constant", {
   ast <- substitute(1 + x * 10 + x[1, 2] + 23 + -1 * 3)
   result <- extract_coefficients(ast)
