@@ -183,7 +183,7 @@ setGeneric("add_variable_", function(model, variable, ..., type = "continuous",
     model@variables[[var_name]] <- var
   } else {
     stop(paste0("The variable definition does not seem to be right.",
-                "Take a look at the vignettes if you need examples on how",
+                "Take a look at the example models on the website on how",
                 " to formulate variables"))
   }
   model
@@ -508,7 +508,7 @@ setGeneric("add_constraint_", function(model,
 setGeneric("solve_model", function(model, solver) {
   if (!is.function(solver)) {
     stop(paste0("Solver is not a function Model -> Solution.\n",
-                "Take a look at one of the vignettes on how to call",
+                "Take a look at the examples on the website on how to call",
                 " solve_model."))
   }
   solver(model)
