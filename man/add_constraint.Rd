@@ -20,6 +20,8 @@ you can add filter expressions}
 
 \item{.show_progress_bar}{displays a progressbar when adding multiple
 constraints}
+
+\item{.dots}{Used to work around non-standard evaluation.}
 }
 \value{
 a Model with new constraints added

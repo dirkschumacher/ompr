@@ -68,7 +68,6 @@ setGeneric("is_defined", function(model, variable) {
 #' @param type must be either continuous, integer or binary
 #' @param lb the lower bound of the variable
 #' @param ub the upper bound of the variable
-#' @param .dots Used to work around non-standard evaluation.
 #'
 #' @examples
 #' library(magrittr)
@@ -95,6 +94,8 @@ check_bounds <- function(lb, ub) {
   }
 }
 
+#' @param .dots Used to work around non-standard evaluation.
+#' @rdname add_variable
 #' @export
 setGeneric("add_variable_", function(model, variable, ..., type = "continuous",
                                     lb = -Inf, ub = Inf, .dots) {
@@ -220,7 +221,8 @@ setGeneric("set_bounds", function(model, variable, ..., lb = NULL, ub = NULL) {
 })
 
 #' @export
-setGeneric("set_bounds_", function(model, variable, ..., lb = NULL, ub = NULL, .dots) {
+setGeneric("set_bounds_", function(model, variable, ...,
+                                   lb = NULL, ub = NULL, .dots) {
   if (is.numeric(lb) && is.numeric(ub)) {
     check_bounds(lb, ub)
   }
@@ -395,11 +397,12 @@ setMethod("show", signature(object = "Model"),
 #' @param model the model
 #' @param constraint_expr the constraint. Must be a linear (in)equality with
 #'        operator "<=", "==" or ">=".
-#' @param .show_progress_bar displays a progressbar when adding multiple
-#'                           constraints
 #' @param ... quantifiers for the indexed variables. For all combinations of
 #'            bound variables a new constraint is created. In addition
 #'            you can add filter expressions
+#' @param .dots Used to work around non-standard evaluation.
+#' @param .show_progress_bar displays a progressbar when adding multiple
+#'                           constraints
 #'
 #' @return a Model with new constraints added
 #' @usage

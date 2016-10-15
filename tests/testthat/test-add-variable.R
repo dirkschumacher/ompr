@@ -126,7 +126,7 @@ test_that("variable quantifiers can have filter expressions", {
 })
 
 test_that("add_variable fails if filter expressions filter out everything", {
-  expect_error(add_variable(MILPModel(), x[i], i = 1:3 , i > 10))
+  expect_error(add_variable(MILPModel(), x[i], i = 1:3, i > 10))
 })
 
 test_that("filter epxressions work with SE 2", {
