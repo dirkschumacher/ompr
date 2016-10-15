@@ -5,19 +5,21 @@
 \alias{set_bounds_}
 \title{Sets the bounds of a variable}
 \usage{
-set_bounds(model, variable, lb = NULL, ub = NULL, ...)
-set_bounds_(model, variable, lb = NULL, ub = NULL, ...)
+set_bounds(model, variable, ..., lb = NULL, ub = NULL)
+set_bounds_(model, variable, ..., lb = NULL, ub = NULL, .dots)
 }
 \arguments{
 \item{model}{the model}
 
 \item{variable}{the variable name/definition}
 
+\item{...}{quantifiers for the indexed variabled}
+
 \item{lb}{the lower bound of the variable}
 
 \item{ub}{the upper bound of the variable}
 
-\item{...}{quantifiers for the indexed variabled}
+\item{.dots}{Used to work around non-standard evaluation.}
 }
 \description{
 Change the lower and upper bounds of a named variable,

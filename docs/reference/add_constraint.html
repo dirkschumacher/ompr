@@ -83,8 +83,8 @@
     <p>Add one or more constraints to the model using quantifiers.</p>
     
 
-    <pre><span class='fu'>add_constraint</span>(<span class='no'>model</span>, <span class='no'>constraint_expr</span>, <span class='no'>.show_progress_bar</span>, <span class='no'>...</span>)
-<span class='fu'>add_constraint_</span>(<span class='no'>model</span>, <span class='no'>constraint_expr</span>, <span class='no'>.show_progress_bar</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>add_constraint</span>(<span class='no'>model</span>, <span class='no'>constraint_expr</span>, <span class='no'>...</span>, <span class='no'>.show_progress_bar</span>)
+<span class='fu'>add_constraint_</span>(<span class='no'>model</span>, <span class='no'>constraint_expr</span>, <span class='no'>...</span>, <span class='no'>.dots</span>, <span class='no'>.show_progress_bar</span>)</pre>
     
     <h2>Arguments</h2>
     <dl class="dl-horizontal">
@@ -93,12 +93,15 @@
       <dt>constraint_expr</dt>
       <dd>the constraint. Must be a linear (in)equality with
 operator &quot;&lt;=&quot;, &quot;==&quot; or &quot;&gt;=&quot;.</dd>
+      <dt>...</dt>
+      <dd>quantifiers for the indexed variables. For all combinations of
+bound variables a new constraint is created. In addition
+you can add filter expressions</dd>
       <dt>.show_progress_bar</dt>
       <dd>displays a progressbar when adding multiple
 constraints</dd>
-      <dt>...</dt>
-      <dd>quantifiers for the indexed variables. For all combinations of
-bound variables a new constraint is created.</dd>
+      <dt>.dots</dt>
+      <dd>Used to work around non-standard evaluation.</dd>
     </dl>
     
     <div class="Value">

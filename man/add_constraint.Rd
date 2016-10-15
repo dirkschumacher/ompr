@@ -5,8 +5,8 @@
 \alias{add_constraint_}
 \title{Add a constraint}
 \usage{
-add_constraint(model, constraint_expr, .show_progress_bar, ...)
-add_constraint_(model, constraint_expr, .show_progress_bar, ...)
+add_constraint(model, constraint_expr, ..., .show_progress_bar)
+add_constraint_(model, constraint_expr, ..., .dots, .show_progress_bar)
 }
 \arguments{
 \item{model}{the model}
@@ -14,11 +14,14 @@ add_constraint_(model, constraint_expr, .show_progress_bar, ...)
 \item{constraint_expr}{the constraint. Must be a linear (in)equality with
 operator "<=", "==" or ">=".}
 
+\item{...}{quantifiers for the indexed variables. For all combinations of
+bound variables a new constraint is created. In addition
+you can add filter expressions}
+
 \item{.show_progress_bar}{displays a progressbar when adding multiple
 constraints}
 
-\item{...}{quantifiers for the indexed variables. For all combinations of
-bound variables a new constraint is created.}
+\item{.dots}{Used to work around non-standard evaluation.}
 }
 \value{
 a Model with new constraints added

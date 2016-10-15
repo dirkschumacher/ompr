@@ -6,3 +6,4 @@
 ^CONDUCT\.md$
 ^vignettes
 ^docs
+^_pkgdown.yml

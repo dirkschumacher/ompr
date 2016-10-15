@@ -84,8 +84,8 @@
 indexed variable or a group of variables.</p>
     
 
-    <pre><span class='fu'>set_bounds</span>(<span class='no'>model</span>, <span class='no'>variable</span>, <span class='kw'>lb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
-<span class='fu'>set_bounds_</span>(<span class='no'>model</span>, <span class='no'>variable</span>, <span class='kw'>lb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>set_bounds</span>(<span class='no'>model</span>, <span class='no'>variable</span>, <span class='no'>...</span>, <span class='kw'>lb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>set_bounds_</span>(<span class='no'>model</span>, <span class='no'>variable</span>, <span class='no'>...</span>, <span class='kw'>lb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>.dots</span>)</pre>
     
     <h2>Arguments</h2>
     <dl class="dl-horizontal">
@@ -93,12 +93,14 @@ indexed variable or a group of variables.</p>
       <dd>the model</dd>
       <dt>variable</dt>
       <dd>the variable name/definition</dd>
+      <dt>...</dt>
+      <dd>quantifiers for the indexed variabled</dd>
       <dt>lb</dt>
       <dd>the lower bound of the variable</dd>
       <dt>ub</dt>
       <dd>the upper bound of the variable</dd>
-      <dt>...</dt>
-      <dd>quantifiers for the indexed variabled</dd>
+      <dt>.dots</dt>
+      <dd>Used to work around non-standard evaluation.</dd>
     </dl>
         
     <h2 id="examples">Examples</h2>
