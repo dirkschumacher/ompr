@@ -137,3 +137,41 @@ test_that("filter epxressions work with SE 2", {
   expect_equal(c("2_1", "3_2", "4_3", "5_4"),
                result@variables[["x"]]@instances)
 })
+
+
+test_that("add_variable throws error when lb or ub is of length > 1", {
+  m <- MILPModel()
+  expect_error(add_variable_(m, ~x, lb = c(5, 2), ub = 10))
+  expect_error(add_variable_(m, ~x, lb = 2, ub = c(10, 10)))
+})
+
+test_that("add_variable throws error when lb or ub is not numeric", {
+  m <- MILPModel()
+  expect_error(add_variable_(m, ~x, lb = "5"))
+  expect_error(add_variable_(m, ~x, ub = "5"))
+})
+
+test_that("add_variable throws error when type is wrong", {
+  m <- MILPModel()
+  expect_error(add_variable_(m, ~x, lb = 5, type = "wat"))
+  expect_error(add_variable_(m, ~x, lb = 5, type = c("integer", "binary")))
+})
+
+test_that("add_variable warns if binary var's bound is not 0/1", {
+  m <- MILPModel()
+  expect_warning({
+    x <- add_variable_(m, ~x, lb = 10, type = "binary")
+  })
+  expect_warning({
+    y <- add_variable_(m, ~x, ub = 110, type = "binary")
+  })
+  expect_equal(0, x@variables[[1]]@lb)
+  expect_equal(1, x@variables[[1]]@ub)
+})
+
+test_that("bug 20161014: division with number in rhs", {
+  m <- MILPModel() %>%
+    add_variable(x) %>%
+    add_constraint(x / 5 <= 1)
+  expect_equal("0.2 * x", as.character(m@constraints[[1]]@lhs))
+})
