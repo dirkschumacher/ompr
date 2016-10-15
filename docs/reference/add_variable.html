@@ -83,8 +83,11 @@
     <p>A variable can either be a name or an indexed name. See examples.</p>
     
 
-    <pre><span class='fu'>add_variable</span>(<span class='no'>model</span>, <span class='no'>variable</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"continuous"</span>, <span class='kw'>lb</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>ub</span> <span class='kw'>=</span> <span class='fl'>Inf</span>,
-  <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>add_variable</span>(<span class='no'>model</span>, <span class='no'>variable</span>, <span class='no'>...</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"continuous"</span>, <span class='kw'>lb</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>,
+  <span class='kw'>ub</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)
+
+<span class='fu'>add_variable_</span>(<span class='no'>model</span>, <span class='no'>variable</span>, <span class='no'>...</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"continuous"</span>, <span class='kw'>lb</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>,
+  <span class='kw'>ub</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='no'>.dots</span>)</pre>
     
     <h2>Arguments</h2>
     <dl class="dl-horizontal">
@@ -92,25 +95,28 @@
       <dd>the model</dd>
       <dt>variable</dt>
       <dd>the variable name/definition</dd>
+      <dt>...</dt>
+      <dd>quantifiers for the indexed variabled. Including filters</dd>
       <dt>type</dt>
       <dd>must be either continuous, integer or binary</dd>
       <dt>lb</dt>
       <dd>the lower bound of the variable</dd>
       <dt>ub</dt>
       <dd>the upper bound of the variable</dd>
-      <dt>...</dt>
-      <dd>quantifiers for the indexed variabled</dd>
+      <dt>.dots</dt>
+      <dd>Used to work around non-standard evaluation.</dd>
     </dl>
         
     <h2 id="examples">Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
 <span class='fu'>MIPModel</span>() <span class='kw'>%&gt;%</span>
  <span class='fu'>add_variable</span>(<span class='no'>x</span>) <span class='kw'>%&gt;%</span> <span class='co'># creates 1 variable named x</span>
- <span class='fu'>add_variable</span>(<span class='no'>y</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>) <span class='co'># creates 10 variables</span></div><div class='output co'>#&gt; Mixed linear integer optimization problem
+ <span class='fu'>add_variable</span>(<span class='no'>y</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>, <span class='no'>i</span> <span class='kw'>%%</span> <span class='fl'>2</span> <span class='kw'>==</span> <span class='fl'>0</span>,
+               <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"binary"</span>) <span class='co'># creates 4 variables</span></div><div class='output co'>#&gt; Mixed linear integer optimization problem
 #&gt; Variables:
-#&gt;   Continuous: 11 
+#&gt;   Continuous: 1 
 #&gt;   Integer: 0 
-#&gt;   Binary: 0 
+#&gt;   Binary: 5 
 #&gt; No objective function. 
 #&gt; Constraints: 0 
 #&gt; </div><div class='input'>
