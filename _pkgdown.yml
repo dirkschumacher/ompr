@@ -20,3 +20,13 @@ reference:
     contents:
     - extract_coefficients
     - render_page
+
+articles:
+  - title: "About the package"
+    contents:
+    - modelling
+  - title: "Example problems"
+    contents:
+    - problem-sudoku
+    - problem-tsp
+    - problem-mtsp

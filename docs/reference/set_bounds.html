@@ -105,9 +105,9 @@ indexed variable or a group of variables.</p>
         
     <h2 id="examples">Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
-<span class='fu'>MIPModel</span>() <span class='kw'>%&gt;%</span>
- <span class='fu'>add_variable</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>) <span class='kw'>%&gt;%</span>
- <span class='fu'>add_constraint</span>(<span class='no'>x</span>[<span class='no'>i</span>] <span class='kw'>&gt;=</span> <span class='fl'>1</span>, <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>) <span class='kw'>%&gt;%</span> <span class='co'># creates 5 constraints</span>
+<span class='fu'><a href='MIPModel.html'>MIPModel</a></span>() <span class='kw'>%&gt;%</span>
+ <span class='fu'><a href='add_variable.html'>add_variable</a></span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>) <span class='kw'>%&gt;%</span>
+ <span class='fu'><a href='add_constraint.html'>add_constraint</a></span>(<span class='no'>x</span>[<span class='no'>i</span>] <span class='kw'>&gt;=</span> <span class='fl'>1</span>, <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>) <span class='kw'>%&gt;%</span> <span class='co'># creates 5 constraints</span>
  <span class='fu'>set_bounds</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>lb</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)</div><div class='output co'>#&gt; Mixed linear integer optimization problem
 #&gt; Variables:
 #&gt;   Continuous: 5 
