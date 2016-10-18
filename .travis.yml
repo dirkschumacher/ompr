@@ -22,4 +22,4 @@ after_success:
   - Rscript -e 'lintr::lint_package()'
 
 env:
-  - LINTR_COMMENT_BOT=true
+  - LINTR_COMMENT_BOT=false
