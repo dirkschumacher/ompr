@@ -29,12 +29,12 @@ test_that("obj. function can bind external variables", {
 
 test_that("set_objective throws an error if it is non-linear", {
   m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
-  expect_error(set_objective(m, sum_exp(x[i], i = 1:2) * x[3]))
+  expect_error(set_objective(m, sum_expr(x[i], i = 1:2) * x[3]))
 })
 
 test_that("we can solve a model", {
   m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
-  m <- add_constraint(m, sum_exp(x[i], i = 1:3) == 1)
+  m <- add_constraint(m, sum_expr(x[i], i = 1:3) == 1)
   m <- set_objective(m, x[1])
   solution <- new("Solution")
   result <- solve_model(m, function(model) {
@@ -46,16 +46,16 @@ test_that("we can solve a model", {
 
 test_that("it works with magrittr pipes", {
   m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary") %>%
-    add_constraint(sum_exp(x[i], i = 1:3) == 1) %>%
+    add_constraint(sum_expr(x[i], i = 1:3) == 1) %>%
     set_objective(x[1])
   expect_equal(length(m@variables), 1)
 })
 
-test_that("set_object passes external values to sum_exp", {
+test_that("set_object passes external values to sum_expr", {
   max_bins <- 5
   m <- new("Model")
   m <- add_variable(m, y[i], i = 1:max_bins, type = "binary")
-  m <- set_objective(m, sum_exp(y[i], i = 1:max_bins), "min")
+  m <- set_objective(m, sum_expr(y[i], i = 1:max_bins), "min")
 })
 
 test_that("we can model a tsp", {
@@ -64,11 +64,11 @@ test_that("we can model a tsp", {
   sub_tours <- list(1, 2, 3, c(1, 2), c(1, 3), c(2, 3))
   r <- MIPModel() %>%
     add_variable(x[i, j], i = 1:cities, j = 1:cities, type = "binary") %>%
-    set_objective(sum_exp(distance_matrix[i, j] * x[i, j],
+    set_objective(sum_expr(distance_matrix[i, j] * x[i, j],
                           i = 1:cities, j = 1:cities), direction = "min") %>%
     add_constraint(x[i, i] == 0, i = 1:cities) %>%
     add_constraint(x[i, j] == x[j, i], i = 1:cities, j = 1:cities) %>%
-    add_constraint(sum_exp(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]) <=
+    add_constraint(sum_expr(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]) <=
                      length(sub_tours[s]) - 1, s = 1:length(sub_tours))
 })
 
@@ -120,14 +120,14 @@ test_that("small to mid sized models should work", {
   n <- 400
   result <- MIPModel() %>%
     add_variable(x[i], i = 1:n, type = "binary") %>%
-    set_objective(sum_exp(x[i], i = 1:n), "max") %>%
-    add_constraint(sum_exp(x[i], i = 1:n) == 1)
+    set_objective(sum_expr(x[i], i = 1:n), "max") %>%
+    add_constraint(sum_expr(x[i], i = 1:n) == 1)
 })
 
-test_that("bug 20160713 #41: quantifiers in constraints in sum_exp", {
+test_that("bug 20160713 #41: quantifiers in constraints in sum_expr", {
   MIPModel() %>%
     add_variable(x[i], i = 1:9) %>%
-    add_constraint(sum_exp(x[i], i = 1:3 + y) == 1, y = c(0, 3, 6))
+    add_constraint(sum_expr(x[i], i = 1:3 + y) == 1, y = c(0, 3, 6))
 })
 
 test_that("small to mid sized model should work #2", {
@@ -135,13 +135,13 @@ test_that("small to mid sized model should work #2", {
   coef <- matrix(1:(n ^ 2), ncol = 2)
   MIPModel() %>%
     add_variable(x[i, j], i = 1:n, j = 1:n) %>%
-    add_constraint(sum_exp(coef[i, j] * x[i, j], i = 1:n, j = 1:n) == 1)
+    add_constraint(sum_expr(coef[i, j] * x[i, j], i = 1:n, j = 1:n) == 1)
 })
 
-test_that("bug 20160729: two sum_exp on one side", {
+test_that("bug 20160729: two sum_expr on one side", {
   m <- MIPModel() %>%
     add_variable(x[j], j = 1:4) %>%
-    add_constraint(sum_exp(x[j], j = 1:2) - sum_exp(x[j], j = 3:4) == 0)
+    add_constraint(sum_expr(x[j], j = 1:2) - sum_expr(x[j], j = 3:4) == 0)
   expect_equal(deparse(m@constraints[[1]]@lhs[[1]]),
                "x[1L] + x[2L] + (-1 * x[3L] + -1 * x[4L])")
 })
@@ -150,8 +150,8 @@ test_that("bug 20160729_2: external var binding", {
   x <- 1:10
   m <- MIPModel() %>%
     add_variable(x[j], j = 1:2)
-  expect_warning(add_constraint(m, sum_exp(x[j], j = 1:2) == 0))
-  expect_warning(add_constraint(m, sum_exp(x[j], j = 1:2) == 0),
+  expect_warning(add_constraint(m, sum_expr(x[j], j = 1:2) == 0))
+  expect_warning(add_constraint(m, sum_expr(x[j], j = 1:2) == 0),
                  regexp = "x")
 })
 

@@ -40,7 +40,7 @@
       <h1>The Multiple Traveling Salesmen Problem</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-16</h4>
+            <h4 class="date">2016-10-18</h4>
           </div>
 
     
@@ -83,39 +83,39 @@ cities &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cl
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr)</code></pre></div>
 <p>Formulate the model. By convention the node with index <span class="math inline">\(1\)</span> is the depot.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the depot is always idx 1</span>
-model &lt;-<span class="st"> </span><span class="kw"><a href="../../../reference/MIPModel.html">MIPModel</a></span>() %&gt;%
+model &lt;-<span class="st"> </span><span class="kw">MIPModel</span>() %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># we create a variable that is 1 iff we travel from city i to j by Salesman k</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_variable.html">add_variable</a></span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
+<span class="st">  </span><span class="kw">add_variable</span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># helper variable for the MTZ sub-tour constraints</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_variable.html">add_variable</a></span>(u[i, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m, <span class="dt">lb =</span> <span class="dv">1</span>, <span class="dt">ub =</span> n) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_variable</span>(u[i, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m, <span class="dt">lb =</span> <span class="dv">1</span>, <span class="dt">ub =</span> n) %&gt;%<span class="st"> </span>
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># minimize travel distance and latest arrival</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(distance[i, j] *<span class="st"> </span>x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m), <span class="st">"min"</span>) %&gt;%
+<span class="st">  </span><span class="kw">set_objective</span>(<span class="kw">sum_expr</span>(distance[i, j] *<span class="st"> </span>x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m), <span class="st">"min"</span>) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># you cannot go to the same city</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[i, i, k] ==<span class="st"> </span><span class="dv">0</span>, <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%
+<span class="st">  </span><span class="kw">add_constraint</span>(x[i, i, k] ==<span class="st"> </span><span class="dv">0</span>, <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># each salesman needs to leave the depot</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[<span class="dv">1</span>, j, k], <span class="dt">j =</span> <span class="dv">2</span>:n) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%
+<span class="st">  </span><span class="kw">add_constraint</span>(<span class="kw">sum_expr</span>(x[<span class="dv">1</span>, j, k], <span class="dt">j =</span> <span class="dv">2</span>:n) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># each salesman needs to come back to the depot</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[i, <span class="dv">1</span>, k], <span class="dt">i =</span> <span class="dv">2</span>:n) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%
+<span class="st">  </span><span class="kw">add_constraint</span>(<span class="kw">sum_expr</span>(x[i, <span class="dv">1</span>, k], <span class="dt">i =</span> <span class="dv">2</span>:n) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># if a salesman comes to a city he has to leave it as well</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[j, i, k], <span class="dt">j =</span> <span class="dv">1</span>:n) ==<span class="st"> </span><span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[i, j, k], <span class="dt">j =</span> <span class="dv">1</span>:n), <span class="dt">i =</span> <span class="dv">2</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%
+<span class="st">  </span><span class="kw">add_constraint</span>(<span class="kw">sum_expr</span>(x[j, i, k], <span class="dt">j =</span> <span class="dv">1</span>:n) ==<span class="st"> </span><span class="kw">sum_expr</span>(x[i, j, k], <span class="dt">j =</span> <span class="dv">1</span>:n), <span class="dt">i =</span> <span class="dv">2</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># leave each city with only one salesman</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[i, j, k], <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">2</span>:n) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(<span class="kw">sum_expr</span>(x[i, j, k], <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">2</span>:n) %&gt;%<span class="st"> </span>
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># arrive at each city with only one salesman</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">2</span>:n) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(<span class="kw">sum_expr</span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">2</span>:n) %&gt;%<span class="st"> </span>
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># ensure no subtours (arc constraints)</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(u[i, k] &gt;=<span class="st"> </span><span class="dv">2</span>, <span class="dt">i =</span> <span class="dv">2</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(u[i, k] -<span class="st"> </span>u[j, k] +<span class="st"> </span><span class="dv">1</span> &lt;=<span class="st"> </span>(n -<span class="st"> </span><span class="dv">1</span>) *<span class="st"> </span>(<span class="dv">1</span> -<span class="st"> </span>x[i, j, k]), <span class="dt">i =</span> <span class="dv">2</span>:n, <span class="dt">j =</span> <span class="dv">2</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m)
+<span class="st">  </span><span class="kw">add_constraint</span>(u[i, k] &gt;=<span class="st"> </span><span class="dv">2</span>, <span class="dt">i =</span> <span class="dv">2</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(u[i, k] -<span class="st"> </span>u[j, k] +<span class="st"> </span><span class="dv">1</span> &lt;=<span class="st"> </span>(n -<span class="st"> </span><span class="dv">1</span>) *<span class="st"> </span>(<span class="dv">1</span> -<span class="st"> </span>x[i, j, k]), <span class="dt">i =</span> <span class="dv">2</span>:n, <span class="dt">j =</span> <span class="dv">2</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:m)
 model</code></pre></div>
 <pre><code>## Mixed linear integer optimization problem
 ## Variables:
@@ -130,7 +130,7 @@ model</code></pre></div>
 <p>This model can now be solved by one of the many solver libraries. Here we will use GLPK.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr.roi)
 <span class="kw">library</span>(ROI.plugin.glpk)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw"><a href="../../../reference/solve_model.html">solve_model</a></span>(model, <span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw">solve_model</span>(model, <span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>## &lt;SOLVER MSG&gt;  ----
 ## GLPK Simplex Optimizer, v4.60
 ## 126 rows, 112 columns, 554 non-zeros
@@ -149,10 +149,10 @@ model</code></pre></div>
 ## INTEGER OPTIMAL SOLUTION FOUND
 ## &lt;!SOLVER MSG&gt; ----</code></pre>
 <p>To extract the solution we can use <code>get_solution</code> method that will return a data.frame which we can further be used with <code>tidyverse</code> packages.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">solution &lt;-<span class="st"> </span><span class="kw"><a href="../../../reference/get_solution.html">get_solution</a></span>(result, x[i, j, k]) %&gt;%<span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">solution &lt;-<span class="st"> </span><span class="kw">get_solution</span>(result, x[i, j, k]) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>) 
 <span class="kw">kable</span>(<span class="kw">head</span>(solution, <span class="dv">3</span>))</code></pre></div>
-<table><thead><tr class="header"><th align="left">variable</th>
+<table class="table"><thead><tr class="header"><th align="left">variable</th>
 <th align="right">i</th>
 <th align="right">j</th>
 <th align="right">k</th>
@@ -180,7 +180,7 @@ model</code></pre></div>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">idx_val =</span> <span class="kw">as.integer</span>(idx_val)) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">inner_join</span>(cities, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">"idx_val"</span> =<span class="st"> "id"</span>))
 <span class="kw">kable</span>(<span class="kw">head</span>(<span class="kw">arrange</span>(paths, trip_id), <span class="dv">4</span>))</code></pre></div>
-<table><thead><tr class="header"><th align="right">salesman</th>
+<table class="table"><thead><tr class="header"><th align="right">salesman</th>
 <th align="right">trip_id</th>
 <th align="left">property</th>
 <th align="right">idx_val</th>

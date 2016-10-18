@@ -96,8 +96,8 @@ n <- 10
 weights <- runif(n, max = max_capacity)
 MILPModel() %>%
   add_variable(x[i], i = 1:n, type = "binary") %>%
-  set_objective(sum_exp(weights[i] * x[i], i = 1:n), "max") %>%
-  add_constraint(sum_exp(weights[i] * x[i], i = 1:n) <= max_capacity) %>%
+  set_objective(sum_expr(weights[i] * x[i], i = 1:n), "max") %>%
+  add_constraint(sum_expr(weights[i] * x[i], i = 1:n) <= max_capacity) %>%
   solve_model(with_ROI(solver = "glpk")) %>% 
   get_solution(x[i]) %>% 
   filter(value > 0)
@@ -119,9 +119,9 @@ weights <- runif(n, max = bin_size)
 MILPModel() %>%
   add_variable(y[i], i = 1:max_bins, type = "binary") %>%
   add_variable(x[i, j], i = 1:max_bins, j = 1:n, type = "binary") %>%
-  set_objective(sum_exp(y[i], i = 1:max_bins), "min") %>%
-  add_constraint(sum_exp(weights[j] * x[i, j], j = 1:n) <= y[i] * bin_size, i = 1:max_bins) %>%
-  add_constraint(sum_exp(x[i, j], i = 1:max_bins) == 1, j = 1:n) %>%
+  set_objective(sum_expr(y[i], i = 1:max_bins), "min") %>%
+  add_constraint(sum_expr(weights[j] * x[i, j], j = 1:n) <= y[i] * bin_size, i = 1:max_bins) %>%
+  add_constraint(sum_expr(x[i, j], i = 1:max_bins) == 1, j = 1:n) %>%
   solve_model(with_ROI(solver = "symphony", verbose = TRUE)) %>% 
   get_solution(x[i, j]) %>%
   filter(value > 0) %>%

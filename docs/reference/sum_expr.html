@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles. ompr</title>
+<title>sum_expr. ompr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -74,29 +74,38 @@
       </header>
 
       <div class="page-header">
-  <h1>Vignette reference <small>version&nbsp;0.5.0.9000</small></h1>
+  <h1>Constructs a sum expression</h1>
 </div>
 
 <div class="row">
   <div class="col-md-9">
-    <div class="section ">
-      <h3>About the package</h3>
-      <p class="section-desc"></p>
+    
+    <p>Constructs a sum expression</p>
+    
 
-      <ul>
-        <li><a href="docs/articles/modelling.html">Modelling techniques in OMPR</a></li>
-      </ul>
-    </div>
-    <div class="section ">
-      <h3>Example problems</h3>
-      <p class="section-desc"></p>
+    <pre><span class='fu'>sum_expr</span>(<span class='no'>exp</span>, <span class='no'>...</span>)</pre>
+    
+    <h2>Arguments</h2>
+    <dl class="dl-horizontal">
+      <dt>exp</dt>
+      <dd>an expression that can be expanded to a sum</dd>
+      <dt>...</dt>
+      <dd>bind variables in exp using dots. See examples.</dd>
+    </dl>
+    
+    <div class="Value">
+      <h2>Value</h2>
 
-      <ul>
-        <li><a href="docs/articles/problem-mtsp.html">The Multiple Traveling Salesmen Problem</a></li>
-        <li><a href="docs/articles/problem-sudoku.html">Solve Sudokus</a></li>
-        <li><a href="docs/articles/problem-tsp.html">Solve the Traveling Salesman Problem</a></li>
-      </ul>
+      <p>the expanded sum as an AST</p>
     </div>
+    
+    <h2 id="examples">Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>sum_expr</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>)</div><div class='output co'>#&gt; x[1L] + x[2L] + x[3L] + x[4L] + x[5L] + x[6L] + x[7L] + x[8L] + 
+#&gt;     x[9L] + x[10L]
+#&gt; </div><div class='input'>
+</div></pre>
+  </div>
+  <div class="col-md-3">
   </div>
 </div>
 

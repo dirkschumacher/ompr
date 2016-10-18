@@ -87,11 +87,11 @@
 </ul>
 <p>The <a href="https://en.wikipedia.org/wiki/Integer_programming">Wikipedia</a> article gives a good starting point if you would like to learn more about the topic.</p>
 <p>This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback.</p>
-<p>Current stable version: <a href="https://github.com/dirkschumacher/ompr/tree/v0.3.4">0.3.4</a></p>
+<p>Current stable version: <a href="https://github.com/dirkschumacher/ompr/tree/v0.4.0">0.4.0</a></p>
 <h2 id="install">Install</h2>
 <p>To install the current development version use devtools:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># remove the ref part if you want the current version</span>
-devtools::<span class="kw">install_github</span>(<span class="st">"dirkschumacher/ompr"</span>, <span class="dt">ref =</span> <span class="st">"v0.3.4"</span>)
+devtools::<span class="kw">install_github</span>(<span class="st">"dirkschumacher/ompr"</span>, <span class="dt">ref =</span> <span class="st">"v0.4.0"</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">"dirkschumacher/ompr.roi"</span>, <span class="dt">ref =</span> <span class="st">"v0.4.0"</span>)</code></pre></div>
 <h2 id="available-solver-bindings">Available solver bindings</h2>
 <table style="width:28%;">
@@ -179,8 +179,8 @@ n &lt;-<span class="st"> </span><span class="dv">10</span>
 weights &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span class="dt">max =</span> max_capacity)
 <span class="kw"><a href="reference/MILPModel.html">MILPModel</a></span>() %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n), <span class="st">"max"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>max_capacity) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw">sum_exp</span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n), <span class="st">"max"</span>) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw">sum_exp</span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>max_capacity) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/solve_model.html">solve_model</a></span>(<span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>)) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(x[i]) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>)</code></pre></div>
@@ -198,9 +198,9 @@ weights &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span cla
 <span class="kw"><a href="reference/MILPModel.html">MILPModel</a></span>() %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins), <span class="st">"min"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(weights[j] *<span class="st"> </span>x[i, j], <span class="dt">j =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>y[i] *<span class="st"> </span>bin_size, <span class="dt">i =</span> <span class="dv">1</span>:max_bins) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span>:n) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw">sum_exp</span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins), <span class="st">"min"</span>) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw">sum_exp</span>(weights[j] *<span class="st"> </span>x[i, j], <span class="dt">j =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>y[i] *<span class="st"> </span>bin_size, <span class="dt">i =</span> <span class="dv">1</span>:max_bins) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw">sum_exp</span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span>:n) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/solve_model.html">solve_model</a></span>(<span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"symphony"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(x[i, j]) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%
