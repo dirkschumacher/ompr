@@ -165,41 +165,7 @@ check_expression <- function(model, the_ast) {
 
 #' @noRd
 is_non_linear <- function(var_names, ast) {
-  contains_vars <- function(le_ast) {
-    vars_found <- FALSE
-    on_element <- function(push, inplace_update_ast, get_ast_value, element) {
-      local_ast <- element$ast
-      path <- element$path
-      if (is.call(local_ast) && !vars_found) {
-        for (i in 2:length(local_ast)) {
-          push(list(ast = local_ast[[i]], path = c(path, i)))
-        }
-      } else if (is.name(local_ast) && !vars_found) {
-        vars_found <<- all(as.character(local_ast) %in% var_names)
-      }
-    }
-    ast_walker(le_ast, on_element)
-    vars_found
-  }
-  non_linear <- FALSE
-  on_element <- function(push, inplace_update_ast, get_ast_value, element) {
-    local_ast <- element$ast
-    path <- element$path
-    if (non_linear) {
-      return()
-    }
-    if (is.call(local_ast) &&
-        as.character(local_ast[[1]]) %in% c("*", "/", "^")) {
-      non_linear <<- contains_vars(local_ast[[2]]) &&
-        contains_vars(local_ast[[3]])
-    } else if (is.call(local_ast)) {
-      for (i in 2:length(local_ast)) {
-        push(list(ast = local_ast[[i]], path = c(path, i)))
-      }
-    }
-  }
-  ast_walker(ast, on_element)
-  non_linear
+  is_non_linear_impl(var_names, ast)
 }
 
 # this function takes an ast and transforms it
