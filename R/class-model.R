@@ -28,36 +28,6 @@ Model <- setClass("Model",
          ),
          validity = function(object) TRUE)
 
-#' Checks if variable is defined in model
-#'
-#' @param model a model object
-#' @param variable the variable expression to check
-#'
-#' @return TRUE iff the variable is part of the model
-#' @export
-setGeneric("is_defined", function(model, variable) {
-  exp <- substitute(variable)
-  exp_class <- class(exp)
-  if (lazyeval::is_name(exp)) {
-    var_name <- as.character(exp)
-    return(var_name %in% names(model@variables))
-  } else if (exp_class == "call" && exp[[1]] == "[") {
-    var_name <- as.character(exp[[2]])
-    bound_exp <- bind_expression(var_name, exp, parent.frame(),
-                                 list())
-    if (!var_name %in% names(model@variables)) {
-      return(FALSE)
-    }
-    var_obj <- model@variables[[var_name]]
-    search_key <- paste0(as.character(bound_exp[3:length(bound_exp)])
-                         , collapse = "_")
-    return(search_key %in% var_obj@instances)
-  }
-  else {
-    stop("Did not recognize variable expression.")
-  }
-})
-
 #' Adds a variable to the model
 #'
 #' A variable can either be a name or an indexed name. See examples.

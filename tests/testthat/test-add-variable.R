@@ -1,15 +1,5 @@
 context("add_variable")
 
-test_that("is_defined works with single variables", {
-  m <- add_variable(new("Model"), x, type = "binary")
-  expect_true(is_defined(m, x))
-})
-
-test_that("is_defined works with subscripts", {
-  m <- add_variable(new("Model"), x[i], i = 1:10, type = "binary")
-  expect_true(is_defined(m, x[3]))
-})
-
 test_that("only accept valid models", {
   expect_error(add_variable(mtcars, x[i], i = 1:10))
 })
@@ -57,8 +47,6 @@ test_that("variables can be added with bound indexes", {
   m <- add_variable(new("Model"), x[i, j], i = 1:10, type = "binary")
   expect_false(is.null(m@variables[["x"]]))
   expect_equal(m@variables[["x"]]@arity, 2)
-  expect_true(is_defined(m, x[1, 3]))
-  expect_false(is_defined(m, x[1, 2]))
 })
 
 test_that("binding variables works with magrittr", {

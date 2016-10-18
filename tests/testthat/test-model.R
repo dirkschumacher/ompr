@@ -166,8 +166,3 @@ test_that("set_objective_ supports standard eval.", {
   m <- set_objective_(m, ~x)
 })
 
-test_that("is_defined throws error if expression is not well formed", {
-  m <- MILPModel()
-  m <- add_variable_(m, ~x)
-  expect_error(is_defined(m, 1 + 1))
-})
