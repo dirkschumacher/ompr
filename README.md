@@ -1,4 +1,4 @@
-# Model MIPs in R
+# A Package to model (Mixed) Integer Programs
 
 [![Build Status](https://travis-ci.org/dirkschumacher/ompr.svg?branch=master)](https://travis-ci.org/dirkschumacher/ompr)
 [![Coverage Status](https://coveralls.io/repos/github/dirkschumacher/ompr/badge.svg?branch=master)](https://coveralls.io/github/dirkschumacher/ompr?branch=master)
@@ -6,7 +6,7 @@
 [![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/GPL-3.0/)  
 [![CRAN](http://www.r-pkg.org/badges/version/ompr)](http://www.r-pkg.org/badges/version/ompr)
 
-OMPR (Optimization Modelling Package in R) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
+OMPR (Optimization Modelling Package) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
 
 Here are some problems you could solve with this package:
   * What is the cost minimal way to visit a set of clients and return home afterwards?
@@ -55,16 +55,16 @@ get_solution(result, y)
 
 ## API
 
-These functions currently form the public API. More detailed docs and examples will follow.
+These functions currently form the public API. More detailed docs can be found in the package function docs or on the [website](https://dirkschumacher.github.io/ompr)
 
 ### DSL
 * `MILPModel()` create an empty mixed integer linear model
-* `add_variable` adds variables to a model
-* `set_objective` sets the objective function of a model
-* `set_bounds`sets bounds of variables
-* `add_constraint` add constraints
-* `solve_model` solves a model with a given solver
-* `get_solution` returns the solution of a solved model for a given variable or group of variables
+* `add_variable()` adds variables to a model
+* `set_objective()` sets the objective function of a model
+* `set_bounds()`sets bounds of variables
+* `add_constraint()` add constraints
+* `solve_model()` solves a model with a given solver
+* `get_solution()` returns the solution of a solved model for a given variable or group of variables
 
 ### Solver
 
