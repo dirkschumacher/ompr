@@ -10,5 +10,7 @@
 #' @import methods
 #' @docType package
 #' @keywords package
+#' @useDynLib ompr
+#' @importFrom Rcpp sourceCpp
 #' @name ompr
 NULL
