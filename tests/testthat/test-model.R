@@ -165,4 +165,3 @@ test_that("set_objective_ supports standard eval.", {
   m <- add_variable_(m, ~x)
   m <- set_objective_(m, ~x)
 })
-
