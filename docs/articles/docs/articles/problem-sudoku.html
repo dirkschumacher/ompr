@@ -24,13 +24,7 @@
 <li>
   <a href="../../../articles/index.html">Articles</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/dirkschumacher/ompr">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
       
@@ -40,7 +34,7 @@
       <h1>Solve Sudokus</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-16</h4>
+            <h4 class="date">2016-10-18</h4>
           </div>
 
     
@@ -56,25 +50,25 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr)
 <span class="kw">library</span>(dplyr)
 n &lt;-<span class="st"> </span><span class="dv">9</span>
-model &lt;-<span class="st"> </span><span class="kw"><a href="../../../reference/MIPModel.html">MIPModel</a></span>() %&gt;%
+model &lt;-<span class="st"> </span><span class="kw">MIPModel</span>() %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># The number k stored in position i,j</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_variable.html">add_variable</a></span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:<span class="dv">9</span>, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
+<span class="st">  </span><span class="kw">add_variable</span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:<span class="dv">9</span>, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># no objective</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/set_objective.html">set_objective</a></span>(<span class="dv">0</span>) %&gt;%
+<span class="st">  </span><span class="kw">set_objective</span>(<span class="dv">0</span>) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># only one number can be assigned per cell</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[i, j, k], <span class="dt">k =</span> <span class="dv">1</span>:<span class="dv">9</span>) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">j =</span> <span class="dv">1</span>:n) %&gt;%
+<span class="st">  </span><span class="kw">add_constraint</span>(<span class="kw">sum_expr</span>(x[i, j, k], <span class="dt">k =</span> <span class="dv">1</span>:<span class="dv">9</span>) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">j =</span> <span class="dv">1</span>:n) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># each number is exactly once in a row</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[i, j, k], <span class="dt">j =</span> <span class="dv">1</span>:n) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:<span class="dv">9</span>) %&gt;%
+<span class="st">  </span><span class="kw">add_constraint</span>(<span class="kw">sum_expr</span>(x[i, j, k], <span class="dt">j =</span> <span class="dv">1</span>:n) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:<span class="dv">9</span>) %&gt;%
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># each number is exactly once in a column</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:<span class="dv">9</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(<span class="kw">sum_expr</span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:n) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">k =</span> <span class="dv">1</span>:<span class="dv">9</span>) %&gt;%<span class="st"> </span>
 <span class="st">  </span>
 <span class="st">  </span><span class="co"># each 3x3 square must have all numbers</span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../../../reference/sum_exp.html">sum_exp</a></span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:<span class="dv">3</span> +<span class="st"> </span>sx, <span class="dt">j =</span> <span class="dv">1</span>:<span class="dv">3</span> +<span class="st"> </span>sy) ==<span class="st"> </span><span class="dv">1</span>, 
+<span class="st">  </span><span class="kw">add_constraint</span>(<span class="kw">sum_expr</span>(x[i, j, k], <span class="dt">i =</span> <span class="dv">1</span>:<span class="dv">3</span> +<span class="st"> </span>sx, <span class="dt">j =</span> <span class="dv">1</span>:<span class="dv">3</span> +<span class="st"> </span>sy) ==<span class="st"> </span><span class="dv">1</span>, 
                  <span class="dt">sx =</span> <span class="kw">seq</span>(<span class="dv">0</span>, n -<span class="st"> </span><span class="dv">3</span>, <span class="dv">3</span>), <span class="dt">sy =</span> <span class="kw">seq</span>(<span class="dv">0</span>, n -<span class="st"> </span><span class="dv">3</span>, <span class="dv">3</span>), <span class="dt">k =</span> <span class="dv">1</span>:<span class="dv">9</span>)
 model</code></pre></div>
 <pre><code>## Mixed linear integer optimization problem
@@ -90,7 +84,7 @@ model</code></pre></div>
 <p>We will use <code>glpk</code> to solve the above model. Note that we haven&rsquo;t fixed any numbers to specific values. That means that the solver will find a valid sudoku without any prior hints.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr.roi)
 <span class="kw">library</span>(ROI.plugin.glpk)
-result &lt;-<span class="st"> </span><span class="kw"><a href="../../../reference/solve_model.html">solve_model</a></span>(model, <span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</code></pre></div>
+result &lt;-<span class="st"> </span><span class="kw">solve_model</span>(model, <span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>## &lt;SOLVER MSG&gt;  ----
 ## GLPK Simplex Optimizer, v4.60
 ## 324 rows, 729 columns, 2916 non-zeros
@@ -108,7 +102,7 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../../../referenc
 ## &lt;!SOLVER MSG&gt; ----</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the following dplyr statement plots a 9x9 matrix</span>
 result %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/get_solution.html">get_solution</a></span>(x[i,j,k]) %&gt;%
+<span class="st">  </span><span class="kw">get_solution</span>(x[i,j,k]) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%<span class="st">  </span>
 <span class="st">  </span><span class="kw">select</span>(i, j, k) %&gt;%<span class="st"> </span>
 <span class="st">  </span>tidyr::<span class="kw">spread</span>(j, k) %&gt;%<span class="st"> </span>
@@ -125,16 +119,16 @@ result %&gt;%<span class="st"> </span>
 ## 9 5 3 8 4 9 2 6 7 1</code></pre>
 <p>If you want to solve a concrete sudoku you can fix certain cells to specific values. For example here we solve a sudoku that has the sequence from 1 to 9 in the first 3x3 matrix fixed.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_fixed &lt;-<span class="st"> </span>model %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">4</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">5</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">6</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">7</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">8</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">9</span>] ==<span class="st"> </span><span class="dv">1</span>)
-result &lt;-<span class="st"> </span><span class="kw"><a href="../../../reference/solve_model.html">solve_model</a></span>(model_fixed, <span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<span class="st">  </span><span class="kw">add_constraint</span>(x[<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(x[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(x[<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(x[<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">4</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(x[<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">5</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(x[<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">6</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(x[<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">7</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(x[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">8</span>] ==<span class="st"> </span><span class="dv">1</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">add_constraint</span>(x[<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">9</span>] ==<span class="st"> </span><span class="dv">1</span>)
+result &lt;-<span class="st"> </span><span class="kw">solve_model</span>(model_fixed, <span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>## &lt;SOLVER MSG&gt;  ----
 ## GLPK Simplex Optimizer, v4.60
 ## 333 rows, 729 columns, 2925 non-zeros
@@ -151,7 +145,7 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../../../referenc
 ## INTEGER OPTIMAL SOLUTION FOUND
 ## &lt;!SOLVER MSG&gt; ----</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../../../reference/get_solution.html">get_solution</a></span>(x[i,j,k]) %&gt;%
+<span class="st">  </span><span class="kw">get_solution</span>(x[i,j,k]) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%<span class="st">  </span>
 <span class="st">  </span><span class="kw">select</span>(i, j, k) %&gt;%<span class="st"> </span>
 <span class="st">  </span>tidyr::<span class="kw">spread</span>(j, k) %&gt;%<span class="st"> </span>

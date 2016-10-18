@@ -11,7 +11,7 @@ reference:
     - set_objective
     - add_constraint
     - set_bounds
-    - sum_exp
+    - sum_expr
   - title: Solve a model
     contents:
     - solve_model

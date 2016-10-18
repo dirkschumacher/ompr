@@ -60,12 +60,7 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/dirkschumacher/ompr">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -76,9 +71,9 @@
       <div class="row">
   <div class="col-md-9">
     
-<h1 id="model-mips-in-r">Model MIPs in R</h1>
+<h1 id="a-package-to-model-mixed-integer-programs">A Package to model (Mixed) Integer Programs</h1>
 <p><a href="https://travis-ci.org/dirkschumacher/ompr"><img src="https://travis-ci.org/dirkschumacher/ompr.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/github/dirkschumacher/ompr?branch=master"><img src="https://coveralls.io/repos/github/dirkschumacher/ompr/badge.svg?branch=master" alt="Coverage Status"></a> <a href="https://ci.appveyor.com/project/dirkschumacher/ompr"><img src="https://ci.appveyor.com/api/projects/status/github/dirkschumacher/ompr?branch=master&amp;svg=true" alt="Build Status Windows"></a> <a href="https://opensource.org/licenses/GPL-3.0/"><img src="https://badges.frapsoft.com/os/gpl/gpl.svg?v=103" alt="GPL Licence"></a><br><a href="http://www.r-pkg.org/badges/version/ompr"><img src="http://www.r-pkg.org/badges/version/ompr" alt="CRAN"></a></p>
-<p>OMPR (Optimization Modelling Package in R) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.</p>
+<p>OMPR (Optimization Modelling Package) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.</p>
 <p>Here are some problems you could solve with this package:</p>
 <ul>
 <li>What is the cost minimal way to visit a set of clients and return home afterwards?</li>
@@ -87,12 +82,10 @@
 </ul>
 <p>The <a href="https://en.wikipedia.org/wiki/Integer_programming">Wikipedia</a> article gives a good starting point if you would like to learn more about the topic.</p>
 <p>This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback.</p>
-<p>Current stable version: <a href="https://github.com/dirkschumacher/ompr/tree/v0.3.4">0.3.4</a></p>
 <h2 id="install">Install</h2>
 <p>To install the current development version use devtools:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># remove the ref part if you want the current version</span>
-devtools::<span class="kw">install_github</span>(<span class="st">"dirkschumacher/ompr"</span>, <span class="dt">ref =</span> <span class="st">"v0.3.4"</span>)
-devtools::<span class="kw">install_github</span>(<span class="st">"dirkschumacher/ompr.roi"</span>, <span class="dt">ref =</span> <span class="st">"v0.4.0"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">"dirkschumacher/ompr"</span>)
+devtools::<span class="kw">install_github</span>(<span class="st">"dirkschumacher/ompr.roi"</span>)</code></pre></div>
 <h2 id="available-solver-bindings">Available solver bindings</h2>
 <table style="width:28%;">
 <colgroup>
@@ -134,23 +127,23 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="reference/MIPMode
 <span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(result, x)
 <span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(result, y)</code></pre></div>
 <h2 id="api">API</h2>
-<p>These functions currently form the public API. More detailed docs and examples will follow.</p>
+<p>These functions currently form the public API. More detailed docs can be found in the package function docs or on the <a href="https://dirkschumacher.github.io/ompr">website</a></p>
 <h3 id="dsl">DSL</h3>
 <ul>
 <li>
 <code><a href="reference/MILPModel.html">MILPModel()</a></code> create an empty mixed integer linear model</li>
 <li>
-<code>add_variable</code> adds variables to a model</li>
+<code><a href="reference/add_variable.html">add_variable()</a></code> adds variables to a model</li>
 <li>
-<code>set_objective</code> sets the objective function of a model</li>
+<code><a href="reference/set_objective.html">set_objective()</a></code> sets the objective function of a model</li>
 <li>
-<code>set_bounds</code>sets bounds of variables</li>
+<code><a href="reference/set_bounds.html">set_bounds()</a></code>sets bounds of variables</li>
 <li>
-<code>add_constraint</code> add constraints</li>
+<code><a href="reference/add_constraint.html">add_constraint()</a></code> add constraints</li>
 <li>
-<code>solve_model</code> solves a model with a given solver</li>
+<code><a href="reference/solve_model.html">solve_model()</a></code> solves a model with a given solver</li>
 <li>
-<code>get_solution</code> returns the solution of a solved model for a given variable or group of variables</li>
+<code><a href="reference/get_solution.html">get_solution()</a></code> returns the solution of a solved model for a given variable or group of variables</li>
 </ul>
 <h3 id="solver">Solver</h3>
 <p>Solvers are in different packages. <code>ompr.ROI</code> uses the ROI package which offers support for all kinds of solvers.</p>
@@ -179,8 +172,8 @@ n &lt;-<span class="st"> </span><span class="dv">10</span>
 weights &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span class="dt">max =</span> max_capacity)
 <span class="kw"><a href="reference/MILPModel.html">MILPModel</a></span>() %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n), <span class="st">"max"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>max_capacity) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n), <span class="st">"max"</span>) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>max_capacity) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/solve_model.html">solve_model</a></span>(<span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>)) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(x[i]) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>)</code></pre></div>
@@ -198,9 +191,9 @@ weights &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span cla
 <span class="kw"><a href="reference/MILPModel.html">MILPModel</a></span>() %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins), <span class="st">"min"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(weights[j] *<span class="st"> </span>x[i, j], <span class="dt">j =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>y[i] *<span class="st"> </span>bin_size, <span class="dt">i =</span> <span class="dv">1</span>:max_bins) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_exp.html">sum_exp</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span>:n) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins), <span class="st">"min"</span>) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(weights[j] *<span class="st"> </span>x[i, j], <span class="dt">j =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>y[i] *<span class="st"> </span>bin_size, <span class="dt">i =</span> <span class="dv">1</span>:max_bins) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span>:n) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/solve_model.html">solve_model</a></span>(<span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"symphony"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(x[i, j]) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%

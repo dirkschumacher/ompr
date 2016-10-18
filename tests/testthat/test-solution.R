@@ -18,7 +18,7 @@ test_that("export single var to numeric", {
 test_that("export solutions to data.frame if var is indexed", {
  model <- MIPModel() %>%
    add_variable(x[i], i = 1:3, ub = 1) %>%
-   set_objective(sum_exp(x[i], i = 1:3))
+   set_objective(sum_expr(x[i], i = 1:3))
  solution <- new("Solution",
                              status = "optimal",
                              model = model,
@@ -31,7 +31,7 @@ test_that("export solutions to data.frame if var is indexed", {
 test_that("export solutions to data.frame with index", {
  model <- MIPModel() %>%
    add_variable(x[i], i = 1:3, ub = 1) %>%
-   set_objective(sum_exp(x[i], i = 1:3))
+   set_objective(sum_expr(x[i], i = 1:3))
  solution <- new("Solution",
                  status = "optimal",
                  model = model,
@@ -63,7 +63,7 @@ test_that("export solutions to data.frame with two indexes", {
 test_that("export infeasible solutions to data.frame", {
   model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
-    set_objective(sum_exp(x[i], i = 1:3))
+    set_objective(sum_expr(x[i], i = 1:3))
   solution <- new("Solution",
                   status = "infeasible",
                   model = model,
@@ -79,7 +79,7 @@ test_that("export solutions to single value if all indexes bound", {
   model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
-    set_objective(sum_exp(x[i], i = 1:3))
+    set_objective(sum_expr(x[i], i = 1:3))
   solution <- new("Solution",
                               status = "optimal",
                               model = model,
@@ -95,7 +95,7 @@ test_that("export solutions to df in a model with more than one variable", {
   model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
-    set_objective(sum_exp(x[i], i = 1:3))
+    set_objective(sum_expr(x[i], i = 1:3))
   solution <- new("Solution",
                   status = "optimal",
                   model = model,
@@ -111,7 +111,7 @@ test_that("solution has a nice default output", {
   model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
-    set_objective(sum_exp(x[i], i = 1:3))
+    set_objective(sum_expr(x[i], i = 1:3))
   solution <- new("Solution",
                   status = "optimal",
                   model = model,
@@ -127,7 +127,7 @@ test_that("solution indexes should not be factors", {
   model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
-    set_objective(sum_exp(x[i], i = 1:3))
+    set_objective(sum_expr(x[i], i = 1:3))
   solution <- new("Solution",
                   status = "optimal",
                   model = model,
@@ -141,7 +141,7 @@ test_that("solution indexes should not be factors", {
 test_that("bug 20160908: solution indexes mixed up", {
   model <- MIPModel() %>%
     add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
-    set_objective(sum_exp(x[10, i], i = 10:12))
+    set_objective(sum_expr(x[10, i], i = 10:12))
   solution <- new("Solution",
                   status = "optimal",
                   model = model,

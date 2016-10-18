@@ -1,4 +1,4 @@
-# Model MIPs in R
+# A Package to model (Mixed) Integer Programs
 
 [![Build Status](https://travis-ci.org/dirkschumacher/ompr.svg?branch=master)](https://travis-ci.org/dirkschumacher/ompr)
 [![Coverage Status](https://coveralls.io/repos/github/dirkschumacher/ompr/badge.svg?branch=master)](https://coveralls.io/github/dirkschumacher/ompr?branch=master)
@@ -6,7 +6,7 @@
 [![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/GPL-3.0/)  
 [![CRAN](http://www.r-pkg.org/badges/version/ompr)](http://www.r-pkg.org/badges/version/ompr)
 
-OMPR (Optimization Modelling Package in R) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
+OMPR (Optimization Modelling Package) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
 
 Here are some problems you could solve with this package:
   * What is the cost minimal way to visit a set of clients and return home afterwards?
@@ -17,16 +17,13 @@ The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives
 
 This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
 
-Current stable version: [0.4.0](https://github.com/dirkschumacher/ompr/tree/v0.4.0)
-
 ## Install
 
 To install the current development version use devtools:
 
 ```R 
-# remove the ref part if you want the current version
-devtools::install_github("dirkschumacher/ompr", ref = "v0.4.0")
-devtools::install_github("dirkschumacher/ompr.roi", ref = "v0.4.0")
+devtools::install_github("dirkschumacher/ompr")
+devtools::install_github("dirkschumacher/ompr.roi")
 ```
 
 ## Available solver bindings
@@ -58,16 +55,16 @@ get_solution(result, y)
 
 ## API
 
-These functions currently form the public API. More detailed docs and examples will follow.
+These functions currently form the public API. More detailed docs can be found in the package function docs or on the [website](https://dirkschumacher.github.io/ompr)
 
 ### DSL
 * `MILPModel()` create an empty mixed integer linear model
-* `add_variable` adds variables to a model
-* `set_objective` sets the objective function of a model
-* `set_bounds`sets bounds of variables
-* `add_constraint` add constraints
-* `solve_model` solves a model with a given solver
-* `get_solution` returns the solution of a solved model for a given variable or group of variables
+* `add_variable()` adds variables to a model
+* `set_objective()` sets the objective function of a model
+* `set_bounds()`sets bounds of variables
+* `add_constraint()` add constraints
+* `solve_model()` solves a model with a given solver
+* `get_solution()` returns the solution of a solved model for a given variable or group of variables
 
 ### Solver
 
@@ -96,8 +93,8 @@ n <- 10
 weights <- runif(n, max = max_capacity)
 MILPModel() %>%
   add_variable(x[i], i = 1:n, type = "binary") %>%
-  set_objective(sum_exp(weights[i] * x[i], i = 1:n), "max") %>%
-  add_constraint(sum_exp(weights[i] * x[i], i = 1:n) <= max_capacity) %>%
+  set_objective(sum_expr(weights[i] * x[i], i = 1:n), "max") %>%
+  add_constraint(sum_expr(weights[i] * x[i], i = 1:n) <= max_capacity) %>%
   solve_model(with_ROI(solver = "glpk")) %>% 
   get_solution(x[i]) %>% 
   filter(value > 0)
@@ -119,9 +116,9 @@ weights <- runif(n, max = bin_size)
 MILPModel() %>%
   add_variable(y[i], i = 1:max_bins, type = "binary") %>%
   add_variable(x[i, j], i = 1:max_bins, j = 1:n, type = "binary") %>%
-  set_objective(sum_exp(y[i], i = 1:max_bins), "min") %>%
-  add_constraint(sum_exp(weights[j] * x[i, j], j = 1:n) <= y[i] * bin_size, i = 1:max_bins) %>%
-  add_constraint(sum_exp(x[i, j], i = 1:max_bins) == 1, j = 1:n) %>%
+  set_objective(sum_expr(y[i], i = 1:max_bins), "min") %>%
+  add_constraint(sum_expr(weights[j] * x[i, j], j = 1:n) <= y[i] * bin_size, i = 1:max_bins) %>%
+  add_constraint(sum_expr(x[i, j], i = 1:max_bins) == 1, j = 1:n) %>%
   solve_model(with_ROI(solver = "symphony", verbose = TRUE)) %>% 
   get_solution(x[i, j]) %>%
   filter(value > 0) %>%

@@ -30,19 +30,19 @@ test_that("constraints can have an unary + operator", {
 test_that("add_constraint can handle a for all quantifier", {
   m <- new("Model") %>%
     add_variable(x[i, j], i = 1:3, j = 1:3) %>%
-    add_constraint(sum_exp(x[i, j], j = 1:3) == 1, i = 1:3)
+    add_constraint(sum_expr(x[i, j], j = 1:3) == 1, i = 1:3)
   expect_equal(length(m@constraints), 3)
 })
 
 test_that("add_constraint warns about unbouded all quantifier", {
   m <- new("Model") %>%
     add_variable(x[i, j], i = 1:3, j = 1:3)
-  expect_error(add_constraint(sum_exp(x[i, j], j = 1:3) == 1, e = 1:3))
+  expect_error(add_constraint(sum_expr(x[i, j], j = 1:3) == 1, e = 1:3))
 })
 
 test_that("we can add complicated constraints", {
   m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
-  m <- add_constraint(m, sum_exp(x[i], i = 1:2) + x[3] == 1)
+  m <- add_constraint(m, sum_expr(x[i], i = 1:2) + x[3] == 1)
   expect_equal(length(m@constraints), 1)
   constraint <- m@constraints[[1]]
   expect_equal(constraint@rhs[[1]], 1)
@@ -52,18 +52,18 @@ test_that("we can add complicated constraints", {
 
 test_that("add_constraint throws an error if constraints are non-linear lhs", {
   m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
-  expect_error(add_constraint(m, sum_exp(x[i], i = 1:2) * x[3] == 1))
+  expect_error(add_constraint(m, sum_expr(x[i], i = 1:2) * x[3] == 1))
 })
 
 test_that("add_constraint throws an error if constraints are non-linear rhs", {
   m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
-  expect_error(add_constraint(m, 1 == sum_exp(x[i], i = 1:2) * x[3]))
+  expect_error(add_constraint(m, 1 == sum_expr(x[i], i = 1:2) * x[3]))
 })
 
 test_that("add_constraint warns about unbouded all quantifier in rhs", {
   m <- new("Model") %>%
     add_variable(x[i, j], i = 1:3, j = 1:3)
-  expect_error(add_constraint(1 == sum_exp(x[i, j], j = 1:3), e = 1:3))
+  expect_error(add_constraint(1 == sum_expr(x[i, j], j = 1:3), e = 1:3))
 })
 
 test_that("add_constraints throws error if unbounded indexes in lhs", {
@@ -83,7 +83,7 @@ test_that("bounded vars in add_constraints should take precedence", {
     add_variable(x[i, j], i = 1:3, j = 1:3)
   j <- 1
   i <- 1
-  m <- add_constraint(m, sum_exp(x[i, j], j = 3) == 1)
+  m <- add_constraint(m, sum_expr(x[i, j], j = 3) == 1)
   expect_equal(m@constraints[[1]]@lhs, expression(x[1, 3]))
 })
 

@@ -86,26 +86,26 @@ model <- MIPModel() %>%
   add_variable(u[i, k], i = 1:n, k = 1:m, lb = 1, ub = n) %>% 
   
   # minimize travel distance and latest arrival
-  set_objective(sum_exp(distance[i, j] * x[i, j, k], i = 1:n, j = 1:n, k = 1:m), "min") %>%
+  set_objective(sum_expr(distance[i, j] * x[i, j, k], i = 1:n, j = 1:n, k = 1:m), "min") %>%
   
   # you cannot go to the same city
   add_constraint(x[i, i, k] == 0, i = 1:n, k = 1:m) %>%
   
   # each salesman needs to leave the depot
-  add_constraint(sum_exp(x[1, j, k], j = 2:n) == 1, k = 1:m) %>%
+  add_constraint(sum_expr(x[1, j, k], j = 2:n) == 1, k = 1:m) %>%
   
   # each salesman needs to come back to the depot
-  add_constraint(sum_exp(x[i, 1, k], i = 2:n) == 1, k = 1:m) %>%
+  add_constraint(sum_expr(x[i, 1, k], i = 2:n) == 1, k = 1:m) %>%
   
   # if a salesman comes to a city he has to leave it as well
-  add_constraint(sum_exp(x[j, i, k], j = 1:n) == sum_exp(x[i, j, k], j = 1:n), i = 2:n, k = 1:m) %>%
+  add_constraint(sum_expr(x[j, i, k], j = 1:n) == sum_expr(x[i, j, k], j = 1:n), i = 2:n, k = 1:m) %>%
   
   
   # leave each city with only one salesman
-  add_constraint(sum_exp(x[i, j, k], j = 1:n, k = 1:m) == 1, i = 2:n) %>% 
+  add_constraint(sum_expr(x[i, j, k], j = 1:n, k = 1:m) == 1, i = 2:n) %>% 
   
   # arrive at each city with only one salesman
-  add_constraint(sum_exp(x[i, j, k], i = 1:n, k = 1:m) == 1, j = 2:n) %>% 
+  add_constraint(sum_expr(x[i, j, k], i = 1:n, k = 1:m) == 1, j = 2:n) %>% 
   
   # ensure no subtours (arc constraints)
   add_constraint(u[i, k] >= 2, i = 2:n, k = 1:m) %>% 

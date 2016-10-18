@@ -48,12 +48,12 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
     path <- element$path
     ast <- if (is.null(element$ast)) get_ast_value(path) else element$ast
     stop_traversal <- element$stop_traversal
-    is_final_sum_exp_call <- element$is_final_sum_exp_call
+    is_final_sum_expr_call <- element$is_final_sum_expr_call
     if (is.null(stop_traversal)) {
       stop_traversal <- FALSE
     }
-    if (is.null(is_final_sum_exp_call)) {
-      is_final_sum_exp_call <- FALSE
+    if (is.null(is_final_sum_expr_call)) {
+      is_final_sum_expr_call <- FALSE
     }
     if (!is.call(ast)) {
       # let's try to evaluate the whole sub-tree
@@ -62,13 +62,13 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
         inplace_update_ast(path, new_ast_eval)
       }
     } else if (is.call(ast)) {
-      if (as.character(ast[[1]]) == "sum_exp") {
+      if (as.character(ast[[1]]) == "sum_expr") {
         # we have a sum, let's expand it
         # TODO: detect that automatically
         # we need to evaluate anything from argument 2 onwards
-        # e.g. sum_exp(x[i], i = 1:n) <- the n needs to be bound
-        if (!is_final_sum_exp_call) {
-          push(list(path = path, is_final_sum_exp_call = TRUE))
+        # e.g. sum_expr(x[i], i = 1:n) <- the n needs to be bound
+        if (!is_final_sum_expr_call) {
+          push(list(path = path, is_final_sum_expr_call = TRUE))
           for (i in 3:length(ast)) {
             new_element <- list(
               ast = ast[[i]],
@@ -77,7 +77,7 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
             push(new_element)
           }
         } else {
-          # this expands the sum_exp expression
+          # this expands the sum_expr expression
           # and triggers a reevaluation
           expanded_ast <- eval(ast)
           inplace_update_ast(path, expanded_ast)
@@ -426,10 +426,10 @@ extract_coefficients <- function(ast) {
 #' @return the expanded sum as an AST
 #'
 #' @examples
-#' sum_exp(x[i], i = 1:10)
+#' sum_expr(x[i], i = 1:10)
 #'
 #' @export
-sum_exp <- function(exp, ...) {
+sum_expr <- function(exp, ...) {
   # TODO: This should probably be moved into the model
   # TODO: Make sure the input is correct
   # TODO: Take model and make sure
@@ -441,7 +441,7 @@ sum_exp <- function(exp, ...) {
   subscript_combinations <- build_quantifier_candidates(bound_subscripts,
                                               names(bound_subscripts),
                                               classified_quantifiers$filters)
-  zero_vars_msg <- paste0("The number of different indexes for sum_exp is 0.")
+  zero_vars_msg <- paste0("The number of different indexes for sum_expr is 0.")
   validate_quantifier_candidates(subscript_combinations, zero_vars_msg)
   ast <- substitute(exp)
   list_of_eval_exps <- apply(subscript_combinations, 1, function(row) {
