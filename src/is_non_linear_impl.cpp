@@ -13,12 +13,12 @@ bool contains_var(CharacterVector var_names, SEXP x) {
     stack.pop();
     int local_obj_type = TYPEOF(local_obj);
     if (local_obj_type == SYMSXP) { // name
-      Rcpp::CharacterVector el(local_obj);
+      CharacterVector el(local_obj);
       if (std::find(var_names.begin(), var_names.end(), el[0]) != var_names.end()) {
         return true;
       }
     } else if (local_obj_type == LANGSXP) { // call
-      Rcpp::Language ast(local_obj);
+      Language ast(local_obj);
       for(int i = 1; i < ast.size(); i++) {
         SEXP sub_ast = ast[i].get();
         stack.push(sub_ast);
@@ -38,10 +38,10 @@ bool is_non_linear_impl(CharacterVector var_names, SEXP x) {
     stack.pop();
     int local_obj_type = TYPEOF(local_obj);
     if (local_obj_type == LANGSXP) { // call
-      Rcpp::Language ast(local_obj);
+      Language ast(local_obj);
       if (ast.size() == 3) {
-        Rcpp::CharacterVector op(ast[0]);
-        std::string op_string = Rcpp::as<std::string>(op);
+        CharacterVector op(ast[0]);
+        std::string op_string = as<std::string>(op);
         if (op_string == "*" || op_string == "/" || op_string == "^") {
           bool non_linear = contains_var(var_names, ast[1]) &&
             contains_var(var_names, ast[2]);
