@@ -8,22 +8,19 @@ using namespace Rcpp;
 bool contains_var(CharacterVector var_names, SEXP x) {
   std::stack<SEXP> stack;
   stack.push(x);
-  SEXP local_obj;
-  SEXP sub_ast;
-  int local_obj_type;
   while(!stack.empty()) {
-    local_obj = stack.top();
+    SEXP local_obj = stack.top();
     stack.pop();
-    local_obj_type = TYPEOF(local_obj);
-    if (local_obj_type == 1) { // name
+    int local_obj_type = TYPEOF(local_obj);
+    if (local_obj_type == SYMSXP) { // name
       Rcpp::CharacterVector el(local_obj);
       if (std::find(var_names.begin(), var_names.end(), el[0]) != var_names.end()) {
         return true;
       }
-    } else if (local_obj_type == 6) { // call
+    } else if (local_obj_type == LANGSXP) { // call
       Rcpp::Language ast(local_obj);
       for(int i = 1; i < ast.size(); i++) {
-        sub_ast = ast[i].get();
+        SEXP sub_ast = ast[i].get();
         stack.push(sub_ast);
       }
     }
@@ -36,14 +33,11 @@ bool contains_var(CharacterVector var_names, SEXP x) {
 bool is_non_linear_impl(CharacterVector var_names, SEXP x) {
   std::stack<SEXP> stack;
   stack.push(x);
-  SEXP local_obj;
-  SEXP sub_ast;
-  int local_obj_type;
   while(!stack.empty()) {
-    local_obj = stack.top();
+    SEXP local_obj = stack.top();
     stack.pop();
-    local_obj_type = TYPEOF(local_obj);
-    if (local_obj_type == 6) { // call
+    int local_obj_type = TYPEOF(local_obj);
+    if (local_obj_type == LANGSXP) { // call
       Rcpp::Language ast(local_obj);
       if (ast.size() == 3) {
         Rcpp::CharacterVector op(ast[0]);
@@ -57,7 +51,7 @@ bool is_non_linear_impl(CharacterVector var_names, SEXP x) {
         }
       }
       for(int i = 1; i < ast.size(); i++) {
-        sub_ast = ast[i].get();
+        SEXP sub_ast = ast[i].get();
         stack.push(sub_ast);
       }
     }
