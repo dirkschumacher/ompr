@@ -30,3 +30,18 @@ articles:
     - problem-sudoku
     - problem-tsp
     - problem-mtsp
+
+
+navbar:
+  title: ompr
+  type: default
+  left:
+  - text: Home
+    href: index.html
+  - text: Overview
+    href: articles/index.html
+  - text: Reference
+    href: reference/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/hadley/pkgdown

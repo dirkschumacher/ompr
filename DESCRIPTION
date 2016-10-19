@@ -13,7 +13,7 @@ Description: A package to model (mixed) integer programs.
 License: GPL (>= 3)
 LazyData: TRUE
 RoxygenNote: 5.0.1
-URL: https://dirkschumacher.github.io/ompr
+URL: https://github.com/dirkschumacher/ompr
 BugReports: https://github.com/dirkschumacher/ompr/issues
 Depends: R (>= 3.3.0)
 Imports:
