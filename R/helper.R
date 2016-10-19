@@ -115,12 +115,6 @@ bind_expression <- function(var_name, exp, envir, bound_subscripts) {
 
 #' @noRd
 bind_variables <- function(model, ast, calling_env) {
-  # clean calling environment
-  if (is.list(calling_env)) {
-    env_filter <- !(names(calling_env) %in% names(model@variables))
-    calling_env <- calling_env[env_filter]
-    calling_env <- calling_env[nchar(names(calling_env)) > 0]
-  }
   if (is.environment(calling_env)) {
     if (exists(names(model@variables), calling_env)) {
       problematic_vars <- mapply(function(x) {
@@ -134,6 +128,8 @@ bind_variables <- function(model, ast, calling_env) {
                       " to unexpected behaviour."))
     }
     return(try_eval_exp_rec(ast, calling_env))
+  } else {
+    stop("calling_env is not an environment")
   }
 
   # bind variables
@@ -285,9 +281,6 @@ standardize_ast <- function(ast) {
 #' @noRd
 normalize_expression <- function(model, expression, envir) {
   ast <- bind_variables(model, expression, envir)
-  if (!is.environment(envir)) {
-    ast <- try_eval_exp_rec(ast, envir)
-  } # otherwise this has been done in bind_variables
   check_expression(model, ast)
   ast <- standardize_ast(ast)
   ast
