@@ -141,10 +141,9 @@ bind_variables <- function(model, ast, calling_env) {
 }
 
 check_expression <- function(model, the_ast) {
-  if (!lazyeval::is_call(the_ast) && !lazyeval::is_name(the_ast)) {
-    return(TRUE)
+  if (lazyeval::is_call(the_ast) || lazyeval::is_name(the_ast)) {
+    check_for_unknown_vars_impl(model, the_ast)
   }
-  check_for_unknown_vars_impl(model, the_ast)
 }
 
 #' @noRd
