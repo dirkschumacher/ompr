@@ -32,9 +32,13 @@ ast_walker <- function(ast, on_element) {
   ast
 }
 
+#' always null
+#' @noRd
+return_null <- function(x) NULL
+
 #' @noRd
 try_eval_exp <- function(ast, envir = baseenv()) {
-  result <- try(eval(ast, envir = envir), silent = TRUE)
+  result <- tryCatch(eval(ast, envir = envir), error = return_null)
   if (!is.numeric(result)) {
     ast
   } else {
