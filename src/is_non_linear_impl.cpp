@@ -20,8 +20,7 @@ bool contains_var(CharacterVector var_names, SEXP x) {
     } else if (local_obj_type == LANGSXP) { // call
       Language ast(local_obj);
       for(int i = 1; i < ast.size(); i++) {
-        SEXP sub_ast = ast[i].get();
-        stack.push(sub_ast);
+        stack.push(ast[i].get());
       }
     }
   }
@@ -51,8 +50,7 @@ bool is_non_linear_impl(CharacterVector var_names, SEXP x) {
         }
       }
       for(int i = 1; i < ast.size(); i++) {
-        SEXP sub_ast = ast[i].get();
-        stack.push(sub_ast);
+        stack.push(ast[i].get());
       }
     }
   }
