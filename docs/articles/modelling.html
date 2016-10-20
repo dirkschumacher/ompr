@@ -40,7 +40,7 @@
       <h1>Modelling techniques in OMPR</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-19</h4>
+            <h4 class="date">2016-10-20</h4>
           </div>
 
     
@@ -197,7 +197,7 @@ costs &lt;-<span class="st"> </span><span class="kw">rpois</span>(n, <span class
 max_elements &lt;-<span class="st"> </span><span class="dv">3</span>
 <span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">type =</span> <span class="st">"binary"</span>, <span class="dt">i =</span> <span class="dv">1</span>:n) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(cost[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(costs[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n)) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>max_elements)</code></pre></div>
 <pre><code>## Mixed linear integer optimization problem
 ## Variables:
@@ -211,8 +211,11 @@ max_elements &lt;-<span class="st"> </span><span class="dv">3</span>
 <h2>Extract model solutions</h2>
 <p>Once you have a model, you pass it to a solver and get back a solutions. The main interface to extract variable values from a solution is the function <code>get_solution</code>. It returns a data.frame for indexed variable and thus makes it easy to subsequently use the value.</p>
 <p>We use <code>ROI</code> and <code>GLPK</code> to solve it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI)
-<span class="kw">library</span>(ROI.plugin.glpk)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI)</code></pre></div>
+<pre><code>## ROI: R Optimization Infrastructure</code></pre>
+<pre><code>## Registered solver plugins: nlminb, glpk, symphony.</code></pre>
+<pre><code>## Default solver: auto.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI.plugin.glpk)
 <span class="kw">library</span>(ompr.roi)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
 n &lt;-<span class="st"> </span><span class="dv">5</span>

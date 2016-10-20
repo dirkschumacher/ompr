@@ -151,7 +151,7 @@ costs <- rpois(n, lambda = 3) # a cost vector
 max_elements <- 3
 MILPModel() %>% 
   add_variable(x[i], type = "binary", i = 1:n) %>% 
-  set_objective(sum_expr(cost[i] * x[i], i = 1:n)) %>% 
+  set_objective(sum_expr(costs[i] * x[i], i = 1:n)) %>% 
   add_constraint(sum_expr(x[i], i = 1:n) <= max_elements)
 ```
 
