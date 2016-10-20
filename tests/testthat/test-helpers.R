@@ -31,3 +31,9 @@ test_that("extract_coefficients can extract coefficients", {
   expect_equivalent(10, result$coefficients[["x"]]$coef)
   expect_equivalent(1, result$coefficients[["x[1, 2]"]]$coef)
 })
+
+test_that("check_expression handles special cases", {
+  expect_silent(check_expression(add_variable(MIPModel(), x), substitute(x)))
+  expect_error(check_expression(add_variable(MIPModel(), x), substitute(y)))
+  expect_error(check_expression(add_variable(MIPModel(), x[i], i = 1), substitute(x)))
+})
