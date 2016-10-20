@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// check_for_unknown_vars_impl
+void check_for_unknown_vars_impl(S4 model, SEXP x);
+RcppExport SEXP ompr_check_for_unknown_vars_impl(SEXP modelSEXP, SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type model(modelSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    check_for_unknown_vars_impl(model, x);
+    return R_NilValue;
+END_RCPP
+}
 // is_non_linear_impl
 bool is_non_linear_impl(CharacterVector var_names, SEXP x);
 RcppExport SEXP ompr_is_non_linear_impl(SEXP var_namesSEXP, SEXP xSEXP) {

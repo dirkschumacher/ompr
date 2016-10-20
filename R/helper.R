@@ -137,26 +137,10 @@ bind_variables <- function(model, ast, calling_env) {
 }
 
 check_expression <- function(model, the_ast) {
-  on_element <- function(push, inplace_update_ast, get_ast_value, element) {
-    ast <- element$ast
-    path <- element$path
-    if (is.call(ast) && ast[[1]] == "[" &&
-        class(ast[[2]]) == "name") {
-      var_name <- as.character(ast[[2]])
-      search_key <- paste0(as.character(ast[3:length(ast)]),
-                           collapse = "_")
-      var <- model@variables[[var_name]]
-      if (!is.null(var) && !search_key %in% var@instances) {
-        stop(paste0("The expression contains a variable,",
-                    " that is not part of the model."))
-      }
-    } else if (is.call(ast)) {
-      for (i in 2:length(ast)) {
-        push(list(ast = ast[[i]], path = c(path, i)))
-      }
-    }
+  if (!lazyeval::is_call(the_ast) && !lazyeval::is_name(the_ast)) {
+    return(TRUE)
   }
-  invisible(ast_walker(the_ast, on_element))
+  check_for_unknown_vars_impl(model, the_ast)
 }
 
 #' @noRd
