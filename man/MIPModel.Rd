@@ -9,7 +9,4 @@ MIPModel()
 \description{
 Creates a new MIP Model
 }
-\seealso{
-MILPModel
-}
 

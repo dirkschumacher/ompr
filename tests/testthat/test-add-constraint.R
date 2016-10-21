@@ -1,7 +1,7 @@
 context("add-constraint")
 
 test_that("add_constraint only accepts linear inequalities", {
-  m <- add_variable(new("Model"), x, type = "binary")
+  m <- add_variable(MIPModel(), x, type = "binary")
   expect_error(add_constraint(m, x))
 })
 
@@ -16,7 +16,7 @@ test_that("constraints should be saved with only + operators", {
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x - y <= 10) %>%
     set_objective(5 / (-x + y), direction = "max")
-  expect_equal(deparse(m@constraints[[1]]@lhs[[1]]), "x + -1 * y")
+  expect_equal(deparse(m$constraints[[1]]$lhs[[1]]), "x + -1 * y")
 })
 
 test_that("constraints can have an unary + operator", {
@@ -24,77 +24,77 @@ test_that("constraints can have an unary + operator", {
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(+x - y <= 10) %>%
     set_objective(5 / (-x + y), direction = "max")
-  expect_equal(deparse(m@constraints[[1]]@lhs[[1]]), "1 * x + -1 * y")
+  expect_equal(deparse(m$constraints[[1]]$lhs[[1]]), "1 * x + -1 * y")
 })
 
 test_that("add_constraint can handle a for all quantifier", {
-  m <- new("Model") %>%
+  m <- MIPModel() %>%
     add_variable(x[i, j], i = 1:3, j = 1:3) %>%
     add_constraint(sum_expr(x[i, j], j = 1:3) == 1, i = 1:3)
-  expect_equal(length(m@constraints), 3)
+  expect_equal(length(m$constraints), 3)
 })
 
 test_that("add_constraint warns about unbouded all quantifier", {
-  m <- new("Model") %>%
+  m <- MIPModel() %>%
     add_variable(x[i, j], i = 1:3, j = 1:3)
   expect_error(add_constraint(sum_expr(x[i, j], j = 1:3) == 1, e = 1:3))
 })
 
 test_that("we can add complicated constraints", {
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
+  m <- add_variable(MIPModel(), x[i], i = 1:3, type = "binary")
   m <- add_constraint(m, sum_expr(x[i], i = 1:2) + x[3] == 1)
-  expect_equal(length(m@constraints), 1)
-  constraint <- m@constraints[[1]]
-  expect_equal(constraint@rhs[[1]], 1)
-  expect_equal(constraint@direction, "==")
-  expect_equal(deparse(constraint@lhs[[1]]), "x[1L] + x[2L] + x[3]")
+  expect_equal(length(m$constraints), 1)
+  constraint <- m$constraints[[1]]
+  expect_equal(constraint$rhs[[1]], 1)
+  expect_equal(constraint$direction, "==")
+  expect_equal(deparse(constraint$lhs[[1]]), "x[1L] + x[2L] + x[3]")
 })
 
 test_that("add_constraint throws an error if constraints are non-linear lhs", {
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
+  m <- add_variable(MIPModel(), x[i], i = 1:3, type = "binary")
   expect_error(add_constraint(m, sum_expr(x[i], i = 1:2) * x[3] == 1))
 })
 
 test_that("add_constraint throws an error if constraints are non-linear rhs", {
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
+  m <- add_variable(MIPModel(), x[i], i = 1:3, type = "binary")
   expect_error(add_constraint(m, 1 == sum_expr(x[i], i = 1:2) * x[3]))
 })
 
 test_that("add_constraint warns about unbouded all quantifier in rhs", {
-  m <- new("Model") %>%
+  m <- MIPModel() %>%
     add_variable(x[i, j], i = 1:3, j = 1:3)
   expect_error(add_constraint(1 == sum_expr(x[i, j], j = 1:3), e = 1:3))
 })
 
 test_that("add_constraints throws error if unbounded indexes in lhs", {
-  m <- new("Model") %>%
+  m <- MIPModel() %>%
     add_variable(x[i, j], i = 1:3, j = 1:3)
   expect_error(add_constraint(x[1, j] == 1))
 })
 
 test_that("add_constraints throws error if unbounded indexes in rhs", {
-  m <- new("Model") %>%
+  m <- MIPModel() %>%
     add_variable(x[i, j], i = 1:3, j = 1:3)
   expect_error(add_constraint(1 == x[1, j]))
 })
 
 test_that("bounded vars in add_constraints should take precedence", {
-  m <- new("Model") %>%
+  m <- MIPModel() %>%
     add_variable(x[i, j], i = 1:3, j = 1:3)
   j <- 1
   i <- 1
   m <- add_constraint(m, sum_expr(x[i, j], j = 3) == 1)
-  expect_equal(m@constraints[[1]]@lhs, expression(x[1, 3]))
+  expect_equal(m$constraints[[1]]$lhs, expression(x[1, 3]))
 })
 
 test_that("we can add constraints", {
-  m <- new("Model")
+  m <- MIPModel()
   m <- add_variable(m, x[i], i = 1:10, type = "binary")
   m <- add_constraint(m, x[3] <= x[6])
 })
 
 test_that("add_constraint only allows a fixed set of directions", {
-  m <- new("Model")
+  m <- MIPModel()
   m <- add_variable(m, x[i], i = 1:10, type = "binary")
   add_constraint(m, x[3] <= x[6])
   add_constraint(m, x[3] >= x[6])
@@ -107,17 +107,17 @@ test_that("add_constraint only allows a fixed set of directions", {
 test_that("quantifier filter expressions work with add_constraint", {
   m <- add_variable(MIPModel(), x[i], i = 1:10)
   m <- add_constraint(m, x[i] == 1, i = 1:10, i <= 2)
-  expect_equal(2, length(m@constraints))
+  expect_equal(2, length(m$constraints))
 })
 
 test_that("quantifier filter expressions are combined with AND", {
   m <- add_variable(MIPModel(), x[i], i = 1:10)
   m <- add_constraint(m, x[i] == 1, i = 1:10, i <= 2, i >= 2)
-  expect_equal(1, length(m@constraints))
+  expect_equal(1, length(m$constraints))
 })
 
 test_that("quantifier filter expressions work with add_constraint_", {
   m <- add_variable(MIPModel(), x[i], i = 1:10)
   m <- add_constraint_(m, ~x[i] == 1, i = 1:10, .dots = ~i <= 2)
-  expect_equal(2, length(m@constraints))
+  expect_equal(2, length(m$constraints))
 })

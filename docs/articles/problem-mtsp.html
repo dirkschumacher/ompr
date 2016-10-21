@@ -40,7 +40,7 @@
       <h1>The Multiple Traveling Salesmen Problem</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-20</h4>
+            <h4 class="date">2016-10-21</h4>
           </div>
 
     
@@ -122,7 +122,7 @@ model</code></pre></div>
 ##   Continuous: 14 
 ##   Integer: 0 
 ##   Binary: 98 
-## Search direction: minimize 
+## No objective function. 
 ## Constraints: 126</code></pre>
 </div>
 <div id="results" class="section level2">
@@ -219,7 +219,7 @@ model</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(cities, <span class="kw">aes</span>(x, y)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> is_depot)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> paths, <span class="kw">aes</span>(<span class="dt">group =</span> trip_id, <span class="dt">color =</span> <span class="kw">factor</span>(salesman))) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">paste0</span>(<span class="st">"Optimal route with cost: "</span>, <span class="kw">round</span>(result@objective_value, <span class="dv">2</span>))) +
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">paste0</span>(<span class="st">"Optimal route with cost: "</span>, <span class="kw">round</span>(<span class="kw"><a href="../reference/objective_value.html">objective_value</a></span>(result), <span class="dv">2</span>))) +
 <span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, max_y)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, max_x))</code></pre></div>
 <p><img src="problem-mtsp_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;"></p>

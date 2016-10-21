@@ -58,7 +58,7 @@ get_solution(result, y)
 These functions currently form the public API. More detailed docs can be found in the package function docs or on the [website](https://dirkschumacher.github.io/ompr)
 
 ### DSL
-* `MILPModel()` create an empty mixed integer linear model
+* `MIPModel()` create an empty mixed integer linear model
 * `add_variable()` adds variables to a model
 * `set_objective()` sets the objective function of a model
 * `set_bounds()`sets bounds of variables
@@ -91,7 +91,7 @@ library(ompr.roi)
 max_capacity <- 5
 n <- 10
 weights <- runif(n, max = max_capacity)
-MILPModel() %>%
+MIPModel() %>%
   add_variable(x[i], i = 1:n, type = "binary") %>%
   set_objective(sum_expr(weights[i] * x[i], i = 1:n), "max") %>%
   add_constraint(sum_expr(weights[i] * x[i], i = 1:n) <= max_capacity) %>%
@@ -113,7 +113,7 @@ max_bins <- 10
 bin_size <- 3
 n <- 10
 weights <- runif(n, max = bin_size)
-MILPModel() %>%
+MIPModel() %>%
   add_variable(y[i], i = 1:max_bins, type = "binary") %>%
   add_variable(x[i, j], i = 1:max_bins, j = 1:n, type = "binary") %>%
   set_objective(sum_expr(y[i], i = 1:max_bins), "min") %>%

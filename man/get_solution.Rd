@@ -7,6 +7,8 @@
 \usage{
 get_solution(solution, expr)
 get_solution_(solution, expr)
+
+get_solution_(solution, expr)
 }
 \arguments{
 \item{solution}{the solution object}

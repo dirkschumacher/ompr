@@ -6,6 +6,7 @@
 \title{Sets the bounds of a variable}
 \usage{
 set_bounds(model, variable, ..., lb = NULL, ub = NULL)
+
 set_bounds_(model, variable, ..., lb = NULL, ub = NULL, .dots)
 }
 \arguments{

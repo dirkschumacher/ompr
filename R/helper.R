@@ -120,11 +120,11 @@ bind_expression <- function(var_name, exp, envir, bound_subscripts) {
 #' @noRd
 bind_variables <- function(model, ast, calling_env) {
   if (is.environment(calling_env)) {
-    if (exists(names(model@variables), calling_env)) {
+    if (exists(names(model$variables), calling_env)) {
       problematic_vars <- mapply(function(x) {
         exists(x, calling_env)
-      }, names(model@variables))
-      problematic_vars <- names(model@variables)[problematic_vars]
+      }, names(model$variables))
+      problematic_vars <- names(model$variables)[problematic_vars]
       warning(paste0("There variables in your environment that interfere",
                       " with your defined model variables: ",
                      paste0(problematic_vars, collapse = ","),
