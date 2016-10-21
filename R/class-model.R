@@ -1,32 +1,19 @@
-#' An S4 class to represent a ObjectiveFunction
+#' An S3 class that model an objective function
 #'
-#' @slot expression the expression in standard form
-#' @slot original_expression the original expression as supplied by the user
-#' @slot direction the direction of optimization
+#' @param expression the expression in standard form
+#' @param original_expression the original expression as supplied by the user
+#' @param direction the direction of optimization
 #' @noRd
-ObjectiveFunction <- setClass("ObjectiveFunction", # Exclude Linting
-                              slots = c(
-                                expression = "expression",
-                                original_expression = "expression",
-                                direction = "character"),
-                              validity = function(object) {
-                                length(object@direction) == 1 &&
-                                  object@direction %in% c("min", "max")
-                              })
+new_objective_function <- function(expression,
+                                   original_expression,
+                                   direction) {
+  stopifnot(length(direction) == 1 &&
+              direction %in% c("min", "max"))
+  structure(list(expression = expression,
+                 original_expression = original_expression,
+                 direction = direction), class = "model_objective")
+}
 
-#' An S4 class to represent a Model.
-#'
-#' @slot variables a list of S4 Variable objects
-#' @slot objective the objective function
-#' @slot constraints a list of constraints
-#' @noRd
-Model <- setClass("Model",
-         slots = c(
-           "variables" = "list",
-           "objective" = "ObjectiveFunction",
-           "constraints" = "list"
-         ),
-         validity = function(object) TRUE)
 
 #' Adds a variable to the model
 #'
@@ -48,11 +35,11 @@ Model <- setClass("Model",
 #'
 #' @aliases add_variable_
 #' @export
-setGeneric("add_variable", function(model, variable, ..., type = "continuous",
-                                     lb = -Inf, ub = Inf) {
-  add_variable_(model, lazyeval::lazy(variable), type = type,
+add_variable <- function(model, variable, ..., type = "continuous",
+                         lb = -Inf, ub = Inf) {
+  add_variable_(model = model, variable = lazyeval::lazy(variable), type = type,
                 lb = lb, ub = ub, .dots = lazyeval::lazy_dots(...))
-})
+}
 
 # helper function to check variable bounds
 check_bounds <- function(lb, ub) {
@@ -64,10 +51,17 @@ check_bounds <- function(lb, ub) {
   }
 }
 
+#' @inheritParams add_variable
 #' @param .dots Used to work around non-standard evaluation.
 #' @rdname add_variable
 #' @export
-setGeneric("add_variable_", function(model, variable, ..., type = "continuous",
+add_variable_ <- function(model, variable, ..., type = "continuous",
+                          lb = -Inf, ub = Inf, .dots) {
+  UseMethod("add_variable_")
+}
+
+#' @export
+add_variable_.optimization_model <- function(model, variable, ..., type = "continuous",
                                     lb = -Inf, ub = Inf, .dots) {
   if (length(lb) != 1 || length(ub) != 1) {
     stop("lb and ub must be of length 1. I.e. just a single number.")
@@ -96,20 +90,20 @@ setGeneric("add_variable_", function(model, variable, ..., type = "continuous",
     }
   }
   variable <- lazyeval::as.lazy(variable)
-  exp <- variable$expr
-  if (lazyeval::is_name(exp)) {
-    var_name <- as.character(exp)
-    var <- new("Variable", arity = 0L,
+  expr <- variable$expr
+  if (lazyeval::is_name(expr)) {
+    var_name <- as.character(expr)
+    var <- new_variable(arity = 0L,
                type = type, instances = "",
                lb = lb, ub = ub,
                variable_expression = as.expression(as.symbol(var_name)),
                variable_quantifiers = list()
                )
-    model@variables[[var_name]] <- var
-  } else if (lazyeval::is_call(exp) && exp[[1]] == "[") {
+    model$variables[[var_name]] <- var
+  } else if (lazyeval::is_call(expr) && expr[[1]] == "[") {
 
     # first we need to bind all variables
-    var_name <- as.character(exp[[2]])
+    var_name <- as.character(expr[[2]])
 
     lazy_dots <- lazyeval::lazy_dots(...)
     if (!missing(.dots)) {
@@ -119,13 +113,13 @@ setGeneric("add_variable_", function(model, variable, ..., type = "continuous",
     classified_quantifiers <- classify_quantifiers(lazy_dots)
     bound_subscripts <- lapply(classified_quantifiers$quantifiers,
                                lazyeval::lazy_eval)
-    bound_exp <- bind_expression(var_name, exp, variable$env,
+    bound_expr <- bind_expression(var_name, expr, variable$env,
                                  bound_subscripts)
-    arity <- as.integer(length(bound_exp) - 2)
+    arity <- as.integer(length(bound_expr) - 2)
 
     # then check if all free variables are present in "..."
-    subscripts <- lapply(3:length(bound_exp),
-                         function(x) as.character(bound_exp[x]))
+    subscripts <- lapply(3:length(bound_expr),
+                         function(x) as.character(bound_expr[x]))
     bound_subscripts <- bound_subscripts[
       names(bound_subscripts) %in% subscripts]
     replacement_idxs <- subscripts %in% names(bound_subscripts)
@@ -142,22 +136,22 @@ setGeneric("add_variable_", function(model, variable, ..., type = "continuous",
     instances <- apply(candidates, 1, function(row) {
       paste0(as.integer(row), collapse = "_")
     })
-    var <- new("Variable",
+    var <- new_variable(
                arity = arity,
                type = type,
                instances = instances,
                lb = rep.int(lb, n_vars),
                ub = rep.int(ub, n_vars),
-               variable_expression = as.expression(exp),
+               variable_expression = as.expression(expr),
                variable_quantifiers = bound_subscripts)
-    model@variables[[var_name]] <- var
+    model$variables[[var_name]] <- var
   } else {
     stop(paste0("The variable definition does not seem to be right.",
-                "Take a look at the example models on the website on how",
+                " Take a look at the example models on the website on how",
                 " to formulate variables"))
   }
   model
-})
+}
 
 
 #' Sets the bounds of a variable
@@ -165,16 +159,11 @@ setGeneric("add_variable_", function(model, variable, ..., type = "continuous",
 #' Change the lower and upper bounds of a named variable,
 #' indexed variable or a group of variables.
 #'
-#' @usage
-#' set_bounds(model, variable, ..., lb = NULL, ub = NULL)
-#' set_bounds_(model, variable, ..., lb = NULL, ub = NULL, .dots)
-#'
 #' @param model the model
 #' @param variable the variable name/definition
 #' @param ... quantifiers for the indexed variabled
 #' @param lb the lower bound of the variable
 #' @param ub the upper bound of the variable
-#' @param .dots Used to work around non-standard evaluation.
 #'
 #' @aliases set_bounds_
 #' @examples
@@ -185,13 +174,22 @@ setGeneric("add_variable_", function(model, variable, ..., type = "continuous",
 #'  set_bounds(x[i], lb = 3, i = 1:3)
 #'
 #' @export
-setGeneric("set_bounds", function(model, variable, ..., lb = NULL, ub = NULL) {
+set_bounds <- function(model, variable, ..., lb = NULL, ub = NULL) {
   set_bounds_(model, lazyeval::lazy(variable), lb = lb, ub = ub,
               .dots = lazyeval::lazy_dots(...))
-})
+}
+
+#' @inheritParams set_bounds
+#' @param .dots Used to work around non-standard evaluation.
+#' @rdname set_bounds
+#' @export
+set_bounds_ <- function(model, variable, ...,
+                        lb = NULL, ub = NULL, .dots) {
+  UseMethod("set_bounds_")
+}
 
 #' @export
-setGeneric("set_bounds_", function(model, variable, ...,
+set_bounds_.optimization_model <- function(model, variable, ...,
                                    lb = NULL, ub = NULL, .dots) {
   if (is.numeric(lb) && is.numeric(ub)) {
     check_bounds(lb, ub)
@@ -201,7 +199,7 @@ setGeneric("set_bounds_", function(model, variable, ...,
   is_indexed_variable <- lazyeval::is_call(variable$expr) &&
                           variable$expr[[1]] == "[" &&
                           length(variable$expr) >= 3
-  model_variable_names <- names(model@variables)
+  model_variable_names <- names(model$variables)
   replace_lb <- !is.null(lb) && is.numeric(lb)
   replace_ub <- !is.null(ub) && is.numeric(ub)
   if (is_single_variable) {
@@ -209,20 +207,20 @@ setGeneric("set_bounds_", function(model, variable, ...,
     if (!var_name %in% model_variable_names) {
       stop("Variable does not exists in model")
     }
-    variable <- model@variables[[var_name]]
+    variable <- model$variables[[var_name]]
     if (replace_lb) {
-      variable@lb <- lb
+      variable$lb <- lb
     }
     if (replace_ub) {
-      variable@ub <- ub
+      variable$ub <- ub
     }
-    model@variables[[var_name]] <- variable
+    model$variables[[var_name]] <- variable
   } else if (is_indexed_variable) {
     var_name <- as.character(variable$expr[[2]])
     if (!var_name %in% model_variable_names) {
       stop("Variable does not exists in model")
     }
-    model_variable <- model@variables[[var_name]]
+    model_variable <- model$variables[[var_name]]
     index_names <- sapply(3:length(variable$expr), function(i) {
       as.character(variable$expr[i])
     })
@@ -265,20 +263,20 @@ setGeneric("set_bounds_", function(model, variable, ...,
     instance_keys <- sapply(indexes, function(x) {
       paste0(x, collapse = "_")
     })
-    var_indexes <- which(model_variable@instances %in% instance_keys)
-    if (any(!instance_keys %in% model_variable@instances)) {
+    var_indexes <- which(model_variable$instances %in% instance_keys)
+    if (any(!instance_keys %in% model_variable$instances)) {
       stop("Indexed variable out of bounds.")
     }
     if (replace_lb) {
-      model_variable@lb[var_indexes] <- lb
+      model_variable$lb[var_indexes] <- lb
     }
     if (replace_ub) {
-      model_variable@ub[var_indexes] <- ub
+      model_variable$ub[var_indexes] <- ub
     }
-    model@variables[[var_name]] <- model_variable
+    model$variables[[var_name]] <- model_variable
   }
   model
-})
+}
 
 #' Sets the model objective
 #'
@@ -296,44 +294,49 @@ setGeneric("set_bounds_", function(model, variable, ...,
 #'
 #' @aliases set_objective_
 #' @export
-setGeneric("set_objective", function(model, expression,
+set_objective <- function(model, expression,
                                      direction = c("max", "min")) {
   set_objective_(model, expression = lazyeval::lazy(expression),
                  direction = direction)
-})
+}
+
+#' @inheritParams set_objective
+#' @rdname set_objective
+#' @export
+set_objective_ <- function(model, expression,
+                           direction = c("max", "min")) {
+  UseMethod("set_objective_")
+}
 
 #' @export
-setGeneric("set_objective_", function(model, expression,
+set_objective_.optimization_model <- function(model, expression,
                                       direction = c("max", "min")) {
   stopifnot(length(expression) != 1)
   expression <- lazyeval::as.lazy(expression)
   direction <- match.arg(direction)
   obj_ast <- expression$expr
   ast <- normalize_expression(model, obj_ast, expression$env)
-  var_names <- names(model@variables)
+  var_names <- names(model$variables)
   if (is_non_linear(var_names, ast)) {
     stop(paste0("The objective is probably non-linear. ",
                 "Currently, only linear functions are supported."))
   }
-  obj <- new("ObjectiveFunction",
+  obj <- new_objective_function(
              expression = as.expression(ast),
              original_expression = as.expression(obj_ast),
              direction = direction)
-  model@objective <- obj
+  model$objective <- obj
   model
-})
+}
 
-#' Outputs the model to the console
-#'
-#' @param object the model object
-#' @importFrom stats setNames
 #' @export
-setMethod("show", signature(object = "Model"),
-          definition = function(object) {
+#' @inheritParams print
+#' @importFrom stats setNames
+print.optimization_model <- function(x, ...) {
             cat("Mixed linear integer optimization problem\n")
             mapped_vars <- Map(f = function(var) {
-              setNames(length(var@instances), var@type)
-            }, object@variables)
+              setNames(length(var$instances), var$type)
+            }, x$variables)
             var_count <- Reduce(f = function(acc, el) {
               acc[[names(el)]] <- acc[[names(el)]] + el
               acc
@@ -345,19 +348,19 @@ setMethod("show", signature(object = "Model"),
             cat("  Binary:", var_count$binary, "\n")
 
             # obj function
-            objective <- object@objective
+            objective <- x$objective
             if (!is.null(objective) &&
-                length(objective@direction) == 1) {
+                length(x$direction) == 1) {
               cat("Search direction:",
-                if (objective@direction == "max") "maximize" else "minimize",
+                if (x$direction == "max") "maximize" else "minimize",
                 "\n")
             } else {
               cat("No objective function. \n")
             }
 
             # constraints
-            cat("Constraints:", length(object@constraints), "\n")
-          })
+            cat("Constraints:", length(x$constraints), "\n")
+          }
 
 
 #' Add a constraint
@@ -370,14 +373,11 @@ setMethod("show", signature(object = "Model"),
 #' @param ... quantifiers for the indexed variables. For all combinations of
 #'            bound variables a new constraint is created. In addition
 #'            you can add filter expressions
-#' @param .dots Used to work around non-standard evaluation.
 #' @param .show_progress_bar displays a progressbar when adding multiple
 #'                           constraints
 #'
 #' @return a Model with new constraints added
-#' @usage
-#' add_constraint(model, constraint_expr, ..., .show_progress_bar)
-#' add_constraint_(model, constraint_expr, ..., .dots, .show_progress_bar)
+#'
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
@@ -386,17 +386,27 @@ setMethod("show", signature(object = "Model"),
 #'
 #' @aliases add_constraint_
 #' @export
-setGeneric("add_constraint", function(model,
-                                      constraint_expr,
-                                      ...,
+add_constraint <- function(model, constraint_expr, ...,
                                       .show_progress_bar = TRUE) {
   add_constraint_(model, lazyeval::lazy(constraint_expr),
                   .dots = lazyeval::lazy_dots(...),
                   .show_progress_bar = .show_progress_bar)
-})
+}
+
+#' @inheritParams add_constraint
+#' @param .dots Used to work around non-standard evaluation.
+#' @rdname add_constraint
+#' @export
+add_constraint_ <- function(model,
+                            constraint_expr,
+                            ...,
+                            .dots,
+                            .show_progress_bar = TRUE) {
+  UseMethod("add_constraint_")
+}
 
 #' @export
-setGeneric("add_constraint_", function(model,
+add_constraint_.optimization_model <- function(model,
                                       constraint_expr,
                                       ...,
                                       .dots,
@@ -423,7 +433,7 @@ setGeneric("add_constraint_", function(model,
   add_constraint_internal <- function(envir = parent_env) {
     lhs_ast <- normalize_expression(model, lhs_ast, envir)
     rhs_ast <- normalize_expression(model, rhs_ast, envir)
-    var_names <- names(model@variables)
+    var_names <- names(model$variables)
     if (is_non_linear(var_names, lhs_ast)) {
       stop(paste0("The left-hand-side is probably non-linear. ",
                   "Currently, only linear constraints are ",
@@ -434,11 +444,11 @@ setGeneric("add_constraint_", function(model,
                   "Currently, only linear constraints are ",
                   "supported."))
     }
-    new("Constraint", lhs = as.expression(lhs_ast),
+    new_constraint(lhs = as.expression(lhs_ast),
                       rhs = as.expression(rhs_ast),
                       direction = direction)
   }
-  constraints <- model@constraints
+  constraints <- model$constraints
   if (is.list(bound_subscripts) && length(bound_subscripts) > 0) {
     filter_fn <- function(x) is.numeric(x) & length(x) > 0
     bound_subscripts <- Filter(filter_fn, bound_subscripts)
@@ -461,11 +471,11 @@ setGeneric("add_constraint_", function(model,
     })
     constraints <- c(constraints, new_constraints)
   } else {
-    constraints <- c(constraints, add_constraint_internal())
+    constraints <- c(constraints, list(add_constraint_internal()))
   }
-  model@constraints <- constraints
+  model$constraints <- constraints
   model
-})
+}
 
 #' Solve a model
 #'
@@ -475,21 +485,26 @@ setGeneric("add_constraint_", function(model,
 #' @return solver(model)
 #'
 #' @export
-setGeneric("solve_model", function(model, solver) {
+solve_model <- function(model, solver) UseMethod("solve_model")
+
+#' @export
+solve_model.optimization_model <- function(model, solver) {
   if (!is.function(solver)) {
     stop(paste0("Solver is not a function Model -> Solution.\n",
                 "Take a look at the examples on the website on how to call",
                 " solve_model."))
   }
   solver(model)
-})
+}
 
 #' Creates a new MIP Model
-#' @seealso MILPModel
 #' @export
-MIPModel <- function() Model()
+MIPModel <- function() structure(list(variables = list(),
+                                      objective = NULL,
+                                      constraints = list()),
+                                 class = "optimization_model")
 
 #' Creates a new MILP Model
 #' @seealso MIPModel
-#' @export
-MILPModel <- function() Model()
+#' @noRd
+MILPModel <- MIPModel

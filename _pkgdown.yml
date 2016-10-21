@@ -6,7 +6,7 @@ template:
 reference:
   - title: Build a model
     contents:
-    - MILPModel
+    - MIPModel
     - add_variable
     - set_objective
     - add_constraint
@@ -16,10 +16,12 @@ reference:
     contents:
     - solve_model
     - get_solution
-  - title: Helper functions
+    - objective_value
+    - solver_status
+  - title: Solver developer functions
     contents:
     - extract_coefficients
-    - render_page
+    - new_solution
 
 articles:
   - title: "About the package"

@@ -7,10 +7,10 @@ using namespace Rcpp;
 
 // Checks for unknown variables in expression
 // [[Rcpp::export]]
-void check_for_unknown_vars_impl(S4 model, SEXP x) {
+void check_for_unknown_vars_impl(List model, SEXP x) {
   std::stack<SEXP> stack;
   stack.push(x);
-  List model_vars(model.slot("variables"));
+  List model_vars = model["variables"];
   std::string error_msg = "The expression contains a variable that is not part of the model.";
   while(!stack.empty()) {
     SEXP local_obj = stack.top();
@@ -21,9 +21,8 @@ void check_for_unknown_vars_impl(S4 model, SEXP x) {
       try{
         CharacterVector var = local_obj;
         std::string var_name = as<std::string>(var[0]);
-        int var_position = model_vars.findName(var_name);
-        S4 model_var = model_vars[var_position];
-        int arity = model_var.slot("arity");
+        List model_var = model_vars[var_name];
+        int arity = model_var["arity"];
         if (arity > 0) {
           throw std::invalid_argument("");
         }
@@ -41,9 +40,8 @@ void check_for_unknown_vars_impl(S4 model, SEXP x) {
           CharacterVector var = ast[1];
           std::string var_name = as<std::string>(var[0]);
           try {
-            int var_position = model_vars.findName(var_name);
-            S4 var = model_vars[var_position];
-            CharacterVector instances = var.slot("instances");
+            List var = model_vars[var_name];
+            CharacterVector instances = var["instances"];
 
             // build search key
             std::ostringstream str;

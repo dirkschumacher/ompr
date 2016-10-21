@@ -1,42 +1,42 @@
 context("model")
 
 test_that("one can set an objective function", {
-  m <- new("Model")
+  m <- MIPModel()
   m <- add_variable(m, x[i], i = 1:10, type = "binary")
   m <- set_objective(m, x[1] + x[3], direction = "min")
-  expect_equal(m@objective@direction, "min")
-  expect_equal(deparse(m@objective@expression[[1]]), "x[1] + x[3]")
+  expect_equal(m$objective$direction, "min")
+  expect_equal(deparse(m$objective$expression[[1]]), "x[1] + x[3]")
 })
 
 test_that("only max and min are valid directions for an objective function", {
-  m <- add_variable(new("Model"), x[i], i = 1:10, type = "binary")
+  m <- add_variable(MIPModel(), x[i], i = 1:10, type = "binary")
   expect_error(set_objective(m, x[1] + x[3], direction = "wat"))
   set_objective(m, x[1] + x[3], direction = "min")
   set_objective(m, x[1] + x[3], direction = "max")
 })
 
 test_that("all symbols in an obj. function need to be variables", {
-  m <- add_variable(new("Model"), x[i], i = 1:2, type = "binary")
+  m <- add_variable(MIPModel(), x[i], i = 1:2, type = "binary")
   expect_error(set_objective(m, x[5], direction = "min"))
 })
 
 test_that("obj. function can bind external variables", {
   w <- c(1, 2)
-  m <- add_variable(new("Model"), x[i], i = 1:2, type = "binary")
+  m <- add_variable(MIPModel(), x[i], i = 1:2, type = "binary")
   m <- set_objective(m, w[1] * x[1], direction = "min")
-  expect_equal(deparse(m@objective@expression[[1]]), "1 * x[1]")
+  expect_equal(deparse(m$objective$expression[[1]]), "1 * x[1]")
 })
 
 test_that("set_objective throws an error if it is non-linear", {
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
+  m <- add_variable(MIPModel(), x[i], i = 1:3, type = "binary")
   expect_error(set_objective(m, sum_expr(x[i], i = 1:2) * x[3]))
 })
 
 test_that("we can solve a model", {
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary")
+  m <- add_variable(MIPModel(), x[i], i = 1:3, type = "binary")
   m <- add_constraint(m, sum_expr(x[i], i = 1:3) == 1)
   m <- set_objective(m, x[1])
-  solution <- new("Solution")
+  solution <- new_solution(m, 0, "optimal", solution = c())
   result <- solve_model(m, function(model) {
     expect_identical(model, m)
     solution
@@ -45,15 +45,15 @@ test_that("we can solve a model", {
 })
 
 test_that("it works with magrittr pipes", {
-  m <- add_variable(new("Model"), x[i], i = 1:3, type = "binary") %>%
+  m <- add_variable(MIPModel(), x[i], i = 1:3, type = "binary") %>%
     add_constraint(sum_expr(x[i], i = 1:3) == 1) %>%
     set_objective(x[1])
-  expect_equal(length(m@variables), 1)
+  expect_equal(length(m$variables), 1)
 })
 
 test_that("set_object passes external values to sum_expr", {
   max_bins <- 5
-  m <- new("Model")
+  m <- MIPModel()
   m <- add_variable(m, y[i], i = 1:max_bins, type = "binary")
   m <- set_objective(m, sum_expr(y[i], i = 1:max_bins), "min")
 })
@@ -91,8 +91,8 @@ test_that("bug 20161011 #83: bounds of binary vars are not 0/1", {
   model <- add_variable(MIPModel(), x, type = "binary") %>%
     add_constraint(x <= 10) %>%
     set_objective(-x, direction = "max")
-  expect_equal(0, model@variables[[1]]@lb)
-  expect_equal(1, model@variables[[1]]@ub)
+  expect_equal(0, model$variables[[1]]$lb)
+  expect_equal(1, model$variables[[1]]$ub)
 })
 
 test_that("multiplications in objective fun", {
@@ -100,7 +100,7 @@ test_that("multiplications in objective fun", {
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
     set_objective(5 * (-x + y), direction = "max")
-  expect_equal(deparse(m@objective@expression[[1]]), "-5 * x + 5 * y")
+  expect_equal(deparse(m$objective$expression[[1]]), "-5 * x + 5 * y")
 })
 
 test_that("model output works without an obj. function", {
@@ -113,10 +113,11 @@ test_that("devision in objective fun", {
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
     set_objective(5 / (-x + y), direction = "max")
-  expect_equal(deparse(m@objective@expression[[1]]), "-0.2 * x + 0.2 * y")
+  expect_equal(deparse(m$objective$expression[[1]]), "-0.2 * x + 0.2 * y")
 })
 
 test_that("small to mid sized models should work", {
+  skip_on_cran()
   n <- 400
   result <- MIPModel() %>%
     add_variable(x[i], i = 1:n, type = "binary") %>%
@@ -131,6 +132,7 @@ test_that("bug 20160713 #41: quantifiers in constraints in sum_expr", {
 })
 
 test_that("small to mid sized model should work #2", {
+  skip_on_cran()
   n <- 40
   coef <- matrix(1:(n ^ 2), ncol = 2)
   MIPModel() %>%
@@ -142,7 +144,7 @@ test_that("bug 20160729: two sum_expr on one side", {
   m <- MIPModel() %>%
     add_variable(x[j], j = 1:4) %>%
     add_constraint(sum_expr(x[j], j = 1:2) - sum_expr(x[j], j = 3:4) == 0)
-  expect_equal(deparse(m@constraints[[1]]@lhs[[1]]),
+  expect_equal(deparse(m$constraints[[1]]$lhs[[1]]),
                "x[1L] + x[2L] + (-1 * x[3L] + -1 * x[4L])")
 })
 

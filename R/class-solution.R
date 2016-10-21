@@ -1,19 +1,26 @@
-#' An S4 class to encode a solution
+#' Create a new solution
 #'
 #' This is class should only be used if you develop your own solver.
 #'
-#' @noRd
-Solution <- setClass("Solution",
-                              slots = c(
-                                objective_value = "numeric",
-                                model = "Model",
-                                status = "character",
-                                solution = "numeric"),
-                              validity = function(object) {
-                                object@status %in% c("infeasible",
-                                                     "unbounded", "optimal") &&
-                                  all(nchar(names(object@solution)) > 0)
-                              })
+#' @param objective_value a numeric objective value
+#' @param model the optimization model that was solved
+#' @param status the status of the solution.
+#' @param solution a named numeric vector containing the solution values
+#'
+#' @export
+new_solution <- function(model,
+                         objective_value,
+                         status,
+                         solution) {
+  stopifnot(is.numeric(objective_value))
+  stopifnot(status %in% c("infeasible",
+                         "unbounded", "optimal"))
+  stopifnot(all(nchar(names(solution))))
+  structure(list(model = model,
+                 objective_value = objective_value,
+                 status = status,
+                 solution = solution), class = "solution")
+}
 
 #' Extracts variable values from a solution
 #'
@@ -45,18 +52,25 @@ Solution <- setClass("Solution",
 #'
 #' @aliases get_solution_
 #' @export
-setGeneric("get_solution", function(solution, expr) {
+get_solution <- function(solution, expr) {
   get_solution_(solution, lazyeval::lazy(expr))
-})
+}
+
+#' @inheritParams get_solution
+#' @rdname get_solution
+#' @export
+get_solution_ <- function(solution, expr) {
+  UseMethod("get_solution_")
+}
 
 #' @export
-setGeneric("get_solution_", function(solution, expr) {
+get_solution_.solution <- function(solution, expr) {
   expr <- lazyeval::as.lazy(expr)
   ast <- expr$expr
   is_indexed_var <- is.call(ast)
   stopifnot(!is_indexed_var || ast[[1]] == "[" && length(ast) >= 3)
   var_name <- as.character(if (is_indexed_var) ast[[2]] else ast)
-  if (is.null(solution@model@variables[[var_name]])) {
+  if (is.null(solution$model$variables[[var_name]])) {
     stop("Variable not found")
   }
   if (is_indexed_var) {
@@ -76,15 +90,15 @@ setGeneric("get_solution_", function(solution, expr) {
                                paste0(idx_pattern, collapse = ","),
                                "\\]")
     if (length(free_vars) == 0) {
-      return(solution@solution[grepl(x = names(solution@solution),
+      return(solution$solution[grepl(x = names(solution$solution),
                                      pattern = instance_pattern)])
     } else {
       # the solution is sorted lexigographically
-      var_index <- stringr::str_match(names(solution@solution),
+      var_index <- stringr::str_match(names(solution$solution),
                                       pattern = instance_pattern)
       na_rows <- as.logical(apply(is.na(var_index), 1, all))
       var_index <- var_index[!na_rows, ]
-      var_values <- solution@solution[grepl(names(solution@solution),
+      var_values <- solution$solution[grepl(names(solution$solution),
                                             pattern = instance_pattern)]
       result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
       for (x in colnames(result_df)) {
@@ -94,26 +108,49 @@ setGeneric("get_solution_", function(solution, expr) {
       result_df$variable <- var_name
       colnames(result_df) <- c(free_vars, "value", "variable")
       result_df <- result_df[, c("variable", free_vars, "value")]
-      if (solution@status != "optimal") {
+      if (solution$status != "optimal") {
         result_df <- result_df[FALSE, ]
       }
       return(result_df)
     }
   } else {
-    if (!var_name %in% names(solution@solution)) {
+    if (!var_name %in% names(solution$solution)) {
       stop(paste0("Either variable is not part of the model or you",
                   " have to specify the indexes."))
     }
-    return(solution@solution[var_name])
+    return(solution$solution[var_name])
   }
-})
+}
 
-#' Outputs a model summary to the console.
-#' @param object the solution object
+#' @inheritParams print
 #' @export
-setMethod("show", signature(object = "Solution"),
-          definition = function(object) {
-            cat("Status:", object@status)
+print.solution <- function(x, ...) {
+            cat("Status:", solver_status(x))
             cat("\n")
-            cat("Objective value:", object@objective_value)
-          })
+            cat("Objective value:", objective_value(x))
+          }
+
+#' Extracts the numerical objective value from a solution
+#'
+#' @param solution a solution
+#' @return numeric single item vector
+#'
+#' @export
+objective_value <- function(solution) UseMethod("objective_value")
+
+objective_value.solution <- function(solution) {
+  solution$objective_value
+}
+
+#' Gets the solver status out of a solution
+#'
+#' @param solution a solution
+#' @return character vector being either "infeasible", "optimal" or "unbounded"
+#'
+#' @export
+solver_status <- function(solution) UseMethod("solver_status")
+
+#' @export
+solver_status.solution <- function(solution) {
+  solution$status
+}

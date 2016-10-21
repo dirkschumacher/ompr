@@ -136,7 +136,7 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="reference/MIPMode
 <h3 id="dsl">DSL</h3>
 <ul>
 <li>
-<code><a href="reference/MILPModel.html">MILPModel()</a></code> create an empty mixed integer linear model</li>
+<code><a href="reference/MIPModel.html">MIPModel()</a></code> create an empty mixed integer linear model</li>
 <li>
 <code><a href="reference/add_variable.html">add_variable()</a></code> adds variables to a model</li>
 <li>
@@ -175,7 +175,7 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="reference/MIPMode
 max_capacity &lt;-<span class="st"> </span><span class="dv">5</span>
 n &lt;-<span class="st"> </span><span class="dv">10</span>
 weights &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span class="dt">max =</span> max_capacity)
-<span class="kw"><a href="reference/MILPModel.html">MILPModel</a></span>() %&gt;%
+<span class="kw"><a href="reference/MIPModel.html">MIPModel</a></span>() %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n), <span class="st">"max"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>max_capacity) %&gt;%
@@ -193,7 +193,7 @@ max_bins &lt;-<span class="st"> </span><span class="dv">10</span>
 bin_size &lt;-<span class="st"> </span><span class="dv">3</span>
 n &lt;-<span class="st"> </span><span class="dv">10</span>
 weights &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span class="dt">max =</span> bin_size)
-<span class="kw"><a href="reference/MILPModel.html">MILPModel</a></span>() %&gt;%
+<span class="kw"><a href="reference/MIPModel.html">MIPModel</a></span>() %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins), <span class="st">"min"</span>) %&gt;%

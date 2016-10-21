@@ -2,17 +2,18 @@
 #'
 #'
 #' @noRd
-Constraint <- setClass("Constraint",
-                              slots = c(
-                                lhs = "expression",
-                                direction = "character",
-                                rhs = "expression",
-                                original_lhs_expr = "expression",
-                                original_rhs_expr = "expression",
-                                constraint_quantifiers = "list" # e.g. i = 1:n
-                              ),
-                              validity = function(object) {
-                                # TODO: check that (l|r)hs is in the correct
-                                # format
-                                object@direction %in% c("<=", "==", ">=")
-                              })
+new_constraint <- function(lhs,
+                           direction,
+                           rhs,
+                           original_lhs_expr = NULL,
+                           original_rhs_expr = NULL,
+                           constraint_quantifiers = NULL) {
+  stopifnot(direction %in% c("<=", "==", ">="))
+  structure(list(lhs = lhs,
+                 direction = direction,
+                 rhs = rhs,
+                 original_lhs_expr = original_lhs_expr,
+                 original_rhs_expr = original_rhs_expr,
+                 constraint_quantifiers = constraint_quantifiers),
+            class = "model_constraint")
+}

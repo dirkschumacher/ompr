@@ -6,6 +6,8 @@
 \title{Sets the model objective}
 \usage{
 set_objective(model, expression, direction = c("max", "min"))
+
+set_objective_(model, expression, direction = c("max", "min"))
 }
 \arguments{
 \item{model}{the model}

@@ -7,7 +7,6 @@
 #' to solve a model with different solvers. See the ompr
 #' website for more information, documentation and examples.
 #'
-#' @import methods
 #' @docType package
 #' @keywords package
 #' @useDynLib ompr

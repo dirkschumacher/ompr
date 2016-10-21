@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sets the model objective — set_objective • ompr</title>
+<title>Create a new solution — new_solution • ompr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -74,50 +74,29 @@
       </header>
 
       <div class="page-header">
-  <h1>Sets the model objective</h1>
+  <h1>Create a new solution</h1>
 </div>
 
 <div class="row">
   <div class="col-md-9">
     
-    <p>Sets the model objective</p>
+    <p>This is class should only be used if you develop your own solver.</p>
     
 
-    <pre><span class='fu'>set_objective</span>(<span class='no'>model</span>, <span class='no'>expression</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"max"</span>, <span class='st'>"min"</span>))
-
-<span class='fu'>set_objective_</span>(<span class='no'>model</span>, <span class='no'>expression</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"max"</span>, <span class='st'>"min"</span>))</pre>
+    <pre><span class='fu'>new_solution</span>(<span class='no'>model</span>, <span class='no'>objective_value</span>, <span class='no'>status</span>, <span class='no'>solution</span>)</pre>
     
     <h2>Arguments</h2>
     <dl class="dl-horizontal">
       <dt>model</dt>
-      <dd>the model</dd>
-      <dt>expression</dt>
-      <dd>the linear objective as a sum of variables and constants</dd>
-      <dt>direction</dt>
-      <dd>the optimization direction. Must be either &quot;max&quot; or &quot;min&quot;.</dd>
+      <dd>the optimization model that was solved</dd>
+      <dt>objective_value</dt>
+      <dd>a numeric objective value</dd>
+      <dt>status</dt>
+      <dd>the status of the solution.</dd>
+      <dt>solution</dt>
+      <dd>a named numeric vector containing the solution values</dd>
     </dl>
-    
-    <div class="Value">
-      <h2>Value</h2>
-
-      <p>a Model with a new objective function definition</p>
-    </div>
-    
-    <h2 id="examples">Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
-<span class='fu'><a href='MIPModel.html'>MIPModel</a></span>() <span class='kw'>%&gt;%</span>
- <span class='fu'><a href='add_variable.html'>add_variable</a></span>(<span class='no'>x</span>, <span class='kw'>lb</span> <span class='kw'>=</span> <span class='fl'>2</span>) <span class='kw'>%&gt;%</span>
- <span class='fu'><a href='add_variable.html'>add_variable</a></span>(<span class='no'>y</span>, <span class='kw'>lb</span> <span class='kw'>=</span> <span class='fl'>40</span>) <span class='kw'>%&gt;%</span>
- <span class='fu'>set_objective</span>(<span class='no'>x</span> + <span class='no'>y</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='st'>"min"</span>)</div><div class='output co'>#&gt; Mixed linear integer optimization problem
-#&gt; Variables:
-#&gt;   Continuous: 2 
-#&gt;   Integer: 0 
-#&gt;   Binary: 0 
-#&gt; No objective function. 
-#&gt; Constraints: 0 
-#&gt; </div><div class='input'>
-</div></pre>
-  </div>
+          </div>
   <div class="col-md-3">
   </div>
 </div>

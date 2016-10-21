@@ -31,7 +31,7 @@ This is the `ompr` equivalent:
 ```{r, eval=FALSE}
 n <- 10; W <- 2
 v <- runif(n);w <- runif(n)
-model <- MILPModel() %>% 
+model <- MIPModel() %>% 
   add_variable(x[i], i = 1:n, type = "binary") %>% 
   set_objective(sum_expr(v[i] * x[i], i = 1:n)) %>% 
   add_constraint(sum_expr(w[i] * x[i], i = 1:n) <= W)
@@ -51,7 +51,7 @@ library(magrittr)
 Each function in `ompr` creates immutable copies of the models. In addition the function interface has been designed to work with `magrittr` pipes. You always start with an empty model and add components to it.
 
 ```{r}
-MILPModel() %>% 
+MIPModel() %>% 
   add_variable(x) %>% 
   set_objective(x) %>% 
   add_constraint(x <= 1)
@@ -62,7 +62,7 @@ MILPModel() %>%
 Variables can be of type `continuous`, `integer` or `binary`.
 
 ```{r}
-MILPModel() %>% 
+MIPModel() %>% 
   add_variable(x, type = "integer") %>% 
   add_variable(y, type = "continuous") %>% 
   add_variable(z, type = "binary")
@@ -73,7 +73,7 @@ MILPModel() %>%
 Variables can have lower and upper bounds. 
 
 ```{r}
-MILPModel() %>% 
+MIPModel() %>% 
   add_variable(x, lb = 10) %>% 
   add_variable(y, lb = 5, ub = 10)
 ```
@@ -83,7 +83,7 @@ MILPModel() %>%
 Often when you develop a complex model you work with indexed variables. This is an important concept `ompr` supports.
 
 ```{r}
-MILPModel() %>% 
+MIPModel() %>% 
   add_variable(x[i], i = 1:10) %>%  # creates 10 decision variables
   set_objective(x[5]) %>% 
   add_constraint(x[5] <= 10)
@@ -96,7 +96,7 @@ If you have indexed variables then you often want to sum over a subset of variab
 The following code creates a model with three decision variables $x_1$, $x_2$, $x_3$. An objective function $\sum_i x_i$ and one constraint $\sum_i x_i \leq 10$.
 
 ```{r}
-MILPModel() %>% 
+MIPModel() %>% 
   add_variable(x[i], i = 1:3) %>% 
   set_objective(sum_expr(x[i], i = 1:3)) %>% 
   add_constraint(sum_expr(x[i], i = 1:3) <= 10)
@@ -107,7 +107,7 @@ MILPModel() %>%
 `add_variable`, `add_constraint`, `set_bounds`, `sum_expr` all support a common quantifier interface that also supports filter expression. A more complex example will show what that means.
 
 ```{r}
-MILPModel() %>% 
+MIPModel() %>% 
   # Create x_{i, j} variables for all combinations of i and j where
   # i = 1:10 and j = 1:10.
   add_variable(x[i, j], type = "binary", i = 1:10, j = 1:10) %>% 
@@ -131,7 +131,7 @@ MILPModel() %>%
 Imagine you want to model a matching problem with a single binary decision variable $x_{i,j}$ that is $1$ iff object $i$ is matched to object $j$. One constraint would be to allow matches only if $i \neq j$. This can be modelled by a constraint or by selectively changing bounds on variables. The latter approach can be used by solvers to improve the solution process.
 
 ```{r}
-MILPModel() %>% 
+MIPModel() %>% 
   add_variable(x[i, j], i = 1:10, j = 1:10, 
                type = "integer", lb = 0, ub = 1) %>% 
   set_objective(sum_expr(x[i, j], i = 1:10, j = 1:10)) %>% 
@@ -149,7 +149,7 @@ Of course you will need external parameters for your models. You can reuse any v
 n <- 5 # number of our variables
 costs <- rpois(n, lambda = 3) # a cost vector
 max_elements <- 3
-MILPModel() %>% 
+MIPModel() %>% 
   add_variable(x[i], type = "binary", i = 1:n) %>% 
   set_objective(sum_expr(costs[i] * x[i], i = 1:n)) %>% 
   add_constraint(sum_expr(x[i], i = 1:n) <= max_elements)
@@ -171,7 +171,7 @@ library(ompr.roi)
 set.seed(1)
 n <- 5
 weights <- matrix(rpois(n * n, 5), ncol = n, nrow = n)
-result <- MILPModel() %>% 
+result <- MIPModel() %>% 
   add_variable(x[i, j], i = 1:n, j = 1:n, type = "binary") %>% 
   set_objective(sum_expr(weights[i, j] * x[i, j], i = 1:n, j = 1:n)) %>% 
   add_constraint(sum_expr(x[i, j], j = 1:n) == 1, i = 1:n) %>% 
