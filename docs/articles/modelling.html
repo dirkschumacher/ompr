@@ -79,7 +79,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ##   Continuous: 1 
 ##   Integer: 0 
 ##   Binary: 0 
-## No objective function. 
+## Search direction: maximize 
 ## Constraints: 1</code></pre>
 </div>
 <div id="variable-types" class="section level2">
@@ -123,7 +123,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ##   Continuous: 10 
 ##   Integer: 0 
 ##   Binary: 0 
-## No objective function. 
+## Search direction: maximize 
 ## Constraints: 1</code></pre>
 </div>
 <div id="summation-over-variables" class="section level2">
@@ -139,7 +139,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ##   Continuous: 3 
 ##   Integer: 0 
 ##   Binary: 0 
-## No objective function. 
+## Search direction: maximize 
 ## Constraints: 1</code></pre>
 </div>
 <div id="quantifiers" class="section level2">
@@ -167,7 +167,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ##   Continuous: 0 
 ##   Integer: 0 
 ##   Binary: 105 
-## No objective function. 
+## Search direction: maximize 
 ## Constraints: 15</code></pre>
 </div>
 <div id="special-bounds-on-a-subset-of-variables" class="section level2">
@@ -186,7 +186,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ##   Continuous: 0 
 ##   Integer: 100 
 ##   Binary: 0 
-## No objective function. 
+## Search direction: maximize 
 ## Constraints: 10</code></pre>
 </div>
 <div id="external-model-parameters" class="section level2">
@@ -204,15 +204,18 @@ max_elements &lt;-<span class="st"> </span><span class="dv">3</span>
 ##   Continuous: 0 
 ##   Integer: 0 
 ##   Binary: 5 
-## No objective function. 
+## Search direction: maximize 
 ## Constraints: 1</code></pre>
 </div>
 <div id="extract-model-solutions" class="section level2">
 <h2>Extract model solutions</h2>
 <p>Once you have a model, you pass it to a solver and get back a solutions. The main interface to extract variable values from a solution is the function <code>get_solution</code>. It returns a data.frame for indexed variable and thus makes it easy to subsequently use the value.</p>
 <p>We use <code>ROI</code> and <code>GLPK</code> to solve it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI)
-<span class="kw">library</span>(ROI.plugin.glpk)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI)</code></pre></div>
+<pre><code>## ROI: R Optimization Infrastructure</code></pre>
+<pre><code>## Registered solver plugins: nlminb, glpk, symphony.</code></pre>
+<pre><code>## Default solver: auto.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI.plugin.glpk)
 <span class="kw">library</span>(ompr.roi)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
 n &lt;-<span class="st"> </span><span class="dv">5</span>
