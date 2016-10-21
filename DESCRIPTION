@@ -1,7 +1,7 @@
 Package: ompr
 Type: Package
 Title: A Package to model (Mixed) Integer Programs
-Version: 0.4.0.9000
+Version: 0.4.0.9001
 Authors@R: person("Dirk", "Schumacher", email = "mail@dirk-schumacher.net",
             role = c("aut", "cre", "cph"))
 Description: A package to model (mixed) integer programs.
