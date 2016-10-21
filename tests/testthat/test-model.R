@@ -84,8 +84,16 @@ test_that("model has a nice default output", {
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
     set_objective(-x + y, direction = "max")
-  expect_output(show(m), "Constraints: 1")
+  expect_output(print(m), "Constraints: 1")
 })
+
+test_that("model outputs direction on print", {
+  m <- set_objective(add_variable(MIPModel(), x), 0, direction = "max")
+  expect_output(print(m), "maximize")
+  m <- set_objective(add_variable(MIPModel(), x), 0, direction = "min")
+  expect_output(print(m), "minimize")
+})
+
 
 test_that("bug 20161011 #83: bounds of binary vars are not 0/1", {
   model <- add_variable(MIPModel(), x, type = "binary") %>%

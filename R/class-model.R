@@ -61,8 +61,9 @@ add_variable_ <- function(model, variable, ..., type = "continuous",
 }
 
 #' @export
-add_variable_.optimization_model <- function(model, variable, ..., type = "continuous",
-                                    lb = -Inf, ub = Inf, .dots) {
+add_variable_.optimization_model <- function(model, variable, ...,
+                                             type = "continuous",
+                                             lb = -Inf, ub = Inf, .dots) {
   if (length(lb) != 1 || length(ub) != 1) {
     stop("lb and ub must be of length 1. I.e. just a single number.")
   }
@@ -350,9 +351,9 @@ print.optimization_model <- function(x, ...) {
             # obj function
             objective <- x$objective
             if (!is.null(objective) &&
-                length(x$direction) == 1) {
+                length(objective$direction) == 1) {
               cat("Search direction:",
-                if (x$direction == "max") "maximize" else "minimize",
+                if (objective$direction == "max") "maximize" else "minimize",
                 "\n")
             } else {
               cat("No objective function. \n")

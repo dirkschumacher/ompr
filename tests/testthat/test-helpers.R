@@ -35,5 +35,6 @@ test_that("extract_coefficients can extract coefficients", {
 test_that("check_expression handles special cases", {
   expect_silent(check_expression(add_variable(MIPModel(), x), substitute(x)))
   expect_error(check_expression(add_variable(MIPModel(), x), substitute(y)))
-  expect_error(check_expression(add_variable(MIPModel(), x[i], i = 1), substitute(x)))
+  expect_error(check_expression(add_variable(MIPModel(), x[i], i = 1),
+                                substitute(x)))
 })
