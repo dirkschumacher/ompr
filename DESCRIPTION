@@ -6,7 +6,8 @@ Authors@R: person("Dirk", "Schumacher", email = "mail@dirk-schumacher.net",
             role = c("aut", "cre", "cph"))
 Description: Model mixed integer linear programs in an algebraic way directly in R.
              The model is solver-independent and thus offers the possibility
-             to solve a model with different solvers. See the OMPR
+             to solve a model with different solvers. It currently only supports
+             linear constraints and objective functions. See the OMPR
              website for more information, documentation and examples.
 License: GPL-3 | file LICENSE
 LazyData: TRUE
