@@ -7,4 +7,4 @@
 ^vignettes
 ^docs
 ^_pkgdown.yml
-^LICENSE
+^src/\.clang-format
