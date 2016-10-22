@@ -73,7 +73,7 @@ Solvers are in different packages. `ompr.ROI` uses the ROI package which offers 
 * `with_ROI(solver = "glpk")` solve the model with GLPK. Install `ROI.plugin.glpk`
 * `with_ROI(solver = "symphony")` solve the model with Symphony. Install `ROI.plugin.symphony`
 * `with_ROI(solver = "cplex")` solve the model with CPLEX. Install `ROI.plugin.cplex`
-* ... See the [ROI package](https://cran.r-project.org/web/packages/ROI/index.html) for more plugins.
+* ... See the [ROI package](https://CRAN.R-project.org/package=ROI) for more plugins.
 
  
 ## Further Examples
