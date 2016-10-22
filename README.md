@@ -119,7 +119,7 @@ MIPModel() %>%
   set_objective(sum_expr(y[i], i = 1:max_bins), "min") %>%
   add_constraint(sum_expr(weights[j] * x[i, j], j = 1:n) <= y[i] * bin_size, i = 1:max_bins) %>%
   add_constraint(sum_expr(x[i, j], i = 1:max_bins) == 1, j = 1:n) %>%
-  solve_model(with_ROI(solver = "symphony", verbose = TRUE)) %>% 
+  solve_model(with_ROI(solver = "symphony", verbosity = 1)) %>% 
   get_solution(x[i, j]) %>%
   filter(value > 0) %>%
   arrange(i)
