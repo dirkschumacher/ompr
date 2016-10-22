@@ -8,3 +8,4 @@
 ^docs
 ^_pkgdown.yml
 ^src/\.clang-format
+^cran-comments\.md$

@@ -119,25 +119,19 @@ bind_expression <- function(var_name, exp, envir, bound_subscripts) {
 
 #' @noRd
 bind_variables <- function(model, ast, calling_env) {
-  if (is.environment(calling_env)) {
-    if (exists(names(model$variables), calling_env)) {
-      problematic_vars <- mapply(function(x) {
-        exists(x, calling_env)
-      }, names(model$variables))
-      problematic_vars <- names(model$variables)[problematic_vars]
-      warning(paste0("There variables in your environment that interfere",
-                      " with your defined model variables: ",
-                     paste0(problematic_vars, collapse = ","),
-                      ". This can lead",
-                      " to unexpected behaviour."))
-    }
-    return(try_eval_exp_rec(ast, calling_env))
-  } else {
-    stop("calling_env is not an environment")
+  stopifnot(is.environment(calling_env))
+  if (exists(names(model$variables), calling_env)) {
+    problematic_vars <- mapply(function(x) {
+      exists(x, calling_env)
+    }, names(model$variables))
+    problematic_vars <- names(model$variables)[problematic_vars]
+    warning(paste0("There variables in your environment that interfere",
+                   " with your defined model variables: ",
+                   paste0(problematic_vars, collapse = ","),
+                   ". This can lead",
+                   " to unexpected behaviour."))
   }
-
-  # bind variables
-  eval(substitute(substitute(x, calling_env), list(x = ast)))
+  try_eval_exp_rec(ast, calling_env)
 }
 
 check_expression <- function(model, the_ast) {
@@ -313,8 +307,7 @@ extract_coefficients <- function(ast) {
           expr_idx <- 2
         }
 
-        # What the hell
-        coef <- try(as.numeric(local_ast[[numeric_idx]]), silent = TRUE)
+        coef <- try_eval_exp(local_ast[[numeric_idx]])
         if (!is.numeric(coef)) coef <- 0
         coefficent <- list(ast = local_ast[[expr_idx]],
                            coef = coef)

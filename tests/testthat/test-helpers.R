@@ -38,3 +38,23 @@ test_that("check_expression handles special cases", {
   expect_error(check_expression(add_variable(MIPModel(), x[i], i = 1),
                                 substitute(x)))
 })
+
+test_that("extract_coefficients can extract coefficients #2", {
+  ast <- substitute(5 * x)
+  result <- extract_coefficients(ast)
+  expect_equal(1, length(result$coefficients))
+  expect_equivalent(5, result$coefficients[["x"]]$coef)
+})
+
+test_that("extract_coefficients fails if unkown operator is used", {
+  ast <- substitute(5 ^ x)
+  expect_error(extract_coefficients(ast))
+})
+
+test_that("extract_coefficients can extract coefficients #3", {
+  ast <- substitute(x)
+  result <- extract_coefficients(ast)
+  expect_equal(1, length(result$coefficients))
+  expect_equivalent(1, result$coefficients[["x"]]$coef)
+})
+
