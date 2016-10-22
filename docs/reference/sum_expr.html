@@ -80,17 +80,19 @@
 <div class="row">
   <div class="col-md-9">
     
-    <p>Constructs a sum expression</p>
+    <p>This functions helps to create dynamic sum expression
+based on external variables. Should only be used within
+other &#39;ompr&#39; functions.</p>
     
 
-    <pre><span class='fu'>sum_expr</span>(<span class='no'>exp</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>sum_expr</span>(<span class='no'>expr</span>, <span class='no'>...</span>)</pre>
     
     <h2>Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>exp</dt>
+      <dt>expr</dt>
       <dd>an expression that can be expanded to a sum</dd>
       <dt>...</dt>
-      <dd>bind variables in exp using dots. See examples.</dd>
+      <dd>bind variables in expr using dots. See examples.</dd>
     </dl>
     
     <div class="Value">
@@ -98,10 +100,20 @@
 
       <p>the expanded sum as an AST</p>
     </div>
+
+    <div class="See also">
+      <h2>See also</h2>
+
+      <p>add_constraint</p>
+      <p>set_objective</p>
+    </div>
     
     <h2 id="examples">Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>sum_expr</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>)</div><div class='output co'>#&gt; x[1L] + x[2L] + x[3L] + x[4L] + x[5L] + x[6L] + x[7L] + x[8L] + 
+    <pre class="examples"><div class='input'><span class='co'># create a sum from x_1 to x_10</span>
+<span class='fu'>sum_expr</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>)</div><div class='output co'>#&gt; x[1L] + x[2L] + x[3L] + x[4L] + x[5L] + x[6L] + x[7L] + x[8L] + 
 #&gt;     x[9L] + x[10L]
+#&gt; </div><div class='input'><span class='co'># create a sum from x_2 to x_10 with even indexes</span>
+<span class='fu'>sum_expr</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>, <span class='no'>i</span> <span class='kw'>%%</span> <span class='fl'>2</span> <span class='kw'>==</span> <span class='fl'>0</span>)</div><div class='output co'>#&gt; x[2L] + x[4L] + x[6L] + x[8L] + x[10L]
 #&gt; </div><div class='input'>
 </div></pre>
   </div>

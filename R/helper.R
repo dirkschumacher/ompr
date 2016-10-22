@@ -359,20 +359,28 @@ extract_coefficients <- function(ast) {
 
 #' Constructs a sum expression
 #'
-#' @param exp an expression that can be expanded to a sum
-#' @param ... bind variables in exp using dots. See examples.
+#' This functions helps to create dynamic sum expression
+#' based on external variables. Should only be used within
+#' other 'ompr' functions.
+#'
+#' @param expr an expression that can be expanded to a sum
+#' @param ... bind variables in expr using dots. See examples.
 #'
 #' @return the expanded sum as an AST
 #'
+#' @seealso add_constraint
+#' @seealso set_objective
+#'
 #' @examples
+#' # create a sum from x_1 to x_10
 #' sum_expr(x[i], i = 1:10)
+#' # create a sum from x_2 to x_10 with even indexes
+#' sum_expr(x[i], i = 1:10, i %% 2 == 0)
 #'
 #' @export
-sum_expr <- function(exp, ...) {
-  # TODO: This should probably be moved into the model
-  # TODO: Make sure the input is correct
-  # TODO: Take model and make sure
-  # we do not overwrite any model variables
+sum_expr <- function(expr, ...) {
+  ast <- substitute(expr)
+  stopifnot(lazyeval::is_call(ast))
   lazy_dots <- lazyeval::lazy_dots(...)
   classified_quantifiers <- classify_quantifiers(lazy_dots)
   bound_subscripts <- lapply(classified_quantifiers$quantifiers,
@@ -382,7 +390,6 @@ sum_expr <- function(exp, ...) {
                                               classified_quantifiers$filters)
   zero_vars_msg <- paste0("The number of different indexes for sum_expr is 0.")
   validate_quantifier_candidates(subscript_combinations, zero_vars_msg)
-  ast <- substitute(exp)
   list_of_eval_exps <- apply(subscript_combinations, 1, function(row) {
     binding_env <- as.environment(as.list(row))
     try_eval_exp_rec(ast, binding_env)

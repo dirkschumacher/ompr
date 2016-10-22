@@ -189,3 +189,12 @@ test_that("evaluates terms", {
   expect_equal("25",
                deparse(m$objective$expression[[1]]))
 })
+
+test_that("SE handles sum_expr well", {
+  m <- MIPModel() %>%
+    add_variable_(~x[j], j = 1:4) %>%
+    add_constraint_(~sum_expr(x[j], j = 1:2, j == 1) -
+                      sum_expr(x[j], j = 3:4) == 0)
+  expect_equal(deparse(m$constraints[[1]]$lhs[[1]]),
+               "x[1L] + (-1 * x[3L] + -1 * x[4L])")
+})
