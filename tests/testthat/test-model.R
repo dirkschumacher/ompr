@@ -175,3 +175,17 @@ test_that("set_objective_ supports standard eval.", {
   m <- add_variable_(m, ~x)
   m <- set_objective_(m, ~x)
 })
+
+test_that("can expand a term N * (x - y)", {
+  m <- add_variable(MIPModel(), x[i], i = 1:2)
+  m <- set_objective_(m, ~ -5 * (x[1] - x[2]))
+  expect_equal("-5 * x[1] + 5 * x[2]",
+               deparse(m$objective$expression[[1]]))
+})
+
+test_that("evaluates terms", {
+  m <- add_variable(MIPModel(), x[i], i = 1:2)
+  m <- set_objective_(m, ~ 5 * 5)
+  expect_equal("25",
+               deparse(m$objective$expression[[1]]))
+})
