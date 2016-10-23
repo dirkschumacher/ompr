@@ -3,6 +3,7 @@
 S3method(add_constraint_,optimization_model)
 S3method(add_variable_,optimization_model)
 S3method(get_solution_,solution)
+S3method(objective_value,solution)
 S3method(print,optimization_model)
 S3method(print,solution)
 S3method(set_bounds_,optimization_model)

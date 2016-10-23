@@ -138,6 +138,7 @@ print.solution <- function(x, ...) {
 #' @export
 objective_value <- function(solution) UseMethod("objective_value")
 
+#' @export
 objective_value.solution <- function(solution) {
   solution$objective_value
 }
