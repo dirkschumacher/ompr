@@ -1,0 +1,154 @@
+---
+title: "The Minimum Graph Coloring Problem"
+author: "Dirk Schumacher"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The Minimum Graph Coloring Problem}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+In this article we will model the [minimum graph coloring problem](https://en.wikipedia.org/wiki/Graph_coloring). The goal: color a map with as few colors as possible while no two adjacent regions having the same color.
+
+## Read spatial data
+
+First, let's load some useful packages needed for (spatial) data processing.
+
+```{r, message=FALSE, warning=FALSE}
+library(rgeos)
+library(rgdal)
+library(maptools)
+library(dplyr)
+```
+
+Then we read in the 50 states of the US.
+
+```{r}
+# data from https://github.com/datasets/geo-boundaries-us-110m
+# reference data from here: https://github.com/nvkelso/natural-earth-vector/tree/master/110m_cultural
+# License of reference data: public domain (https://github.com/nvkelso/natural-earth-vector/blob/master/LICENSE.md)
+map_data <- rgdal::readOGR("https://raw.githubusercontent.com/datasets/geo-boundaries-us-110m/84e946f6b1de01e2642bcdb17d5b697acb6b48c4/json/ne_110m_admin_1_states_provinces_shp_scale_rank.geojson", "OGRGeoJSON")
+```
+
+Next step is to create an adjacency list to determine neighboring states.
+
+```{r}
+# this gives as an adjancy list
+neighbors <- spdep::poly2nb(map_data)
+
+# a helper function that determines if two nodes are adjacent
+is_adjacent <- function(i, j) {
+  purrr::map2_lgl(i, j, ~ .y %in% neighbors[[.x]])
+}
+```
+
+We can then ask:
+```{r}
+is_adjacent(1, 2)
+is_adjacent(1, 3)
+```
+
+
+## Optimization model
+
+Next, we will model the problem with `ompr` as a mixed integer linear program that tries to find a coloring with as few colors as possible.
+
+```{r, message=FALSE}
+library(ompr)
+```
+
+```{r, message=FALSE}
+n <- nrow(map_data@data) # number of nodes aka states
+max_colors <- 4 # 4 should be enough. But you increase this number.
+
+# based on the formulation from here
+# http://wwwhome.math.utwente.nl/~uetzm/do/IP-FKS.pdf
+model <- MIPModel() %>% 
+  
+  # 1 iff node i has color k
+  add_variable(x[i, k], type = "binary", i = 1:n, k = 1:max_colors) %>% 
+  
+  # 1 iff color k is used
+  add_variable(y[k], type = "binary", k = 1:max_colors) %>% 
+  
+  # minimize colors
+  set_objective(sum_expr(y[k], k = 1:max_colors), direction = "min") %>% 
+  
+  # each node is colored
+  add_constraint(sum_expr(x[i, k], k = 1:max_colors) == 1, i = 1:n) %>% 
+  
+  # if a color is used set y to 1
+  add_constraint(sum_expr(x[i, k], i = 1:n) <= n * y[k], k = 1:max_colors) %>% 
+  
+  # no adjacent nodes have the same color
+  add_constraint(x[i, k] + x[j, k] <= 1, i = 1:n, j = 1:n, k = 1:max_colors, is_adjacent(i, j))
+```
+
+```{r}
+model
+```
+
+The last constraint uses *filter constraints*:
+```{r, eval=FALSE}
+add_constraint(x[i, k] + x[j, k] <= 1, i = 1:n, j = 1:n, k = 1:max_colors, is_adjacent(i, j))
+```
+This code generates a constraint for each combination of i, j and k with the additional constraint, that `is_adjacent(i, j)` needs to evaluate to `TRUE`. Using *filter constraints* let's you design a very specific set of constraints with minimal code. This principle can be used with all functions that acceppt quantifiers: `sum_expr`, `set_bounds`, `add_constraints` and `add_variable`.
+
+## Solve it
+
+Now since we have built the model, we will solve it using the excellent `ROI` package and the `symphony` solver. `ompr.roi` is a solver that takes an `ompr` package and translates it to `ROI`: this makes it possible to use range of solvers out of the box.
+
+```{r, message=FALSE}
+library(ROI)
+library(ROI.plugin.symphony)
+library(ompr.roi)
+```
+
+```{r, warning=FALSE}
+result <- solve_model(model, with_ROI("symphony"))
+```
+
+```{r}
+result
+```
+
+Yay. We found the minimal coloring with `r objective_value(result)` colors.
+
+## Plot the result
+
+Last step is to plot the result. First we will get the colors from the optimal solution.
+
+```{r}
+assigned_colors <- get_solution(result, x[i, k]) %>% 
+  filter(value > 0.9) %>% 
+  arrange(i)
+```
+
+```{r}
+head(assigned_colors, 5)
+```
+
+Then we need to prepare the data for ggplot and join the colors to the data.
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+color_data <- map_data@data
+color_data$color <- assigned_colors$k
+plot_data_fort <- fortify(map_data, region = "adm1_code") %>% 
+  left_join(select(color_data, adm1_code, color), 
+            by = c("id" = "adm1_code")) %>% 
+  mutate(color = factor(color))
+```
+
+Now we have everything to plot it:
+
+```{r}
+ggplot(plot_data_fort, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(aes(fill = color)) + 
+  coord_quickmap() + 
+  viridis::scale_fill_viridis(discrete = TRUE, option = "D")
+```
+

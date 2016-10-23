@@ -32,7 +32,7 @@ articles:
     - problem-sudoku
     - problem-tsp
     - problem-mtsp
-
+    - problem-graph-coloring
 
 navbar:
   title: ompr

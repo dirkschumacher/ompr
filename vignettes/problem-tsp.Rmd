@@ -1,10 +1,10 @@
 ---
-title: "Solve the Traveling Salesman Problem"
+title: "The Traveling Salesman Problem"
 author: "Dirk Schumacher"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Solve the Traveling Salesman Problem}
+  %\VignetteIndexEntry{The Traveling Salesman Problem}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
