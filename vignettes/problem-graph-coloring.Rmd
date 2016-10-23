@@ -80,7 +80,7 @@ model <- MIPModel() %>%
   # each node is colored
   add_constraint(sum_expr(x[i, k], k = 1:max_colors) == 1, i = 1:n) %>% 
   
-  # if a color is used set y to 1
+  # if a color k is used, set y[k] to 1
   add_constraint(sum_expr(x[i, k], i = 1:n) <= n * y[k], k = 1:max_colors) %>% 
   
   # no adjacent nodes have the same color
@@ -91,11 +91,11 @@ model <- MIPModel() %>%
 model
 ```
 
-The last constraint uses *filter constraints*:
+The last constraint uses *filter expressions*:
 ```{r, eval=FALSE}
 add_constraint(x[i, k] + x[j, k] <= 1, i = 1:n, j = 1:n, k = 1:max_colors, is_adjacent(i, j))
 ```
-This code generates a constraint for each combination of i, j and k with the additional constraint, that `is_adjacent(i, j)` needs to evaluate to `TRUE`. Using *filter constraints* let's you design a very specific set of constraints with minimal code. This principle can be used with all functions that acceppt quantifiers: `sum_expr`, `set_bounds`, `add_constraints` and `add_variable`.
+This code generates a constraint for each combination of i, j and k with the additional constraint, that `is_adjacent(i, j)` needs to evaluate to `TRUE`. Using *filter expressions* let's you design a very specific set of constraints with minimal code. This principle can be used with all functions that acceppt quantifiers: `sum_expr`, `set_bounds`, `add_constraint` and `add_variable`.
 
 ## Solve it
 

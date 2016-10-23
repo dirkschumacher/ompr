@@ -46,4 +46,4 @@ navbar:
     href: reference/index.html
   right:
   - icon: fa-github fa-lg
-    href: https://github.com/hadley/pkgdown
+    href: https://github.com/dirkschumacher/ompr
