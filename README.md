@@ -1,4 +1,4 @@
-# A Package to model (Mixed) Integer Programs
+# Mathematical programming in R
 
 [![Build Status](https://travis-ci.org/dirkschumacher/ompr.svg?branch=master)](https://travis-ci.org/dirkschumacher/ompr)
 [![Coverage Status](https://coveralls.io/repos/github/dirkschumacher/ompr/badge.svg?branch=master)](https://coveralls.io/github/dirkschumacher/ompr?branch=master)
@@ -16,6 +16,18 @@ Here are some problems you could solve with this package:
 The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives a good starting point if you would like to learn more about the topic.
 
 This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
+
+## Supported problem classes
+
+### Objective types
+* Linear
+
+### Constraint types
+* Linear
+
+### Variable types
+* Continuous
+* Integer-valued
 
 ## Install
 
