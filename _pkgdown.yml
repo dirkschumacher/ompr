@@ -1,7 +1,8 @@
 title: ompr
 
-template:
-  bootswatch: cerulean
+templates:
+  params:
+    bootswatch: cerulean
 
 reference:
   - title: Build a model
