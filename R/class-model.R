@@ -96,9 +96,7 @@ add_variable_.optimization_model <- function(model, variable, ...,
     var_name <- as.character(expr)
     var <- new_variable(arity = 0L,
                type = type, instances = "",
-               lb = lb, ub = ub,
-               variable_expression = as.expression(as.symbol(var_name)),
-               variable_quantifiers = list()
+               lb = lb, ub = ub
                )
     model$variables[[var_name]] <- var
   } else if (lazyeval::is_call(expr) && expr[[1]] == "[") {
@@ -142,9 +140,7 @@ add_variable_.optimization_model <- function(model, variable, ...,
                type = type,
                instances = instances,
                lb = rep.int(lb, n_vars),
-               ub = rep.int(ub, n_vars),
-               variable_expression = as.expression(expr),
-               variable_quantifiers = bound_subscripts)
+               ub = rep.int(ub, n_vars))
     model$variables[[var_name]] <- var
   } else {
     stop(paste0("The variable definition does not seem to be right.",

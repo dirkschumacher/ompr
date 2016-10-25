@@ -9,8 +9,6 @@
 #' @param ub an optional upper bound. No value means unbounded.
 #' @param instances a character vector with an entry for each
 #'        variable instance.
-#' @param variable_expression the original variable expression as an ast
-#' @param variable_quantifiers the variable quantifiers.
 #'
 #' @noRd
 new_variable <- function(arity, type, instances, lb, ub,
@@ -21,8 +19,6 @@ new_variable <- function(arity, type, instances, lb, ub,
   stopifnot(type %in% c("binary", "continuous", "integer"))
   structure(list(arity = arity,
              type = type, instances = instances,
-             lb = lb, ub = ub,
-             variable_expression = variable_expression,
-             variable_quantifiers = variable_quantifiers),
+             lb = lb, ub = ub),
             class = "model_variable")
 }
