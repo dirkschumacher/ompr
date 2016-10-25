@@ -79,7 +79,7 @@ plot_data <- expand.grid(
 ggplot(plot_data, aes(x = course, y = count, fill = weight)) + 
   geom_bar(stat = "identity") + 
   viridis::scale_fill_viridis() + 
-  geom_hline(yintercept = 12)
+  geom_hline(yintercept = 11)
 ```
 
 ## The model
