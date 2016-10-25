@@ -22,7 +22,7 @@ new_solution <- function(model,
                  solution = solution), class = "solution")
 }
 
-#' Extracts variable values from a solution
+#' Get variable values from a solution
 #'
 #' @param solution the solution object
 #' @param expr a variable expression. You can partially bind indexes.
@@ -130,7 +130,7 @@ print.solution <- function(x, ...) {
             cat("Objective value:", objective_value(x))
           }
 
-#' Extracts the numerical objective value from a solution
+#' Extract the numerical objective value from a solution
 #'
 #' @param solution a solution
 #' @return numeric single item vector
@@ -143,7 +143,7 @@ objective_value.solution <- function(solution) {
   solution$objective_value
 }
 
-#' Gets the solver status out of a solution
+#' Get the solver status from a solution
 #'
 #' @param solution a solution
 #' @return character vector being either "infeasible", "optimal" or "unbounded"

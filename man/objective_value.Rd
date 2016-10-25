@@ -2,7 +2,7 @@
 % Please edit documentation in R/class-solution.R
 \name{objective_value}
 \alias{objective_value}
-\title{Extracts the numerical objective value from a solution}
+\title{Extract the numerical objective value from a solution}
 \usage{
 objective_value(solution)
 }
@@ -13,6 +13,6 @@ objective_value(solution)
 numeric single item vector
 }
 \description{
-Extracts the numerical objective value from a solution
+Extract the numerical objective value from a solution
 }
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/helper.R
 \name{sum_expr}
 \alias{sum_expr}
-\title{Constructs a sum expression}
+\title{Construct a sum expression}
 \usage{
 sum_expr(expr, ...)
 }

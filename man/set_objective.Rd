@@ -3,7 +3,7 @@
 \name{set_objective}
 \alias{set_objective}
 \alias{set_objective_}
-\title{Sets the model objective}
+\title{Set the model objective}
 \usage{
 set_objective(model, expression, direction = c("max", "min"))
 
@@ -20,7 +20,7 @@ set_objective_(model, expression, direction = c("max", "min"))
 a Model with a new objective function definition
 }
 \description{
-Sets the model objective
+Set the model objective
 }
 \examples{
 library(magrittr)

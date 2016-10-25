@@ -267,7 +267,7 @@ normalize_expression <- function(model, expression, envir) {
   ast
 }
 
-#' Extracts the coefficients out of an ast
+#' Extract the coefficients out of an ast
 #'
 #' Should only be used if you intentd to develop your own solver.
 #'
@@ -357,7 +357,7 @@ extract_coefficients <- function(ast) {
   return_tuple
 }
 
-#' Constructs a sum expression
+#' Construct a sum expression
 #'
 #' This functions helps to create dynamic sum expression
 #' based on external variables. Should only be used within

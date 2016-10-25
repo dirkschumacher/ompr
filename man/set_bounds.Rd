@@ -3,7 +3,7 @@
 \name{set_bounds}
 \alias{set_bounds}
 \alias{set_bounds_}
-\title{Sets the bounds of a variable}
+\title{Set the bounds of a variable}
 \usage{
 set_bounds(model, variable, ..., lb = NULL, ub = NULL)
 

@@ -3,7 +3,7 @@
 \name{get_solution}
 \alias{get_solution}
 \alias{get_solution_}
-\title{Extracts variable values from a solution}
+\title{Get variable values from a solution}
 \usage{
 get_solution(solution, expr)
 get_solution_(solution, expr)
@@ -21,7 +21,7 @@ a data.frame. One row for each variable instance
         Unless it is a single variable, then it returns a single number.
 }
 \description{
-Extracts variable values from a solution
+Get variable values from a solution
 }
 \examples{
 \dontrun{

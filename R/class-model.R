@@ -15,7 +15,7 @@ new_objective_function <- function(expression,
 }
 
 
-#' Adds a variable to the model
+#' Add a variable to the model
 #'
 #' A variable can either be a name or an indexed name. See examples.
 #'
@@ -151,7 +151,7 @@ add_variable_.optimization_model <- function(model, variable, ...,
 }
 
 
-#' Sets the bounds of a variable
+#' Set the bounds of a variable
 #'
 #' Change the lower and upper bounds of a named variable,
 #' indexed variable or a group of variables.
@@ -275,7 +275,7 @@ set_bounds_.optimization_model <- function(model, variable, ...,
   model
 }
 
-#' Sets the model objective
+#' Set the model objective
 #'
 #' @param model the model
 #' @param expression the linear objective as a sum of variables and constants
@@ -494,14 +494,9 @@ solve_model.optimization_model <- function(model, solver) {
   solver(model)
 }
 
-#' Creates a new MIP Model
+#' Create a new MIP Model
 #' @export
 MIPModel <- function() structure(list(variables = list(),
                                       objective = NULL,
                                       constraints = list()),
                                  class = "optimization_model")
-
-#' Creates a new MILP Model
-#' @seealso MIPModel
-#' @noRd
-MILPModel <- MIPModel

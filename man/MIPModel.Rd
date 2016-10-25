@@ -2,11 +2,11 @@
 % Please edit documentation in R/class-model.R
 \name{MIPModel}
 \alias{MIPModel}
-\title{Creates a new MIP Model}
+\title{Create a new MIP Model}
 \usage{
 MIPModel()
 }
 \description{
-Creates a new MIP Model
+Create a new MIP Model
 }
 

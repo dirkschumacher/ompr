@@ -2,7 +2,7 @@
 % Please edit documentation in R/class-solution.R
 \name{solver_status}
 \alias{solver_status}
-\title{Gets the solver status out of a solution}
+\title{Get the solver status from a solution}
 \usage{
 solver_status(solution)
 }
@@ -13,6 +13,6 @@ solver_status(solution)
 character vector being either "infeasible", "optimal" or "unbounded"
 }
 \description{
-Gets the solver status out of a solution
+Get the solver status from a solution
 }
 

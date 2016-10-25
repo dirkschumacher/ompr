@@ -2,7 +2,7 @@
 % Please edit documentation in R/helper.R
 \name{extract_coefficients}
 \alias{extract_coefficients}
-\title{Extracts the coefficients out of an ast}
+\title{Extract the coefficients out of an ast}
 \usage{
 extract_coefficients(ast)
 }

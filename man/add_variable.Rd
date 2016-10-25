@@ -3,7 +3,7 @@
 \name{add_variable}
 \alias{add_variable}
 \alias{add_variable_}
-\title{Adds a variable to the model}
+\title{Add a variable to the model}
 \usage{
 add_variable(model, variable, ..., type = "continuous", lb = -Inf,
   ub = Inf)
