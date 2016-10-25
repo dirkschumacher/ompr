@@ -36,8 +36,8 @@
       
       </header><div class="row">
   <div class="contents col-md-9">
-    <div id="a-package-to-model-mixed-integer-programs" class="section level1">
-<h1>A Package to model (Mixed) Integer Programs</h1>
+    <div id="mathematical-programming-in-r" class="section level1">
+<h1>Mathematical programming in R</h1>
 <p><a href="https://travis-ci.org/dirkschumacher/ompr"><img src="https://travis-ci.org/dirkschumacher/ompr.svg?branch=master" alt="Build Status"></a> <a href="https://ci.appveyor.com/project/dirkschumacher/ompr"><img src="https://ci.appveyor.com/api/projects/status/github/dirkschumacher/ompr?branch=master&amp;svg=true" alt="Build Status Windows"></a> <a href="https://coveralls.io/github/dirkschumacher/ompr?branch=master"><img src="https://coveralls.io/repos/github/dirkschumacher/ompr/badge.svg?branch=master" alt="Coverage Status"></a> <a href="https://opensource.org/licenses/GPL-3.0/"><img src="https://badges.frapsoft.com/os/gpl/gpl.svg?v=103" alt="GPL Licence"></a><br><a href="http://www.r-pkg.org/badges/version/ompr"><img src="http://www.r-pkg.org/badges/version/ompr" alt="CRAN"></a></p>
 <p>OMPR (Optimization Modelling Package) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.</p>
 <p>Here are some problems you could solve with this package:</p>
@@ -46,9 +46,29 @@
 <li>If you run a radio station :) What is the optimal way to play music such that your users do not have to listen to the same songs too often?</li>
 </ul><p>The <a href="https://en.wikipedia.org/wiki/Integer_programming">Wikipedia</a> article gives a good starting point if you would like to learn more about the topic.</p>
 <p>This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback.</p>
+<div id="supported-problem-classes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mathematical-programming-in-r" class="anchor"></a>Supported problem classes</h2>
+<div id="objective-types" class="section level3">
+<h3 class="hasAnchor">
+<a href="#supported-problem-classes" class="anchor"></a>Objective types</h3>
+<ul><li>Linear</li>
+</ul></div>
+<div id="constraint-types" class="section level3">
+<h3 class="hasAnchor">
+<a href="#objective-types" class="anchor"></a>Constraint types</h3>
+<ul><li>Linear</li>
+</ul></div>
+<div id="variable-types" class="section level3">
+<h3 class="hasAnchor">
+<a href="#constraint-types" class="anchor"></a>Variable types</h3>
+<ul><li>Continuous</li>
+<li>Integer-valued</li>
+</ul></div>
+</div>
 <div id="install" class="section level2">
 <h2 class="hasAnchor">
-<a href="#a-package-to-model-mixed-integer-programs" class="anchor"></a>Install</h2>
+<a href="#variable-types" class="anchor"></a>Install</h2>
 <p>To install the current development version use devtools:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">"dirkschumacher/ompr"</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">"dirkschumacher/ompr.roi"</span>)</code></pre></div>
