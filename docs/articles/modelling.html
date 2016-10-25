@@ -40,14 +40,15 @@
       <h1>Modelling techniques in OMPR</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-23</h4>
+            <h4 class="date">2016-10-25</h4>
           </div>
 
     
     
+<div class="contents">
 <p>This vignettes discribes the modelling techniques available in <code>ompr</code> to make your life easier when developing a mixed integer programming model.</p>
 <div id="a-mip-model" class="section level2">
-<h2>A MIP Model</h2>
+<h2 class="hasAnchor"><html><body><a href="#a-mip-model" class="anchor"></a></body></html>A MIP Model</h2>
 <p>You can think of a MIP Model as a big constraint maxtrix and a set of vectors. But you can also think of it as a set of decision variables, an objective function and a number of constraints. <code>ompr</code> implements the latter approach.</p>
 <p>For example, <a href="https://en.wikipedia.org/wiki/Knapsack_problem">Wikipedia</a> describes the Knapsack problem like this: <span class="math display">\[
 \begin{equation*}
@@ -68,7 +69,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 <p>The overall idea is to use modern R idioms to construct models like the one above as readable as possible directly in R. <code>ompr</code> will do the heavy lifting and transforms everything into matrices/vectors and pass it to your favorite solver.</p>
 </div>
 <div id="pipes" class="section level2">
-<h2>Pipes</h2>
+<h2 class="hasAnchor"><html><body><a href="#pipes" class="anchor"></a></body></html>Pipes</h2>
 <p>Each function in <code>ompr</code> creates immutable copies of the models. In addition the function interface has been designed to work with <code>magrittr</code> pipes. You always start with an empty model and add components to it.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x) %&gt;%<span class="st"> </span>
@@ -83,7 +84,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ## Constraints: 1</code></pre>
 </div>
 <div id="variable-types" class="section level2">
-<h2>Variable types</h2>
+<h2 class="hasAnchor"><html><body><a href="#variable-types" class="anchor"></a></body></html>Variable types</h2>
 <p>Variables can be of type <code>continuous</code>, <code>integer</code> or <code>binary</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x, <span class="dt">type =</span> <span class="st">"integer"</span>) %&gt;%<span class="st"> </span>
@@ -98,7 +99,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ## Constraints: 0</code></pre>
 </div>
 <div id="variable-bounds" class="section level2">
-<h2>Variable bounds</h2>
+<h2 class="hasAnchor"><html><body><a href="#variable-bounds" class="anchor"></a></body></html>Variable bounds</h2>
 <p>Variables can have lower and upper bounds.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x, <span class="dt">lb =</span> <span class="dv">10</span>) %&gt;%<span class="st"> </span>
@@ -112,7 +113,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ## Constraints: 0</code></pre>
 </div>
 <div id="indexed-variables" class="section level2">
-<h2>Indexed variables</h2>
+<h2 class="hasAnchor"><html><body><a href="#indexed-variables" class="anchor"></a></body></html>Indexed variables</h2>
 <p>Often when you develop a complex model you work with indexed variables. This is an important concept <code>ompr</code> supports.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span>:<span class="dv">10</span>) %&gt;%<span class="st">  </span><span class="co"># creates 10 decision variables</span>
@@ -127,7 +128,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ## Constraints: 1</code></pre>
 </div>
 <div id="summation-over-variables" class="section level2">
-<h2>Summation over variables</h2>
+<h2 class="hasAnchor"><html><body><a href="#summation-over-variables" class="anchor"></a></body></html>Summation over variables</h2>
 <p>If you have indexed variables then you often want to sum over a subset of variables.</p>
 <p>The following code creates a model with three decision variables <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, <span class="math inline">\(x_3\)</span>. An objective function <span class="math inline">\(\sum_i x_i\)</span> and one constraint <span class="math inline">\(\sum_i x_i \leq 10\)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() %&gt;%<span class="st"> </span>
@@ -143,7 +144,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ## Constraints: 1</code></pre>
 </div>
 <div id="quantifiers" class="section level2">
-<h2>Quantifiers</h2>
+<h2 class="hasAnchor"><html><body><a href="#quantifiers" class="anchor"></a></body></html>Quantifiers</h2>
 <p><code>add_variable</code>, <code>add_constraint</code>, <code>set_bounds</code>, <code>sum_expr</code> all support a common quantifier interface that also supports filter expression. A more complex example will show what that means.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="co"># Create x_{i, j} variables for all combinations of i and j where</span>
@@ -171,7 +172,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ## Constraints: 15</code></pre>
 </div>
 <div id="special-bounds-on-a-subset-of-variables" class="section level2">
-<h2>Special bounds on a subset of variables</h2>
+<h2 class="hasAnchor"><html><body><a href="#special-bounds-on-a-subset-of-variables" class="anchor"></a></body></html>Special bounds on a subset of variables</h2>
 <p>Imagine you want to model a matching problem with a single binary decision variable <span class="math inline">\(x_{i,j}\)</span> that is <span class="math inline">\(1\)</span> iff object <span class="math inline">\(i\)</span> is matched to object <span class="math inline">\(j\)</span>. One constraint would be to allow matches only if <span class="math inline">\(i \neq j\)</span>. This can be modelled by a constraint or by selectively changing bounds on variables. The latter approach can be used by solvers to improve the solution process.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span>:<span class="dv">10</span>, 
@@ -190,7 +191,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 ## Constraints: 10</code></pre>
 </div>
 <div id="external-model-parameters" class="section level2">
-<h2>External model parameters</h2>
+<h2 class="hasAnchor"><html><body><a href="#external-model-parameters" class="anchor"></a></body></html>External model parameters</h2>
 <p>Of course you will need external parameters for your models. You can reuse any variable defined in your R environment within the MIP Model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># number of our variables</span>
 costs &lt;-<span class="st"> </span><span class="kw">rpois</span>(n, <span class="dt">lambda =</span> <span class="dv">3</span>) <span class="co"># a cost vector</span>
@@ -208,11 +209,14 @@ max_elements &lt;-<span class="st"> </span><span class="dv">3</span>
 ## Constraints: 1</code></pre>
 </div>
 <div id="extract-model-solutions" class="section level2">
-<h2>Extract model solutions</h2>
+<h2 class="hasAnchor"><html><body><a href="#extract-model-solutions" class="anchor"></a></body></html>Extract model solutions</h2>
 <p>Once you have a model, you pass it to a solver and get back a solutions. The main interface to extract variable values from a solution is the function <code>get_solution</code>. It returns a data.frame for indexed variable and thus makes it easy to subsequently use the value.</p>
 <p>We use <code>ROI</code> and <code>GLPK</code> to solve it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI)
-<span class="kw">library</span>(ROI.plugin.glpk)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI)</code></pre></div>
+<pre><code>## ROI: R Optimization Infrastructure</code></pre>
+<pre><code>## Registered solver plugins: nlminb, glpk, symphony.</code></pre>
+<pre><code>## Default solver: auto.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI.plugin.glpk)
 <span class="kw">library</span>(ompr.roi)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
 n &lt;-<span class="st"> </span><span class="dv">5</span>
@@ -255,6 +259,11 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPM
 ## 4        x 4     0
 ## 5        x 5     0</code></pre>
 </div>
+<div id="feedback" class="section level2">
+<h2 class="hasAnchor"><html><body><a href="#feedback" class="anchor"></a></body></html>Feedback</h2>
+<p>Do you have any questions, ideas, comments? Or did you find a mistake? Let&rsquo;s discuss on <a href="https://github.com/dirkschumacher/ompr/issues">Github</a>.</p>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs">
@@ -271,6 +280,7 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPM
         <li><a href="#special-bounds-on-a-subset-of-variables">Special bounds on a subset of variables</a></li>
         <li><a href="#external-model-parameters">External model parameters</a></li>
         <li><a href="#extract-model-solutions">Extract model solutions</a></li>
+        <li><a href="#feedback">Feedback</a></li>
         </ul></div>
           </div>
   </div>

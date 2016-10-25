@@ -123,7 +123,7 @@ library(ROI.plugin.glpk)
 ```
 
 ```{r}
-result <- solve_model(model, with_ROI(solver = "glpk", verbose = TRUE))
+result <- solve_model(model, with_ROI(solver = "glpk"))
 ```
 
 To extract the solution we can use `get_solution` method that will return a data.frame which we can further be used with `tidyverse` packages.
@@ -156,3 +156,6 @@ ggplot(cities, aes(x, y)) +
   scale_x_continuous(limits = c(0, max_x))
 ```
 
+## Feedback
+
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/ompr/issues).

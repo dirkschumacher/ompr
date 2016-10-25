@@ -146,3 +146,7 @@ ggplot(cities, aes(x, y)) +
   ggtitle(paste0("Optimal route with cost: ", round(objective_value(result), 2)))
 ```
 
+## Feedback
+
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/ompr/issues).
+

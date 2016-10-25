@@ -152,3 +152,6 @@ ggplot(plot_data_fort, aes(x = long, y = lat, group = group)) +
   viridis::scale_fill_viridis(discrete = TRUE, option = "D")
 ```
 
+## Feedback
+
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/ompr/issues).

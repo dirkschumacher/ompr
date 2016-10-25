@@ -40,18 +40,19 @@
       <h1>Solve Sudokus</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-23</h4>
+            <h4 class="date">2016-10-25</h4>
           </div>
 
     
     
+<div class="contents">
 <div id="solve-sudokus-using-milp" class="section level2">
-<h2>Solve Sudokus using MILP</h2>
+<h2 class="hasAnchor"><html><body><a href="#solve-sudokus-using-milp" class="anchor"></a></body></html>Solve Sudokus using MILP</h2>
 <p>In this vignettes we will solve Sudoku puzzles using MILP. <a href="https://en.wikipedia.org/wiki/Sudoku">Sudoku</a> in its most popular form is a constraint satistication problem and by setting the objective function to <span class="math inline">\(0\)</span> you transform the optimization problem into a pure constraint satistication problem. In this document we will consider Sudokus in a 9x9 grid with 3x3 sub-matrices.</p>
 <p>Of course you can formulate an objective function as well that directs the solver towards solutions maximizing a certain linear function.</p>
 </div>
 <div id="the-model" class="section level2">
-<h2>The model</h2>
+<h2 class="hasAnchor"><html><body><a href="#the-model" class="anchor"></a></body></html>The model</h2>
 <p>The idea is to introduce a binary variable <span class="math inline">\(x\)</span> with three indexes <span class="math inline">\(i, j, k\)</span> that is <span class="math inline">\(1\)</span> if and only if the number <span class="math inline">\(k\)</span> is in cell <span class="math inline">\(i, j\)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr)
 <span class="kw">library</span>(dplyr)
@@ -86,7 +87,7 @@ model</code></pre></div>
 ## Constraints: 324</code></pre>
 </div>
 <div id="solve-the-model" class="section level2">
-<h2>Solve the model</h2>
+<h2 class="hasAnchor"><html><body><a href="#solve-the-model" class="anchor"></a></body></html>Solve the model</h2>
 <p>We will use <code>glpk</code> to solve the above model. Note that we haven&rsquo;t fixed any numbers to specific values. That means that the solver will find a valid sudoku without any prior hints.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr.roi)
 <span class="kw">library</span>(ROI.plugin.glpk)
@@ -167,6 +168,11 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/solv
 ## 8 5 3 1 8 6 9 7 4 2
 ## 9 6 9 7 4 3 2 1 8 5</code></pre>
 </div>
+<div id="feedback" class="section level2">
+<h2 class="hasAnchor"><html><body><a href="#feedback" class="anchor"></a></body></html>Feedback</h2>
+<p>Do you have any questions, ideas, comments? Or did you find a mistake? Let&rsquo;s discuss on <a href="https://github.com/dirkschumacher/ompr/issues">Github</a>.</p>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs">
@@ -176,6 +182,7 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/solv
         <ul class="nav nav-pills nav-stacked"><li><a href="#solve-sudokus-using-milp">Solve Sudokus using MILP</a></li>
         <li><a href="#the-model">The model</a></li>
         <li><a href="#solve-the-model">Solve the model</a></li>
+        <li><a href="#feedback">Feedback</a></li>
         </ul></div>
           </div>
   </div>

@@ -190,3 +190,6 @@ get_solution(result, x[2, j])
 ```
 
 
+## Feedback
+
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/ompr/issues).

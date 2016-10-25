@@ -88,6 +88,7 @@
 
 <span class='fu'>get_solution_</span>(<span class='no'>solution</span>, <span class='no'>expr</span>)</pre>
     
+    <div class="section">
     <h2>Arguments</h2>
     <dl class="dl-horizontal">
       <dt>solution</dt>
@@ -95,8 +96,9 @@
       <dt>expr</dt>
       <dd>a variable expression. You can partially bind indexes.</dd>
     </dl>
+    </div>
     
-    <div class="Value">
+    <div class="section">
       <h2>Value</h2>
 
       <p>a data.frame. One row for each variable instance
@@ -104,6 +106,7 @@
         Unless it is a single variable, then it returns a single number.</p>
     </div>
     
+    <div class="section">
     <h2 id="examples">Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
 <span class='co'># library(magrittr)</span>
@@ -118,6 +121,7 @@
 <span class='co'># solution2 &lt;- get_solution(result, y[i, 1])</span>
 <span class='co'># solution3 &lt;- get_solution(result, y[i, j])</span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
+    </div>
   </div>
   <div class="col-md-3">
   </div>

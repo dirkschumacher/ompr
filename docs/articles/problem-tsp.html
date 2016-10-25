@@ -40,13 +40,14 @@
       <h1>The Traveling Salesman Problem</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-23</h4>
+            <h4 class="date">2016-10-25</h4>
           </div>
 
     
     
+<div class="contents">
 <div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<h2 class="hasAnchor"><html><body><a href="#introduction" class="anchor"></a></body></html>Introduction</h2>
 <p>This vignette decribes how to solve a TSP using <code>ompr</code>.</p>
 <p><a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">Wikipedia</a> gives the following definition:</p>
 <blockquote>
@@ -57,7 +58,7 @@
 <p>In this vignette we will construct a TSP with random points within an Euclidean space.</p>
 </div>
 <div id="setting" class="section level2">
-<h2>Setting</h2>
+<h2 class="hasAnchor"><html><body><a href="#setting" class="anchor"></a></body></html>Setting</h2>
 <p>First let us import some librarys</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
 <span class="kw">library</span>(dplyr)
@@ -78,7 +79,7 @@ cities &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cl
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">distance &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">dist</span>(<span class="kw">select</span>(cities, x, y), <span class="dt">diag =</span> <span class="ot">TRUE</span>, <span class="dt">upper =</span> <span class="ot">TRUE</span>))</code></pre></div>
 </div>
 <div id="model-formulation" class="section level2">
-<h2>Model formulation</h2>
+<h2 class="hasAnchor"><html><body><a href="#model-formulation" class="anchor"></a></body></html>Model formulation</h2>
 <p>There are essential two prominent ways to model a TSP as a MILP. One is to formulate the full model using the Miller&ndash;Tucker&ndash;Zemlin (MTZ) formulation and the other option is to use the so-called sub-tour elimination constraints .<a href="https://www.unc.edu/~pataki/papers/teachtsp.pdf">1</a></p>
 <p>The first formulation is fairly compact (quadratic many constraints and variables) but is not suitable anymore when n gets larger. The second formulation has exponential many constraints at most, but can solve larger TSPs due to the better LP relaxation. The idea of the latter approach is add constraints to the model <em>during</em> the solution process as soon as a solution was found that contains a sub-tour. For solution strategies like this solvers usually offer callbacks that let&rsquo;s you modify the model during the the branch-and-cut process - this is however not currently supported by <code>ompr</code>.</p>
 <p>Therefor we will use the MTZ formulation and solve a fairly small TSP.</p>
@@ -118,7 +119,7 @@ model</code></pre></div>
 ## Constraints: 110</code></pre>
 </div>
 <div id="results" class="section level2">
-<h2>Results</h2>
+<h2 class="hasAnchor"><html><body><a href="#results" class="anchor"></a></body></html>Results</h2>
 <p>This model can now be solved by one of the many solver libraries. Here we will use GLPK.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr.roi)
 <span class="kw">library</span>(ROI.plugin.glpk)</code></pre></div>
@@ -200,6 +201,11 @@ model</code></pre></div>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">paste0</span>(<span class="st">"Optimal route with cost: "</span>, <span class="kw">round</span>(<span class="kw"><a href="../reference/objective_value.html">objective_value</a></span>(result), <span class="dv">2</span>)))</code></pre></div>
 <p><img src="problem-tsp_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
+<div id="feedback" class="section level2">
+<h2 class="hasAnchor"><html><body><a href="#feedback" class="anchor"></a></body></html>Feedback</h2>
+<p>Do you have any questions, ideas, comments? Or did you find a mistake? Let&rsquo;s discuss on <a href="https://github.com/dirkschumacher/ompr/issues">Github</a>.</p>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs">
@@ -210,6 +216,7 @@ model</code></pre></div>
         <li><a href="#setting">Setting</a></li>
         <li><a href="#model-formulation">Model formulation</a></li>
         <li><a href="#results">Results</a></li>
+        <li><a href="#feedback">Feedback</a></li>
         </ul></div>
           </div>
   </div>

@@ -40,17 +40,18 @@
       <h1>The Multiple Traveling Salesmen Problem</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-23</h4>
+            <h4 class="date">2016-10-25</h4>
           </div>
 
     
     
+<div class="contents">
 <div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<h2 class="hasAnchor"><html><body><a href="#introduction" class="anchor"></a></body></html>Introduction</h2>
 <p>This vignette decribes how to solve the mTSP using <code>ompr</code>. The problem is similiar to the standard TSP but now we have more than one Salesman. Please refer to the vignette on the standard TSP for more background information. All salesmen start and end their trips at a single location (the depot). In addition, all salesmen need to visit at least one client.</p>
 </div>
 <div id="setting" class="section level2">
-<h2>Setting</h2>
+<h2 class="hasAnchor"><html><body><a href="#setting" class="anchor"></a></body></html>Setting</h2>
 <p>First let us import some librarys</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
 <span class="kw">library</span>(dplyr)
@@ -77,7 +78,7 @@ cities &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cl
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">distance &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">dist</span>(<span class="kw">select</span>(cities, x, y), <span class="dt">diag =</span> <span class="ot">TRUE</span>, <span class="dt">upper =</span> <span class="ot">TRUE</span>))</code></pre></div>
 </div>
 <div id="model-formulation" class="section level2">
-<h2>Model formulation</h2>
+<h2 class="hasAnchor"><html><body><a href="#model-formulation" class="anchor"></a></body></html>Model formulation</h2>
 <p>As in the other TSP example we will use the MTZ formulation and solve a fairly small mTSP. The basic idea is to extend the two index formulation to three indexes <span class="math inline">\(x_{i,j,k}\)</span> that is 1 iff salesman <span class="math inline">\(k\)</span> travels from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span>.</p>
 <p>Import <code>ompr</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr)</code></pre></div>
@@ -126,28 +127,11 @@ model</code></pre></div>
 ## Constraints: 126</code></pre>
 </div>
 <div id="results" class="section level2">
-<h2>Results</h2>
+<h2 class="hasAnchor"><html><body><a href="#results" class="anchor"></a></body></html>Results</h2>
 <p>This model can now be solved by one of the many solver libraries. Here we will use GLPK.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr.roi)
 <span class="kw">library</span>(ROI.plugin.glpk)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/solve_model.html">solve_model</a></span>(model, <span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>## &lt;SOLVER MSG&gt;  ----
-## GLPK Simplex Optimizer, v4.60
-## 126 rows, 112 columns, 554 non-zeros
-##       0: obj =   0.000000000e+00 inf =   2.800e+01 (28)
-##      33: obj =   2.010264919e+03 inf =   2.220e-16 (0)
-## *    69: obj =   9.855386281e+02 inf =   4.071e-16 (0)
-## OPTIMAL LP SOLUTION FOUND
-## GLPK Integer Optimizer, v4.60
-## 126 rows, 112 columns, 554 non-zeros
-## 98 integer variables, all of which are binary
-## Integer optimization begins...
-## +    69: mip =     not found yet &gt;=              -inf        (1; 0)
-## +   126: &gt;&gt;&gt;&gt;&gt;   1.606406423e+03 &gt;=   9.855386281e+02  38.6% (20; 0)
-## +   145: &gt;&gt;&gt;&gt;&gt;   1.432864966e+03 &gt;=   1.017948272e+03  29.0% (19; 4)
-## +   340: mip =   1.432864966e+03 &gt;=     tree is empty   0.0% (0; 69)
-## INTEGER OPTIMAL SOLUTION FOUND
-## &lt;!SOLVER MSG&gt; ----</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/solve_model.html">solve_model</a></span>(model, <span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>))</code></pre></div>
 <p>To extract the solution we can use <code>get_solution</code> method that will return a data.frame which we can further be used with <code>tidyverse</code> packages.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">solution &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(result, x[i, j, k]) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>) 
@@ -224,6 +208,11 @@ model</code></pre></div>
 <span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, max_x))</code></pre></div>
 <p><img src="problem-mtsp_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
+<div id="feedback" class="section level2">
+<h2 class="hasAnchor"><html><body><a href="#feedback" class="anchor"></a></body></html>Feedback</h2>
+<p>Do you have any questions, ideas, comments? Or did you find a mistake? Let&rsquo;s discuss on <a href="https://github.com/dirkschumacher/ompr/issues">Github</a>.</p>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs">
@@ -234,6 +223,7 @@ model</code></pre></div>
         <li><a href="#setting">Setting</a></li>
         <li><a href="#model-formulation">Model formulation</a></li>
         <li><a href="#results">Results</a></li>
+        <li><a href="#feedback">Feedback</a></li>
         </ul></div>
           </div>
   </div>

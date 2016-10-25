@@ -85,19 +85,21 @@
 
     <pre><span class='fu'>extract_coefficients</span>(<span class='no'>ast</span>)</pre>
     
+    <div class="section">
     <h2>Arguments</h2>
     <dl class="dl-horizontal">
       <dt>ast</dt>
       <dd>the ast</dd>
     </dl>
+    </div>
     
-    <div class="Value">
+    <div class="section">
       <h2>Value</h2>
 
       <p>a list with values for constants and coefficients</p>
     </div>
 
-    <div class="Details">
+    <div class="section">
       <h2>Details</h2>
 
       <p>The expression should be a simple sum.
@@ -106,6 +108,7 @@ For each multiplication operation, one operand must be a numeric
 the other a non-numeric.</p>
     </div>
     
+    <div class="section">
     <h2 id="examples">Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>extract_coefficients</span>(<span class='fu'>substitute</span>(<span class='fl'>5</span> * <span class='no'>x</span> + <span class='fl'>1</span>))</div><div class='output co'>#&gt; $coefficients
 #&gt; $coefficients$x
@@ -122,6 +125,7 @@ the other a non-numeric.</p>
 #&gt; 
 #&gt; </div><div class='input'>
 </div></pre>
+    </div>
   </div>
   <div class="col-md-3">
   </div>

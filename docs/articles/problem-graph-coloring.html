@@ -40,17 +40,18 @@
       <h1>The Minimum Graph Coloring Problem</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-23</h4>
+            <h4 class="date">2016-10-25</h4>
           </div>
 
     
     
+<div class="contents">
 <div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<h2 class="hasAnchor"><html><body><a href="#introduction" class="anchor"></a></body></html>Introduction</h2>
 <p>In this article we will model the <a href="https://en.wikipedia.org/wiki/Graph_coloring">minimum graph coloring problem</a>. The goal: color a map with as few colors as possible while no two adjacent regions having the same color.</p>
 </div>
 <div id="read-spatial-data" class="section level2">
-<h2>Read spatial data</h2>
+<h2 class="hasAnchor"><html><body><a href="#read-spatial-data" class="anchor"></a></body></html>Read spatial data</h2>
 <p>First, let&rsquo;s load some useful packages needed for (spatial) data processing.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rgeos)
 <span class="kw">library</span>(rgdal)
@@ -80,7 +81,7 @@ is_adjacent &lt;-<span class="st"> </span>function(i, j) {
 <pre><code>## [1] TRUE</code></pre>
 </div>
 <div id="optimization-model" class="section level2">
-<h2>Optimization model</h2>
+<h2 class="hasAnchor"><html><body><a href="#optimization-model" class="anchor"></a></body></html>Optimization model</h2>
 <p>Next, we will model the problem with <code>ompr</code> as a mixed integer linear program that tries to find a coloring with as few colors as possible.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="kw">nrow</span>(map_data@data) <span class="co"># number of nodes aka states</span>
@@ -120,7 +121,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 <p>This code generates a constraint for each combination of i, j and k with the additional constraint, that <code>is_adjacent(i, j)</code> needs to evaluate to <code>TRUE</code>. Using <em>filter expressions</em> let&rsquo;s you design a very specific set of constraints with minimal code. This principle can be used with all functions that acceppt quantifiers: <code>sum_expr</code>, <code>set_bounds</code>, <code>add_constraint</code> and <code>add_variable</code>.</p>
 </div>
 <div id="solve-it" class="section level2">
-<h2>Solve it</h2>
+<h2 class="hasAnchor"><html><body><a href="#solve-it" class="anchor"></a></body></html>Solve it</h2>
 <p>Now since we have built the model, we will solve it using the excellent <code>ROI</code> package and the <code>symphony</code> solver. <code>ompr.roi</code> is a solver that takes an <code>ompr</code> package and translates it to <code>ROI</code>: this makes it possible to use range of solvers out of the box.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI)
 <span class="kw">library</span>(ROI.plugin.symphony)
@@ -132,17 +133,17 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 <p>Yay. We found the minimal coloring with 4 colors.</p>
 </div>
 <div id="plot-the-result" class="section level2">
-<h2>Plot the result</h2>
+<h2 class="hasAnchor"><html><body><a href="#plot-the-result" class="anchor"></a></body></html>Plot the result</h2>
 <p>Last step is to plot the result. First we will get the colors from the optimal solution.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">assigned_colors &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(result, x[i, k]) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="fl">0.9</span>) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">arrange</span>(i)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(assigned_colors, <span class="dv">5</span>)</code></pre></div>
 <pre><code>##   variable i k value
-## 1        x 1 1     1
-## 2        x 2 1     1
-## 3        x 3 4     1
-## 4        x 4 3     1
+## 1        x 1 3     1
+## 2        x 2 3     1
+## 3        x 3 1     1
+## 4        x 4 2     1
 ## 5        x 5 4     1</code></pre>
 <p>Then we need to prepare the data for ggplot and join the colors to the data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
@@ -159,6 +160,11 @@ plot_data_fort &lt;-<span class="st"> </span><span class="kw">fortify</span>(map
 <span class="st">  </span>viridis::<span class="kw">scale_fill_viridis</span>(<span class="dt">discrete =</span> <span class="ot">TRUE</span>, <span class="dt">option =</span> <span class="st">"D"</span>)</code></pre></div>
 <p><img src="problem-graph-coloring_files/figure-html/unnamed-chunk-15-1.png" width="672"></p>
 </div>
+<div id="feedback" class="section level2">
+<h2 class="hasAnchor"><html><body><a href="#feedback" class="anchor"></a></body></html>Feedback</h2>
+<p>Do you have any questions, ideas, comments? Or did you find a mistake? Let&rsquo;s discuss on <a href="https://github.com/dirkschumacher/ompr/issues">Github</a>.</p>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs">
@@ -170,6 +176,7 @@ plot_data_fort &lt;-<span class="st"> </span><span class="kw">fortify</span>(map
         <li><a href="#optimization-model">Optimization model</a></li>
         <li><a href="#solve-it">Solve it</a></li>
         <li><a href="#plot-the-result">Plot the result</a></li>
+        <li><a href="#feedback">Feedback</a></li>
         </ul></div>
           </div>
   </div>
