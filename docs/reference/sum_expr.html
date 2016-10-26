@@ -74,12 +74,12 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Construct a sum expression</h1>
-</div>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Construct a sum expression</h1>
+    </div>
 
-<div class="row">
-  <div class="col-md-9">
     
     <p>This functions helps to create dynamic sum expression
 based on external variables. Should only be used within
@@ -88,31 +88,28 @@ other &#39;ompr&#39; functions.</p>
 
     <pre><span class='fu'>sum_expr</span>(<span class='no'>expr</span>, <span class='no'>...</span>)</pre>
     
-    <div class="section">
-    <h2>Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>expr</dt>
       <dd>an expression that can be expanded to a sum</dd>
       <dt>...</dt>
       <dd>bind variables in expr using dots. See examples.</dd>
     </dl>
-    </div>
     
-    <div class="section">
-      <h2>Value</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-      <p>the expanded sum as an AST</p>
-    </div>
-
-    <div class="section">
-      <h2>See also</h2>
-
-      <p><code><a href='add_constraint.html'>add_constraint</a></code></p>
-      <p><code><a href='set_objective.html'>set_objective</a></code></p>
-    </div>
+    <p>the expanded sum as an AST</p>
     
-    <div class="section">
-    <h2 id="examples">Examples</h2>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <p><code><a href='add_constraint.html'>add_constraint</a></code></p>
+    <p><code><a href='set_objective.html'>set_objective</a></code></p>
+    
+
+    <h2 class="hasAnchor" id="examples">
+      <a class="anchor" href="#examples"></a>
+      Examples
+    </h2>
     <pre class="examples"><div class='input'><span class='co'># create a sum from x_1 to x_10</span>
 <span class='fu'>sum_expr</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>)</div><div class='output co'>#&gt; x[1L] + x[2L] + x[3L] + x[4L] + x[5L] + x[6L] + x[7L] + x[8L] + 
 #&gt;     x[9L] + x[10L]
@@ -120,14 +117,33 @@ other &#39;ompr&#39; functions.</p>
 <span class='fu'>sum_expr</span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>, <span class='no'>i</span> <span class='kw'>%%</span> <span class='fl'>2</span> <span class='kw'>==</span> <span class='fl'>0</span>)</div><div class='output co'>#&gt; x[2L] + x[4L] + x[6L] + x[8L] + x[10L]
 #&gt; </div><div class='input'>
 </div></pre>
-    </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 hidden-xs hidden-sm">
+    <div id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
+    </div>
   </div>
 </div>
 
       <footer>
-      <p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <div class="copyright">
+  <p>Developed by Dirk Schumacher.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
    </div>
 

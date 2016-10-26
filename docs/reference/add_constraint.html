@@ -74,12 +74,12 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Add a constraint</h1>
-</div>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Add a constraint</h1>
+    </div>
 
-<div class="row">
-  <div class="col-md-9">
     
     <p>Add one or more constraints to the model using quantifiers.</p>
     
@@ -88,8 +88,7 @@
 
 <span class='fu'>add_constraint_</span>(<span class='no'>model</span>, <span class='no'>constraint_expr</span>, <span class='no'>...</span>, <span class='no'>.dots</span>, <span class='kw'>.show_progress_bar</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
-    <div class="section">
-    <h2>Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>model</dt>
       <dd>the model</dd>
@@ -106,16 +105,16 @@ constraints</dd>
       <dt>.dots</dt>
       <dd>Used to work around non-standard evaluation.</dd>
     </dl>
-    </div>
     
-    <div class="section">
-      <h2>Value</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-      <p>a Model with new constraints added</p>
-    </div>
+    <p>a Model with new constraints added</p>
     
-    <div class="section">
-    <h2 id="examples">Examples</h2>
+
+    <h2 class="hasAnchor" id="examples">
+      <a class="anchor" href="#examples"></a>
+      Examples
+    </h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
 <span class='fu'><a href='MIPModel.html'>MIPModel</a></span>() <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='add_variable.html'>add_variable</a></span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>) <span class='kw'>%&gt;%</span>
@@ -128,14 +127,31 @@ constraints</dd>
 #&gt; Constraints: 5 
 #&gt; </div><div class='input'>
 </div></pre>
-    </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 hidden-xs hidden-sm">
+    <div id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
+    </div>
   </div>
 </div>
 
       <footer>
-      <p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <div class="copyright">
+  <p>Developed by Dirk Schumacher.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
    </div>
 

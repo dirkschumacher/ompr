@@ -74,12 +74,12 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Set the model objective</h1>
-</div>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Set the model objective</h1>
+    </div>
 
-<div class="row">
-  <div class="col-md-9">
     
     <p>Set the model objective</p>
     
@@ -88,8 +88,7 @@
 
 <span class='fu'>set_objective_</span>(<span class='no'>model</span>, <span class='no'>expression</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"max"</span>, <span class='st'>"min"</span>))</pre>
     
-    <div class="section">
-    <h2>Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>model</dt>
       <dd>the model</dd>
@@ -98,16 +97,16 @@
       <dt>direction</dt>
       <dd>the optimization direction. Must be either &quot;max&quot; or &quot;min&quot;.</dd>
     </dl>
-    </div>
     
-    <div class="section">
-      <h2>Value</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-      <p>a Model with a new objective function definition</p>
-    </div>
+    <p>a Model with a new objective function definition</p>
     
-    <div class="section">
-    <h2 id="examples">Examples</h2>
+
+    <h2 class="hasAnchor" id="examples">
+      <a class="anchor" href="#examples"></a>
+      Examples
+    </h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
 <span class='fu'><a href='MIPModel.html'>MIPModel</a></span>() <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='add_variable.html'>add_variable</a></span>(<span class='no'>x</span>, <span class='kw'>lb</span> <span class='kw'>=</span> <span class='fl'>2</span>) <span class='kw'>%&gt;%</span>
@@ -121,14 +120,31 @@
 #&gt; Constraints: 0 
 #&gt; </div><div class='input'>
 </div></pre>
-    </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 hidden-xs hidden-sm">
+    <div id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
+    </div>
   </div>
 </div>
 
       <footer>
-      <p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <div class="copyright">
+  <p>Developed by Dirk Schumacher.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
    </div>
 

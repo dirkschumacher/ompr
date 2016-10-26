@@ -74,12 +74,12 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Add a variable to the model</h1>
-</div>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Add a variable to the model</h1>
+    </div>
 
-<div class="row">
-  <div class="col-md-9">
     
     <p>A variable can either be a name or an indexed name. See examples.</p>
     
@@ -90,8 +90,7 @@
 <span class='fu'>add_variable_</span>(<span class='no'>model</span>, <span class='no'>variable</span>, <span class='no'>...</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"continuous"</span>, <span class='kw'>lb</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>,
   <span class='kw'>ub</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='no'>.dots</span>)</pre>
     
-    <div class="section">
-    <h2>Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>model</dt>
       <dd>the model</dd>
@@ -108,10 +107,12 @@
       <dt>.dots</dt>
       <dd>Used to work around non-standard evaluation.</dd>
     </dl>
-    </div>
-        
-    <div class="section">
-    <h2 id="examples">Examples</h2>
+    
+
+    <h2 class="hasAnchor" id="examples">
+      <a class="anchor" href="#examples"></a>
+      Examples
+    </h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
 <span class='fu'><a href='MIPModel.html'>MIPModel</a></span>() <span class='kw'>%&gt;%</span>
  <span class='fu'>add_variable</span>(<span class='no'>x</span>) <span class='kw'>%&gt;%</span> <span class='co'># creates 1 variable named x</span>
@@ -125,14 +126,29 @@
 #&gt; Constraints: 0 
 #&gt; </div><div class='input'>
 </div></pre>
-    </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 hidden-xs hidden-sm">
+    <div id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
+    </div>
   </div>
 </div>
 
       <footer>
-      <p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <div class="copyright">
+  <p>Developed by Dirk Schumacher.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
    </div>
 

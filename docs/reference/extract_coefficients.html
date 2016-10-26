@@ -74,43 +74,40 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Extract the coefficients out of an ast</h1>
-</div>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Extract the coefficients out of an ast</h1>
+    </div>
 
-<div class="row">
-  <div class="col-md-9">
     
     <p>Should only be used if you intentd to develop your own solver.</p>
     
 
     <pre><span class='fu'>extract_coefficients</span>(<span class='no'>ast</span>)</pre>
     
-    <div class="section">
-    <h2>Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>ast</dt>
       <dd>the ast</dd>
     </dl>
-    </div>
     
-    <div class="section">
-      <h2>Value</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-      <p>a list with values for constants and coefficients</p>
-    </div>
+    <p>a list with values for constants and coefficients</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <div class="section">
-      <h2>Details</h2>
-
-      <p>The expression should be a simple sum.
+    <p>The expression should be a simple sum.
 Only multiplication and + operators are allowed.
 For each multiplication operation, one operand must be a numeric
 the other a non-numeric.</p>
-    </div>
     
-    <div class="section">
-    <h2 id="examples">Examples</h2>
+
+    <h2 class="hasAnchor" id="examples">
+      <a class="anchor" href="#examples"></a>
+      Examples
+    </h2>
     <pre class="examples"><div class='input'><span class='fu'>extract_coefficients</span>(<span class='fu'>substitute</span>(<span class='fl'>5</span> * <span class='no'>x</span> + <span class='fl'>1</span>))</div><div class='output co'>#&gt; $coefficients
 #&gt; $coefficients$x
 #&gt; $coefficients$x$ast
@@ -126,14 +123,33 @@ the other a non-numeric.</p>
 #&gt; 
 #&gt; </div><div class='input'>
 </div></pre>
-    </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 hidden-xs hidden-sm">
+    <div id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
+    </div>
   </div>
 </div>
 
       <footer>
-      <p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <div class="copyright">
+  <p>Developed by Dirk Schumacher.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
    </div>
 
