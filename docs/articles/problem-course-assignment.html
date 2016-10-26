@@ -41,7 +41,7 @@
       <h1>Assigning students to courses</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-10-25</h4>
+            <h4 class="date">2016-10-26</h4>
           </div>
 
     
@@ -92,10 +92,10 @@ plot_data &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(
   <span class="dt">weight =</span> <span class="dv">1</span>:<span class="dv">3</span>
 ) %&gt;%<span class="st"> </span><span class="kw">rowwise</span>() %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">count =</span> <span class="kw">sum</span>(<span class="kw">map_int</span>(<span class="kw">seq_len</span>(n), ~<span class="kw">weight</span>(.x, course) ==<span class="st"> </span>weight))) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">course =</span> <span class="kw">factor</span>(course))
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">course =</span> <span class="kw">factor</span>(course), <span class="dt">weight =</span> <span class="kw">factor</span>(weight))
 <span class="kw">ggplot</span>(plot_data, <span class="kw">aes</span>(<span class="dt">x =</span> course, <span class="dt">y =</span> count, <span class="dt">fill =</span> weight)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">"identity"</span>) +<span class="st"> </span>
-<span class="st">  </span>viridis::<span class="kw">scale_fill_viridis</span>() +<span class="st"> </span>
+<span class="st">  </span>viridis::<span class="kw">scale_fill_viridis</span>(<span class="dt">discrete =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">11</span>)</code></pre></div>
 <p><img src="problem-course-assignment_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 </div>
@@ -186,17 +186,17 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/solv
 ## 1      2     2
 ## 2      3    38</code></pre>
 <p>38 students got their top preference. 2 students were assigned to their second choice and 0 students got their least preferable course.</p>
-<p>The courses have the following number of students:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">matching %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(j) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">count =</span> <span class="kw">n</span>())</code></pre></div>
-<pre><code>## # A tibble: 4 &times; 2
-##       j count
-##   &lt;int&gt; &lt;int&gt;
-## 1     1     7
-## 2     2    11
-## 3     3    11
-## 4     4    11</code></pre>
+<p>The course assignment now looks like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data &lt;-<span class="st"> </span>matching %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">course =</span> <span class="kw">factor</span>(j), <span class="dt">weight =</span> <span class="kw">factor</span>(weight, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>))) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(course, weight) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">count =</span> <span class="kw">n</span>()) %&gt;%<span class="st"> </span>
+<span class="st">  </span>tidyr::<span class="kw">complete</span>(weight, <span class="dt">fill =</span> <span class="kw">list</span>(<span class="dt">count =</span> <span class="dv">0</span>))
+<span class="kw">ggplot</span>(plot_data, <span class="kw">aes</span>(<span class="dt">x =</span> course, <span class="dt">y =</span> count, <span class="dt">fill =</span> weight)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">"identity"</span>) +<span class="st"> </span>
+<span class="st">  </span>viridis::<span class="kw">scale_fill_viridis</span>(<span class="dt">discrete =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">11</span>)</code></pre></div>
+<p><img src="problem-course-assignment_files/figure-html/unnamed-chunk-13-1.png" width="672"></p>
 </div>
 <div id="feedback" class="section level2">
 <h2 class="hasAnchor"><html><body><a href="#feedback" class="anchor"></a></body></html>Feedback</h2>

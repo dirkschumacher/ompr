@@ -75,10 +75,10 @@ plot_data <- expand.grid(
   weight = 1:3
 ) %>% rowwise() %>% 
   mutate(count = sum(map_int(seq_len(n), ~weight(.x, course) == weight))) %>% 
-  mutate(course = factor(course))
+  mutate(course = factor(course), weight = factor(weight))
 ggplot(plot_data, aes(x = course, y = count, fill = weight)) + 
   geom_bar(stat = "identity") + 
-  viridis::scale_fill_viridis() + 
+  viridis::scale_fill_viridis(discrete = TRUE) + 
   geom_hline(yintercept = 11)
 ```
 
@@ -157,12 +157,18 @@ matching %>%
 `r nrow(filter(matching, weight == 3))` students got their top preference.
 `r nrow(filter(matching, weight == 2))` students were assigned to their second choice and `r nrow(filter(matching, weight == 1))` students got their least preferable course.
 
-The courses have the following number of students:
+The course assignment now looks like this:
 
 ```{r}
-matching %>% 
-  group_by(j) %>% 
-  summarise(count = n())
+plot_data <- matching %>% 
+  mutate(course = factor(j), weight = factor(weight, levels = c(1, 2, 3))) %>% 
+  group_by(course, weight) %>% 
+  summarise(count = n()) %>% 
+  tidyr::complete(weight, fill = list(count = 0))
+ggplot(plot_data, aes(x = course, y = count, fill = weight)) + 
+  geom_bar(stat = "identity") + 
+  viridis::scale_fill_viridis(discrete = TRUE) + 
+  geom_hline(yintercept = 11)
 ```
 
 
