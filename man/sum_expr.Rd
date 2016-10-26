@@ -27,8 +27,8 @@ sum_expr(x[i], i = 1:10, i \%\% 2 == 0)
 
 }
 \seealso{
-add_constraint
+\code{\link{add_constraint}}
 
-set_objective
+\code{\link{set_objective}}
 }
 

@@ -368,8 +368,8 @@ extract_coefficients <- function(ast) {
 #'
 #' @return the expanded sum as an AST
 #'
-#' @seealso add_constraint
-#' @seealso set_objective
+#' @seealso \code{\link{add_constraint}}
+#' @seealso \code{\link{set_objective}}
 #'
 #' @examples
 #' # create a sum from x_1 to x_10
