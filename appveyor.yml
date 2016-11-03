@@ -21,6 +21,8 @@ environment:
 
   - R_VERSION: devel
 
+  - R_VERSION: oldrel
+
 
 # Adapt as necessary starting from here
 
