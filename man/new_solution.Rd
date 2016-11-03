@@ -11,11 +11,11 @@ new_solution(model, objective_value, status, solution)
 
 \item{objective_value}{a numeric objective value}
 
-\item{status}{the status of the solution.}
+\item{status}{the status of the solution}
 
 \item{solution}{a named numeric vector containing the solution values}
 }
 \description{
-This is class should only be used if you develop your own solver.
+This function/class should only be used if you develop your own solver.
 }
 

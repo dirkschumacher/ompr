@@ -1,10 +1,10 @@
 #' Create a new solution
 #'
-#' This is class should only be used if you develop your own solver.
+#' This function/class should only be used if you develop your own solver.
 #'
 #' @param objective_value a numeric objective value
 #' @param model the optimization model that was solved
-#' @param status the status of the solution.
+#' @param status the status of the solution
 #' @param solution a named numeric vector containing the solution values
 #'
 #' @export
