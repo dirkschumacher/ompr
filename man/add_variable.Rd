@@ -16,7 +16,7 @@ add_variable_(model, variable, ..., type = "continuous", lb = -Inf,
 
 \item{variable}{the variable name/definition}
 
-\item{...}{quantifiers for the indexed variabled. Including filters}
+\item{...}{quantifiers for the indexed variable. Including filters}
 
 \item{type}{must be either continuous, integer or binary}
 

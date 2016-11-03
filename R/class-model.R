@@ -21,7 +21,7 @@ new_objective_function <- function(expression,
 #'
 #' @param model the model
 #' @param variable the variable name/definition
-#' @param ... quantifiers for the indexed variabled. Including filters
+#' @param ... quantifiers for the indexed variable. Including filters
 #' @param type must be either continuous, integer or binary
 #' @param lb the lower bound of the variable
 #' @param ub the upper bound of the variable
@@ -158,7 +158,7 @@ add_variable_.optimization_model <- function(model, variable, ...,
 #'
 #' @param model the model
 #' @param variable the variable name/definition
-#' @param ... quantifiers for the indexed variabled
+#' @param ... quantifiers for the indexed variable
 #' @param lb the lower bound of the variable
 #' @param ub the upper bound of the variable
 #'

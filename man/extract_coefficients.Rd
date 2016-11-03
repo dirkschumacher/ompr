@@ -7,13 +7,13 @@
 extract_coefficients(ast)
 }
 \arguments{
-\item{ast}{the ast}
+\item{ast}{the abstract syntax tree (usually a call)}
 }
 \value{
 a list with values for constants and coefficients
 }
 \description{
-Should only be used if you intentd to develop your own solver.
+Should only be used if you want to develop your own solver.
 }
 \details{
 The expression should be a simple sum.

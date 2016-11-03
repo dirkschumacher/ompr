@@ -14,7 +14,7 @@ set_bounds_(model, variable, ..., lb = NULL, ub = NULL, .dots)
 
 \item{variable}{the variable name/definition}
 
-\item{...}{quantifiers for the indexed variabled}
+\item{...}{quantifiers for the indexed variable}
 
 \item{lb}{the lower bound of the variable}
 
