@@ -1,6 +1,5 @@
-# ompr 0.4.0.9001
+# ompr 0.5.0
 
-* Added a `NEWS.md` file to track changes to the package.
-
+* First version on CRAN
 
 

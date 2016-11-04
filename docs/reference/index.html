@@ -10,7 +10,6 @@
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
-
 <!-- Bootstrap -->
 <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
@@ -22,6 +21,7 @@
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
@@ -75,35 +75,42 @@
       </header>
 
       <div class="row">
-  <div class="col-md-9 contents">
+  <div class="col-md-9">
     <div class="page-header">
       <h1>Function reference</h1>
-      <h4>version&nbsp;0.4.0.9001</h4>
+      <h4>version&nbsp;0.5.0</h4>
     </div>
 
+    <div class="contents">
       <h2 id="section-build-a-model" class="hasAnchor"><a href="#section-build-a-model" class="anchor"></a>Build a model</h2>
       <p class="section-desc"></p>
 
+      
       <p><a href="add_constraint.html">Add a constraint</a></p>
       <ul>
         <li><code><a href="add_constraint.html">add_constraint</a></code></li><li><code><a href="add_constraint.html">add_constraint_</a></code></li>
       </ul>
+      
       <p><a href="add_variable.html">Add a variable to the model</a></p>
       <ul>
         <li><code><a href="add_variable.html">add_variable</a></code></li><li><code><a href="add_variable.html">add_variable_</a></code></li>
       </ul>
+      
       <p><a href="MIPModel.html">Create a new MIP Model</a></p>
       <ul>
         <li><code><a href="MIPModel.html">MIPModel</a></code></li>
       </ul>
+      
       <p><a href="set_bounds.html">Set the bounds of a variable</a></p>
       <ul>
         <li><code><a href="set_bounds.html">set_bounds</a></code></li><li><code><a href="set_bounds.html">set_bounds_</a></code></li>
       </ul>
+      
       <p><a href="set_objective.html">Set the model objective</a></p>
       <ul>
         <li><code><a href="set_objective.html">set_objective</a></code></li><li><code><a href="set_objective.html">set_objective_</a></code></li>
       </ul>
+      
       <p><a href="sum_expr.html">Construct a sum expression</a></p>
       <ul>
         <li><code><a href="sum_expr.html">sum_expr</a></code></li>
@@ -111,18 +118,22 @@
           <h2 id="section-solve-a-model" class="hasAnchor"><a href="#section-solve-a-model" class="anchor"></a>Solve a model</h2>
       <p class="section-desc"></p>
 
+      
       <p><a href="get_solution.html">Get variable values from a solution</a></p>
       <ul>
         <li><code><a href="get_solution.html">get_solution</a></code></li><li><code><a href="get_solution.html">get_solution_</a></code></li>
       </ul>
+      
       <p><a href="objective_value.html">Extract the numerical objective value from a solution</a></p>
       <ul>
         <li><code><a href="objective_value.html">objective_value</a></code></li>
       </ul>
+      
       <p><a href="solve_model.html">Solve a model</a></p>
       <ul>
         <li><code><a href="solve_model.html">solve_model</a></code></li>
       </ul>
+      
       <p><a href="solver_status.html">Get the solver status from a solution</a></p>
       <ul>
         <li><code><a href="solver_status.html">solver_status</a></code></li>
@@ -130,26 +141,27 @@
           <h2 id="section-solver-developer-functions" class="hasAnchor"><a href="#section-solver-developer-functions" class="anchor"></a>Solver developer functions</h2>
       <p class="section-desc"></p>
 
+      
       <p><a href="extract_coefficients.html">Extract the coefficients out of an ast</a></p>
       <ul>
         <li><code><a href="extract_coefficients.html">extract_coefficients</a></code></li>
       </ul>
+      
       <p><a href="new_solution.html">Create a new solution</a></p>
       <ul>
         <li><code><a href="new_solution.html">new_solution</a></code></li>
       </ul>
     
+    </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm">
-    <div id="sidebar">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#section-build-a-model">Build a model</a></li>
-        <li><a href="#section-solve-a-model">Solve a model</a></li>
-        <li><a href="#section-solver-developer-functions">Solver developer functions</a></li>
-      </ul>
-    </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#section-build-a-model">Build a model</a></li>
+      <li><a href="#section-solve-a-model">Solve a model</a></li>
+      <li><a href="#section-solver-developer-functions">Solver developer functions</a></li>
+    </ul>
   </div>
 </div>
 

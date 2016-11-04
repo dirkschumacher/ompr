@@ -1,5 +1,5 @@
 ## Test environments
-* local OS X install, R 3.3.1
+* local OS X install, R 3.3.2
 * ubuntu 12.04 (on travis-ci), R release, oldrel, devel
 * Windows Server 2012 R2 x64 (on appveyor), R release, patched and devel
 
