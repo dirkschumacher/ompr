@@ -58,3 +58,23 @@ test_that("extract_coefficients can extract coefficients #3", {
   expect_equivalent(1, result$coefficients[["x"]]$coef)
 })
 
+test_that("bug 20161107 #103: bug in extract coefficient (1)", {
+  a <- 12
+  m <- MIPModel() %>%
+    add_variable(x) %>%
+    set_objective(- (a * x))
+  result <- extract_coefficients(m$objective$expression[[1]])
+  expect_equal(-12, result$coefficients[["x"]]$coef)
+  expect_equal(0, result$constant)
+})
+
+
+test_that("bug 20161107 #103: bug in extract coefficient (2)", {
+  a <- 47
+  m <- MIPModel() %>%
+    add_variable(x[i], i = 1:2) %>%
+    add_variable(y) %>%
+    add_constraint(y - a * x[i] <= 1, i = 1:2)
+  result <- extract_coefficients(m$constraints[[1]]$lhs[[1]])
+  expect_equal(-47, result$coefficients[["x[1L]"]]$coef)
+})

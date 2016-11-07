@@ -171,12 +171,19 @@ standardize_ast <- function(ast) {
     path <- element$path
     multiplier <- element$multiplier
     need_multiplication <- is.numeric(multiplier)
+    multiplier <- if (!need_multiplication) 1 else multiplier
     mult_num <- if (is.numeric(multiplier)) multiplier else 1
     if (is.call(local_ast)) {
       operator <- as.character(local_ast[[1]])
       ast_length <- length(local_ast)
       if (operator == "(") {
         push_idx(local_ast[[2]], path, multiplier = multiplier)
+      } else if (operator == "[") {
+        if (need_multiplication && multiplier != 1) {
+          new_ast <- substitute(x * y,
+                                list(x = multiplier, y = local_ast))
+          inplace_update_ast(path, new_ast)
+        }
       } else if (operator %in% c("+", "-") && ast_length == 2) {
         # -x or -(23 + x)
         if (operator == "-") {
@@ -224,7 +231,7 @@ standardize_ast <- function(ast) {
           # or we need to further evaluate one of the branches
           continue_traversal(local_ast, path)
         } else if (left_is_num && right_is_num) {
-          inplace_update_ast(path, try_eval_exp(local_ast))
+          inplace_update_ast(path, try_eval_exp(local_ast) * multiplier)
         } else if (!is_multiplication) {
           # if it is a devision, let's make it a multiplication
           if (left_is_num && !right_is_num) {
@@ -247,12 +254,18 @@ standardize_ast <- function(ast) {
             term_idx <- 2
           }
           new_multiplier <- try_eval_exp(local_ast[[num_idx]])
-          if (!is.null(multiplier)) {
+          if (need_multiplication) {
             new_multiplier <- new_multiplier * multiplier
           }
           term <- local_ast[[term_idx]]
           push_idx(term, path, new_multiplier)
         }
+      }
+    } else if (lazyeval::is_name(local_ast)) {
+      if (need_multiplication && multiplier != 1) {
+        new_ast <- substitute(x * y,
+                              list(x = multiplier, y = local_ast))
+        inplace_update_ast(path, new_ast)
       }
     }
   }
