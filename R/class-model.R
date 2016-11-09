@@ -37,7 +37,10 @@ new_objective_function <- function(expression,
 #' @export
 add_variable <- function(model, variable, ..., type = "continuous",
                          lb = -Inf, ub = Inf) {
-  add_variable_(model = model, variable = lazyeval::lazy(variable), type = type,
+  add_variable_(model = model,
+                variable = lazyeval::as.lazy(substitute(variable),
+                                             parent.frame()),
+                type = type,
                 lb = lb, ub = ub, .dots = lazyeval::lazy_dots(...))
 }
 
@@ -172,7 +175,8 @@ add_variable_.optimization_model <- function(model, variable, ...,
 #'
 #' @export
 set_bounds <- function(model, variable, ..., lb = NULL, ub = NULL) {
-  set_bounds_(model, lazyeval::lazy(variable), lb = lb, ub = ub,
+  set_bounds_(model, lazyeval::as.lazy(substitute(variable), parent.frame()),
+              lb = lb, ub = ub,
               .dots = lazyeval::lazy_dots(...))
 }
 
@@ -293,7 +297,8 @@ set_bounds_.optimization_model <- function(model, variable, ...,
 #' @export
 set_objective <- function(model, expression,
                                      direction = c("max", "min")) {
-  set_objective_(model, expression = lazyeval::lazy(expression),
+  set_objective_(model, expression = lazyeval::as.lazy(substitute(expression),
+                                                       parent.frame()),
                  direction = direction)
 }
 
@@ -385,7 +390,8 @@ print.optimization_model <- function(x, ...) {
 #' @export
 add_constraint <- function(model, constraint_expr, ...,
                                       .show_progress_bar = TRUE) {
-  add_constraint_(model, lazyeval::lazy(constraint_expr),
+  add_constraint_(model, lazyeval::as.lazy(substitute(constraint_expr),
+                                                     parent.frame()),
                   .dots = lazyeval::lazy_dots(...),
                   .show_progress_bar = .show_progress_bar)
 }

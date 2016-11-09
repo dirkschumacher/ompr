@@ -125,7 +125,7 @@ bind_variables <- function(model, ast, calling_env) {
       exists(x, calling_env)
     }, names(model$variables))
     problematic_vars <- names(model$variables)[problematic_vars]
-    warning(paste0("There variables in your environment that interfere",
+    warning(paste0("There are variables in your environment that interfere",
                    " with your defined model variables: ",
                    paste0(problematic_vars, collapse = ","),
                    ". This can lead",

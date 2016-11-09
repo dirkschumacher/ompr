@@ -198,3 +198,10 @@ test_that("SE handles sum_expr well", {
   expect_equal(deparse(m$constraints[[1]]$lhs[[1]]),
                "x[1L] + (-1 * x[3L] + -1 * x[4L])")
 })
+
+test_that("bug 20161108 #105: c can be assigned as var name", {
+  expect_warning(add_variable(MIPModel(), c, lb = 1, ub = 2) %>%
+    set_objective(c) %>%
+    add_constraint(c <= 5) %>%
+    set_bounds(c, lb = 1.5), regexp = "interfere",  all = TRUE)
+})
