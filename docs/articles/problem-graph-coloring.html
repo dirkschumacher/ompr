@@ -41,7 +41,7 @@
       <h1>The Minimum Graph Coloring Problem</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-11-03</h4>
+            <h4 class="date">2016-11-09</h4>
           </div>
 
     
@@ -141,11 +141,11 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPMo
 <span class="st">  </span><span class="kw">arrange</span>(i)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(assigned_colors, <span class="dv">5</span>)</code></pre></div>
 <pre><code>##   variable i k value
-## 1        x 1 3     1
-## 2        x 2 3     1
+## 1        x 1 2     1
+## 2        x 2 2     1
 ## 3        x 3 1     1
 ## 4        x 4 2     1
-## 5        x 5 4     1</code></pre>
+## 5        x 5 3     1</code></pre>
 <p>Then we need to prepare the data for ggplot and join the colors to the data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
 color_data &lt;-<span class="st"> </span>map_data@data
