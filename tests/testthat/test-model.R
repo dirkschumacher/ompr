@@ -205,3 +205,21 @@ test_that("bug 20161108 #105: c can be assigned as var name", {
     add_constraint(c <= 5) %>%
     set_bounds(c, lb = 1.5), regexp = "interfere",  all = TRUE)
 })
+
+test_that("bug 20161110 #106: Error when indices used in sum_expr(...)
+           condition already have values in workspace", {
+   i <- 2
+   j <- 2
+   model <- MIPModel()
+   model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
+   expect_silent(result <- set_objective(model,
+                                         sum_expr(x[i, j], i = 1:2,
+                                                  j = 1:2, i != j)))
+   expect_silent(result <- add_constraint(model,
+                                         sum_expr(x[i, j], i = 1:2,
+                                                  j = 1:2, i != j) <= 10))
+   expect_silent(result <- add_constraint(model,
+                                          sum_expr(1 + x[i, i] + x[i, j],
+                                                   i = 1:2, j = 1:2,
+                                                   i != j) <= 10))
+})

@@ -53,17 +53,24 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
     ast <- if (is.null(element$ast)) get_ast_value(path) else element$ast
     stop_traversal <- element$stop_traversal
     is_final_sum_expr_call <- element$is_final_sum_expr_call
+    exclude_vars <- element$exclude_vars
     if (is.null(stop_traversal)) {
       stop_traversal <- FALSE
     }
     if (is.null(is_final_sum_expr_call)) {
       is_final_sum_expr_call <- FALSE
     }
+    if (is.null(exclude_vars)) {
+      exclude_vars <- ""
+    }
     if (!is.call(ast)) {
       # let's try to evaluate the whole sub-tree
-      new_ast_eval <- try_eval_exp(ast, envir)
-      if (is.numeric(new_ast_eval)) {
-        inplace_update_ast(path, new_ast_eval)
+      if (lazyeval::is_name(ast) &&
+          !as.character(ast) %in% exclude_vars) {
+        new_ast_eval <- try_eval_exp(ast, envir)
+        if (is.numeric(new_ast_eval)) {
+          inplace_update_ast(path, new_ast_eval)
+        }
       }
     } else if (is.call(ast)) {
       if (as.character(ast[[1]]) == "sum_expr") {
@@ -73,10 +80,12 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
         # e.g. sum_expr(x[i], i = 1:n) <- the n needs to be bound
         if (!is_final_sum_expr_call) {
           push(list(path = path, is_final_sum_expr_call = TRUE))
+          free_vars <- free_indexes_rec(ast[[2]])
           for (i in 3:length(ast)) {
             new_element <- list(
               ast = ast[[i]],
-              path = c(path, i)
+              path = c(path, i),
+              exclude_vars = free_vars
             )
             push(new_element)
           }
@@ -92,7 +101,8 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
         push(list(ast = ast, path = path, stop_traversal = TRUE))
         for (i in 2:length(ast)) {
           new_element <- list(ast = ast[[i]],
-                              path = c(path, i))
+                              path = c(path, i),
+                              exclude_vars = exclude_vars)
           push(new_element)
         }
       } else {
@@ -106,6 +116,46 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
     }
   }
   ast_walker(base_ast, on_element)
+}
+
+# given an AST in the form of an indexed variable
+# it returns the names of the free variables in the indexes
+# if var is not an index it returns character()
+free_indexes <- function(expr) {
+  if (expr[[1]] == "[" && length(expr) >= 3) {
+    vars <- vapply(3:length(expr), function(i) {
+      x <- expr[[i]]
+      if (lazyeval::is_name(x)) {
+        as.character(x)
+      } else {
+        NA_character_
+      }
+    }, character(1))
+    return(vars[!is.na(vars)])
+  }
+  character()
+}
+
+# same as free_indexes but traverses the AST
+free_indexes_rec <- function(expr) {
+  free_vars <- character()
+  on_element <- function(push, inplace_update_ast, get_ast_value, element) {
+    path <- element$path
+    ast <- if (is.null(element$ast)) get_ast_value(path) else element$ast
+    if (lazyeval::is_call(ast)) {
+      if (ast[[1]] == "[") {
+        free_vars <<- c(free_vars, free_indexes(ast))
+      } else {
+        for (i in seq_len(length(ast))) {
+          if (i > 1) {
+            push(list(ast = ast[[i]], path = c(path, i)))
+          }
+        }
+      }
+    }
+  }
+  ast_walker(expr, on_element)
+  unique(free_vars)
 }
 
 #' @noRd
