@@ -219,7 +219,7 @@ test_that("bug 20161110 #106: Error when indices used in sum_expr(...)
                                          sum_expr(x[i, j], i = 1:2,
                                                   j = 1:2, i != j) <= 10))
    expect_silent(result <- add_constraint(model,
-                                          sum_expr(1 + x[i, i] + x[i, j],
+                                          sum_expr(1 + x[i, j] + x[i, j],
                                                    i = 1:2, j = 1:2,
                                                    i != j) <= 10))
 })
