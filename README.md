@@ -100,15 +100,22 @@ library(ROI)
 library(ROI.plugin.glpk)
 library(ompr)
 library(ompr.roi)
-max_capacity <- 5
+max_capacity <- 3
 n <- 10
-weights <- runif(n, max = max_capacity)
-MIPModel() %>%
+fibs <- c(1, 1, 2, 3, 5, 8, 13, 21, 34, 55)
+triangulars <- rev(c(21, 28, 36, 45, 55, 1, 3, 6, 10, 15))
+weights <- max_capacity * triangulars / max(triangulars)
+values <- fibs
+
+model <- MIPModel() %>%
   add_variable(x[i], i = 1:n, type = "binary") %>%
-  set_objective(sum_expr(weights[i] * x[i], i = 1:n), "max") %>%
   add_constraint(sum_expr(weights[i] * x[i], i = 1:n) <= max_capacity) %>%
-  solve_model(with_ROI(solver = "glpk")) %>% 
-  get_solution(x[i]) %>% 
+  set_objective(sum_expr(values[i] * x[i], i = 1:n), "max")
+
+result <- model %>%
+  solve_model(with_ROI(solver = "glpk"))
+
+get_solution(result, x[i]) %>% 
   filter(value > 0)
 ```
 
@@ -124,15 +131,26 @@ library(ompr.roi)
 max_bins <- 10
 bin_size <- 3
 n <- 10
-weights <- runif(n, max = bin_size)
-MIPModel() %>%
+fibs <- c(1, 1, 2, 3, 5, 8, 13, 21, 34, 55)
+weights <- bin_size*fibs / max(fibs)
+
+model <- MIPModel() %>%
   add_variable(y[i], i = 1:max_bins, type = "binary") %>%
   add_variable(x[i, j], i = 1:max_bins, j = 1:n, type = "binary") %>%
   set_objective(sum_expr(y[i], i = 1:max_bins), "min") %>%
   add_constraint(sum_expr(weights[j] * x[i, j], j = 1:n) <= y[i] * bin_size, i = 1:max_bins) %>%
-  add_constraint(sum_expr(x[i, j], i = 1:max_bins) == 1, j = 1:n) %>%
-  solve_model(with_ROI(solver = "symphony", verbosity = 1)) %>% 
-  get_solution(x[i, j]) %>%
+  add_constraint(sum_expr(x[i, j], i = 1:max_bins) == 1, j = 1:n)
+
+result <- model %>%
+  solve_model(with_ROI(solver = "symphony", verbosity = 1))
+  
+solution <- get_solution(result, x[i, j]) %>% filter(value > 0)
+
+#used bins
+sort(unique(solution$i))
+
+#elements in bins
+get_solution(result, x[i, j]) %>%
   filter(value > 0) %>%
   arrange(i)
 ```
