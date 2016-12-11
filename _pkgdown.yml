@@ -23,6 +23,12 @@ reference:
     contents:
     - extract_coefficients
     - new_solution
+    - extract_constraints
+    - nvars
+    - objective_vector
+    - variable_bounds
+    - variable_keys
+    - variable_types
 
 articles:
   - title: "About the package"

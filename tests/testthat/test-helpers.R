@@ -20,13 +20,13 @@ test_that("sum_expr supports filter expressions", {
 
 test_that("extract_coefficients can extract constant", {
   ast <- substitute(1 + x * 10 + x[1, 2] + 23 + -1 * 3)
-  result <- extract_coefficients(ast)
+  result <- extract_coefficients_internal(ast)
   expect_equivalent(21, result$constant)
 })
 
 test_that("extract_coefficients can extract coefficients", {
   ast <- substitute(1 + x * (5 + 5) + x[1, 2] + 23 + -1 * 3)
-  result <- extract_coefficients(ast)
+  result <- extract_coefficients_internal(ast)
   expect_equal(2, length(result$coefficients))
   expect_equivalent(10, result$coefficients[["x"]]$coef)
   expect_equivalent(1, result$coefficients[["x[1, 2]"]]$coef)
@@ -41,19 +41,24 @@ test_that("check_expression handles special cases", {
 
 test_that("extract_coefficients can extract coefficients #2", {
   ast <- substitute(5 * x)
-  result <- extract_coefficients(ast)
+  result <- extract_coefficients_internal(ast)
   expect_equal(1, length(result$coefficients))
   expect_equivalent(5, result$coefficients[["x"]]$coef)
 })
 
+test_that("extract_coefficients is now deprecated", {
+  ast <- substitute(5 * x)
+  expect_warning(extract_coefficients(ast))
+})
+
 test_that("extract_coefficients fails if unkown operator is used", {
   ast <- substitute(5 ^ x)
-  expect_error(extract_coefficients(ast))
+  expect_error(extract_coefficients_internal(ast))
 })
 
 test_that("extract_coefficients can extract coefficients #3", {
   ast <- substitute(x)
-  result <- extract_coefficients(ast)
+  result <- extract_coefficients_internal(ast)
   expect_equal(1, length(result$coefficients))
   expect_equivalent(1, result$coefficients[["x"]]$coef)
 })
@@ -63,7 +68,7 @@ test_that("bug 20161107 #103: bug in extract coefficient (1)", {
   m <- MIPModel() %>%
     add_variable(x) %>%
     set_objective(- (a * x))
-  result <- extract_coefficients(m$objective$expression[[1]])
+  result <- extract_coefficients_internal(m$objective$expression[[1]])
   expect_equal(-12, result$coefficients[["x"]]$coef)
   expect_equal(0, result$constant)
 })
@@ -75,6 +80,6 @@ test_that("bug 20161107 #103: bug in extract coefficient (2)", {
     add_variable(x[i], i = 1:2) %>%
     add_variable(y) %>%
     add_constraint(y - a * x[i] <= 1, i = 1:2)
-  result <- extract_coefficients(m$constraints[[1]]$lhs[[1]])
+  result <- extract_coefficients_internal(m$constraints[[1]]$lhs[[1]])
   expect_equal(-47, result$coefficients[["x[1L]"]]$coef)
 })
