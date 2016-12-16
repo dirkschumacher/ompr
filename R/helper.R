@@ -341,9 +341,6 @@ normalize_expression <- function(model, expression, envir) {
 #'
 #' @param ast the abstract syntax tree (usually a call)
 #'
-#' @examples
-#' extract_coefficients(substitute(5 * x + 1))
-#'
 #' @return a list with values for constants and coefficients
 #' @export
 extract_coefficients <- function(ast) {
