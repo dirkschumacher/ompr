@@ -41,7 +41,7 @@
       <h1>The Multiple Traveling Salesmen Problem</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-12-11</h4>
+            <h4 class="date">2016-12-16</h4>
           </div>
 
     
@@ -137,27 +137,8 @@ model</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">solution &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(result, x[i, j, k]) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>) 
 <span class="kw">kable</span>(<span class="kw">head</span>(solution, <span class="dv">3</span>))</code></pre></div>
-<table class="table"><thead><tr class="header"><th align="left">variable</th>
-<th align="right">i</th>
-<th align="right">j</th>
-<th align="right">k</th>
-<th align="right">value</th>
-</tr></thead><tbody><tr class="odd"><td align="left">x</td>
-<td align="right">3</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr><tr class="even"><td align="left">x</td>
-<td align="right">4</td>
-<td align="right">2</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr><tr class="odd"><td align="left">x</td>
-<td align="right">2</td>
-<td align="right">3</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr></tbody></table><p>Now we need to link back the indexes in our model with the actual cities.</p>
+<p>variable i j k value &mdash;&mdash;&mdash; &mdash; &mdash; &mdash; &mdash;&mdash;</p>
+<p>Now we need to link back the indexes in our model with the actual cities.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">paths &lt;-<span class="st"> </span><span class="kw">select</span>(solution, i, j, k) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">rename</span>(<span class="dt">from =</span> i, <span class="dt">to =</span> j, <span class="dt">salesman =</span> k) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">trip_id =</span> <span class="kw">row_number</span>()) %&gt;%<span class="st"> </span>
@@ -165,42 +146,8 @@ model</code></pre></div>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">idx_val =</span> <span class="kw">as.integer</span>(idx_val)) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">inner_join</span>(cities, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">"idx_val"</span> =<span class="st"> "id"</span>))
 <span class="kw">kable</span>(<span class="kw">head</span>(<span class="kw">arrange</span>(paths, trip_id), <span class="dv">4</span>))</code></pre></div>
-<table class="table"><thead><tr class="header"><th align="right">salesman</th>
-<th align="right">trip_id</th>
-<th align="left">property</th>
-<th align="right">idx_val</th>
-<th align="right">x</th>
-<th align="right">y</th>
-<th align="left">is_depot</th>
-</tr></thead><tbody><tr class="odd"><td align="right">1</td>
-<td align="right">1</td>
-<td align="left">from</td>
-<td align="right">3</td>
-<td align="right">186.0619</td>
-<td align="right">330.3989</td>
-<td align="left">FALSE</td>
-</tr><tr class="even"><td align="right">1</td>
-<td align="right">1</td>
-<td align="left">to</td>
-<td align="right">1</td>
-<td align="right">250.0000</td>
-<td align="right">250.0000</td>
-<td align="left">TRUE</td>
-</tr><tr class="odd"><td align="right">1</td>
-<td align="right">2</td>
-<td align="left">from</td>
-<td align="right">4</td>
-<td align="right">286.4267</td>
-<td align="right">314.5570</td>
-<td align="left">FALSE</td>
-</tr><tr class="even"><td align="right">1</td>
-<td align="right">2</td>
-<td align="left">to</td>
-<td align="right">2</td>
-<td align="right">132.7543</td>
-<td align="right">472.3376</td>
-<td align="left">FALSE</td>
-</tr></tbody></table><p>And plot it:</p>
+<p>salesman trip_id property idx_val x y is_depot &mdash;&mdash;&mdash; &mdash;&mdash;&ndash; &mdash;&mdash;&mdash; &mdash;&mdash;&ndash; &mdash; &mdash; &mdash;&mdash;&mdash;</p>
+<p>And plot it:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(cities, <span class="kw">aes</span>(x, y)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> is_depot)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> paths, <span class="kw">aes</span>(<span class="dt">group =</span> trip_id, <span class="dt">color =</span> <span class="kw">factor</span>(salesman))) +<span class="st"> </span>

@@ -41,7 +41,7 @@
       <h1>The Traveling Salesman Problem</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-12-11</h4>
+            <h4 class="date">2016-12-16</h4>
           </div>
 
     
@@ -129,17 +129,16 @@ model</code></pre></div>
 ## GLPK Simplex Optimizer, v4.60
 ## 110 rows, 110 columns, 434 non-zeros
 ##       0: obj =   0.000000000e+00 inf =   2.900e+01 (29)
-##      33: obj =   2.118421165e+03 inf =   5.551e-17 (0)
-## *    62: obj =   1.450925576e+03 inf =   3.997e-15 (0)
+##      33: obj =   2.456134336e+03 inf =   5.551e-17 (0)
+## *    72: obj =   1.450925576e+03 inf =   6.939e-16 (0)
 ## OPTIMAL LP SOLUTION FOUND
 ## GLPK Integer Optimizer, v4.60
 ## 110 rows, 110 columns, 434 non-zeros
-## 100 integer variables, 90 of which are binary
+## 100 integer variables, 81 of which are binary
 ## Integer optimization begins...
-## +    62: mip =     not found yet &gt;=              -inf        (1; 0)
-## +    79: &gt;&gt;&gt;&gt;&gt;   1.471334313e+03 &gt;=   1.450925576e+03   1.4% (4; 0)
-## +   103: &gt;&gt;&gt;&gt;&gt;   1.469860058e+03 &gt;=   1.450925576e+03   1.3% (3; 1)
-## +   123: mip =   1.469860058e+03 &gt;=     tree is empty   0.0% (0; 7)
+## +    72: mip =     not found yet &gt;=              -inf        (1; 0)
+## +    95: &gt;&gt;&gt;&gt;&gt;   1.469860058e+03 &gt;=   1.450925576e+03   1.3% (3; 0)
+## +   119: mip =   1.469860058e+03 &gt;=     tree is empty   0.0% (0; 5)
 ## INTEGER OPTIMAL SOLUTION FOUND
 ## &lt;!SOLVER MSG&gt; ----</code></pre>
 <p>To extract the solution we can use <code>get_solution</code> method that will return a data.frame which we can further be used with <code>tidyverse</code> packages.</p>
@@ -151,16 +150,16 @@ model</code></pre></div>
 <th align="right">j</th>
 <th align="right">value</th>
 </tr></thead><tbody><tr class="odd"><td align="left">x</td>
+<td align="right">1</td>
 <td align="right">7</td>
 <td align="right">1</td>
-<td align="right">1</td>
 </tr><tr class="even"><td align="left">x</td>
-<td align="right">1</td>
-<td align="right">2</td>
+<td align="right">10</td>
+<td align="right">8</td>
 <td align="right">1</td>
 </tr><tr class="odd"><td align="left">x</td>
-<td align="right">5</td>
-<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">1</td>
 <td align="right">1</td>
 </tr></tbody></table><p>Now we need to link back the indexes in our model with the actual cities.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">paths &lt;-<span class="st"> </span><span class="kw">select</span>(solution, i, j) %&gt;%<span class="st"> </span>
@@ -177,24 +176,24 @@ model</code></pre></div>
 <th align="right">y</th>
 </tr></thead><tbody><tr class="odd"><td align="right">1</td>
 <td align="left">from</td>
-<td align="right">7</td>
-<td align="right">267.4290</td>
-<td align="right">439.3217</td>
+<td align="right">1</td>
+<td align="right">398.89216</td>
+<td align="right">398.99456</td>
 </tr><tr class="even"><td align="right">1</td>
 <td align="left">to</td>
-<td align="right">1</td>
-<td align="right">398.8922</td>
-<td align="right">398.9946</td>
+<td align="right">7</td>
+<td align="right">267.42898</td>
+<td align="right">439.32168</td>
 </tr><tr class="odd"><td align="right">2</td>
 <td align="left">from</td>
-<td align="right">1</td>
-<td align="right">398.8922</td>
-<td align="right">398.9946</td>
+<td align="right">10</td>
+<td align="right">83.78474</td>
+<td align="right">388.60316</td>
 </tr><tr class="even"><td align="right">2</td>
 <td align="left">to</td>
-<td align="right">2</td>
-<td align="right">376.7825</td>
-<td align="right">296.8970</td>
+<td align="right">8</td>
+<td align="right">48.26312</td>
+<td align="right">98.80287</td>
 </tr></tbody></table><p>And plot it:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(cities, <span class="kw">aes</span>(x, y)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_point</span>() +<span class="st"> </span>

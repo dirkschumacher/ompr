@@ -11,9 +11,9 @@ nvars(model)
 }
 \value{
 a list with three named elements.
-        'binary' - number of binary variables
-        'integer' - number of integer variables
-        'continuous' - number of continuous variables
+        'binary' => number of binary variables,
+        'integer' => number of integer variables,
+        'continuous' => number of continuous variables.
 }
 \description{
 Number of variables of a model

@@ -19,13 +19,12 @@ reference:
     - get_solution
     - objective_value
     - solver_status
-  - title: Solver developer functions
+  - title: Solver-developer functions
     contents:
-    - extract_coefficients
     - new_solution
     - extract_constraints
     - nvars
-    - objective_vector
+    - objective_function
     - variable_bounds
     - variable_keys
     - variable_types

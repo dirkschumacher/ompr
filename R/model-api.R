@@ -134,9 +134,9 @@ extract_constraints.optimization_model <- function(model) {
 #'
 #' @param model the model
 #' @return a list with three named elements.
-#'         'binary' - number of binary variables
-#'         'integer' - number of integer variables
-#'         'continuous' - number of continuous variables
+#'         'binary' => number of binary variables,
+#'         'integer' => number of integer variables,
+#'         'continuous' => number of continuous variables.
 #' @export
 nvars <- function(model) UseMethod("nvars")
 
