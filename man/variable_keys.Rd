@@ -18,7 +18,7 @@ Get all unique names of the model variables
 }
 \examples{
 library(magrittr)
-model <- MIPMode() \%>\%
+model <- MIPModel() \%>\%
   add_variable(x[i], i = 1:3)
 variable_keys(model)
 }
