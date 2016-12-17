@@ -10,6 +10,9 @@ describe("nvars()", {
     expect_equivalent(10, result$binary)
     expect_equivalent(5, result$continuous)
     expect_equivalent(2, result$integer)
+    expect_null(names(result$continuous))
+    expect_null(names(result$binary))
+    expect_null(names(result$integer))
   })
   it("returns 0 for a model without variables", {
     model <- MIPModel()

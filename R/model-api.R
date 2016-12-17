@@ -152,7 +152,7 @@ nvars.optimization_model <- function(model) {
     setNames(length(var$instances), var$type)
   }, model$variables)
   Reduce(f = function(acc, el) {
-    acc[[names(el)]] <- acc[[names(el)]] + el
+    acc[[names(el)]] <- acc[[names(el)]] + as.numeric(el)
     acc
   }, mapped_vars, init = list(continuous = 0, integer = 0,
                               binary = 0))
