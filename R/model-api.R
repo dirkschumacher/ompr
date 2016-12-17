@@ -1,8 +1,14 @@
-#' Get all unique names of the model variables.
+#' Get all unique names of the model variables
 #'
 #' @param model the model
 #' @return a character vector ordered in the same way
 #'         as the constraint matrix columns and objective vector
+#'
+#' @examples
+#' library(magrittr)
+#' model <- MIPMode() %>%
+#'   add_variable(x[i], i = 1:3)
+#' variable_keys(model)
 #' @export
 variable_keys <- function(model) UseMethod("variable_keys")
 
@@ -19,7 +25,8 @@ variable_keys.optimization_model <- function(model) {
       } else {
         x
       }
-    })))
+    }))
+  )
 }
 
 # helper function that creates a function
@@ -54,7 +61,7 @@ build_coefficent_vector_fun <- function(model_var_keys) {
 }
 
 
-#' Extract the objective function of a model
+#' Extract the objective function from a model
 #'
 #' @param model the model
 #'
@@ -81,9 +88,7 @@ objective_function.optimization_model <- function(model) {
   }
 }
 
-#' Extract the constraint matrix, the right hand side and the directions.
-#'
-#' It does not use sparse matrices.
+#' Extract the constraint matrix, the right hand side and the directions from a model.
 #'
 #' @param model the model
 #' @return a list with three named elements.
@@ -153,7 +158,7 @@ nvars.optimization_model <- function(model) {
                               binary = 0))
 }
 
-#' Return the variable types
+#' Variable types of a model
 #'
 #' One component for each variable in the correct order
 #' @param model the model
@@ -189,7 +194,7 @@ extract_var_bounds_fun <- function(type) {
   }
 }
 
-#' Returns the variable lower and upper bounds
+#' Variable lower and upper bounds of a model
 #'
 #' @param model the model
 #'

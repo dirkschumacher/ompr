@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get all unique names of the model variables. — variable_keys • ompr</title>
+<title>Get all unique names of the model variables — variable_keys • ompr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,11 +77,11 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get all unique names of the model variables.</h1>
+    <h1>Get all unique names of the model variables</h1>
     </div>
 
     
-    <p>Get all unique names of the model variables.</p>
+    <p>Get all unique names of the model variables</p>
     
 
     <pre><span class='fu'>variable_keys</span>(<span class='no'>model</span>)</pre>
@@ -98,6 +98,10 @@
         as the constraint matrix columns and objective vector</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>MIPMode</span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='add_variable.html'>add_variable</a></span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): konnte Funktion &quot;MIPMode&quot; nicht finden</span></div><div class='input'><span class='fu'>variable_keys</span>(<span class='no'>model</span>)</div><div class='output co'>#&gt; <span class='error'>Error in variable_keys(model): Objekt &#39;model&#39; nicht gefunden</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -105,7 +109,9 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

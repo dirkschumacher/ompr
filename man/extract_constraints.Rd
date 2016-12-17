@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-api.R
 \name{extract_constraints}
 \alias{extract_constraints}
-\title{Extract the constraint matrix, the right hand side and the directions.}
+\title{Extract the constraint matrix, the right hand side and the directions from a model.}
 \usage{
 extract_constraints(model)
 }
@@ -16,6 +16,6 @@ a list with three named elements.
         'direction' is a vector of the constraint directions
 }
 \description{
-It does not use sparse matrices.
+Extract the constraint matrix, the right hand side and the directions from a model.
 }
 

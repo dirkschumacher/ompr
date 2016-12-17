@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-api.R
 \name{variable_bounds}
 \alias{variable_bounds}
-\title{Returns the variable lower and upper bounds}
+\title{Variable lower and upper bounds of a model}
 \usage{
 variable_bounds(model)
 }
@@ -14,6 +14,6 @@ a list with two components 'lower' and 'upper' each
 having a numeric vector of bounds. One for each variable.
 }
 \description{
-Returns the variable lower and upper bounds
+Variable lower and upper bounds of a model
 }
 

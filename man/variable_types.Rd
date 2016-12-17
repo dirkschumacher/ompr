@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-api.R
 \name{variable_types}
 \alias{variable_types}
-\title{Return the variable types}
+\title{Variable types of a model}
 \usage{
 variable_types(model)
 }

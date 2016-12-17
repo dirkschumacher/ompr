@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-api.R
 \name{objective_function}
 \alias{objective_function}
-\title{Extract the objective function of a model}
+\title{Extract the objective function from a model}
 \usage{
 objective_function(model)
 }
@@ -10,6 +10,6 @@ objective_function(model)
 \item{model}{the model}
 }
 \description{
-Extract the objective function of a model
+Extract the objective function from a model
 }
 
