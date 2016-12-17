@@ -100,8 +100,9 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>MIPMode</span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='add_variable.html'>add_variable</a></span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): konnte Funktion &quot;MIPMode&quot; nicht finden</span></div><div class='input'><span class='fu'>variable_keys</span>(<span class='no'>model</span>)</div><div class='output co'>#&gt; <span class='error'>Error in variable_keys(model): Objekt &#39;model&#39; nicht gefunden</span></div></pre>
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='MIPModel.html'>MIPModel</a></span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='add_variable.html'>add_variable</a></span>(<span class='no'>x</span>[<span class='no'>i</span>], <span class='kw'>i</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'>variable_keys</span>(<span class='no'>model</span>)</div><div class='output co'>#&gt; [1] &quot;x[1]&quot; &quot;x[2]&quot; &quot;x[3]&quot;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

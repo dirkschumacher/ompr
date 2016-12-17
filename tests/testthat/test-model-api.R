@@ -46,20 +46,20 @@ describe("variable_keys()", {
     model <- MIPModel() %>%
       add_variable(x[i], i = 1:3)
     result <- variable_keys(model)
-    expect_equal(c("x_1", "x_2", "x_3"), result)
+    expect_equal(c("x[1]", "x[2]", "x[3]"), result)
   })
   it("works with more than 1 index var", {
     model <- MIPModel() %>%
       add_variable(x[i, j], i = 1:2, j = 1:2)
     result <- variable_keys(model)
-    expect_equal(c("x_1_1", "x_1_2", "x_2_1", "x_2_2"), result)
+    expect_equal(c("x[1,1]", "x[1,2]", "x[2,1]", "x[2,2]"), result)
   })
   it("works with vars without an index", {
     model <- MIPModel() %>%
       add_variable(x[i, j], i = 1, j = 1) %>%
       add_variable(a)
     result <- variable_keys(model)
-    expect_equal(c("a", "x_1_1"), result)
+    expect_equal(c("a", "x[1,1]"), result)
   })
   it("sorts keys alphabetically", {
     model <- MIPModel() %>%

@@ -17,15 +17,21 @@ variable_keys.optimization_model <- function(model) {
   if (length(model$variables) == 0) {
     return(character(0))
   }
-  sort(unlist(lapply(names(model$variables),
+  sort(unlist(lapply(sort(names(model$variables)),
     function(x) {
       var <- model$variables[[x]]
       if (var$arity > 0) {
-        paste0(x, "_", var$instances)
+        var_codes <- paste0(x, "_", var$instances)
+        vapply(var_codes, function(var_code) {
+          splited_els <- strsplit(var_code, "_", fixed = TRUE)[[1]]
+          paste0(splited_els[1], "[",
+                 paste0(splited_els[2:length(splited_els)], collapse = ","),
+                 "]")
+        }, character(1))
       } else {
         x
       }
-    }))
+    }), use.names = FALSE)
   )
 }
 
@@ -42,9 +48,9 @@ build_coefficent_vector_fun <- function(model_var_keys) {
       var_ast <- var_coef$ast
       if (is.call(var_ast) && length(var_ast) > 1) {
         var_name <- as.character(var_ast[[2]])
-        search_key <- paste0(c(var_name,
-                               as.character(var_ast[3:length(var_ast)])),
-                             collapse = "_")
+        search_key <- paste0(var_name, "[",
+                             paste0(as.character(var_ast[3:length(var_ast)]),
+                                    collapse = ","), "]")
       } else {
         var_name <- as.character(var_ast)
         search_key <- var_name
@@ -65,6 +71,12 @@ build_coefficent_vector_fun <- function(model_var_keys) {
 #'
 #' @param model the model
 #'
+#' @examples
+#' library(magrittr)
+#' model <- MIPModel() %>%
+#'   add_variable(x[i], i = 1:5) %>%
+#'   set_objective(sum_expr(i * x[i], i = 1:5) + 10)
+#' objective_function(model)
 #' @export
 objective_function <- function(model) UseMethod("objective_function")
 
@@ -88,7 +100,7 @@ objective_function.optimization_model <- function(model) {
   }
 }
 
-#' Extract the constraint matrix, the right hand side and the directions from a model.
+#' Extract the constraint matrix, the right hand side and the directions from a model
 #'
 #' @param model the model
 #' @return a list with three named elements.
@@ -96,6 +108,13 @@ objective_function.optimization_model <- function(model) {
 #'         'rhs' is the right hand side vector in the order of the matrix.
 #'         'direction' is a vector of the constraint directions
 #'
+#' @examples
+#' library(magrittr)
+#' model <- MIPModel() %>%
+#'   add_variable(x[i], i = 1:3) %>%
+#'   add_variable(y[i], i = 1:3) %>%
+#'   add_constraint(x[i] + y[i] <= 1, i = 1:3)
+#' extract_constraints(model)
 #' @export
 extract_constraints <- function(model) UseMethod("extract_constraints")
 
@@ -142,6 +161,14 @@ extract_constraints.optimization_model <- function(model) {
 #'         'binary' => number of binary variables,
 #'         'integer' => number of integer variables,
 #'         'continuous' => number of continuous variables.
+#'
+#' @examples
+#' library(magrittr)
+#' model <- MIPModel() %>%
+#'   add_variable(x[i], i = 1:10, type = "binary") %>%
+#'   add_variable(y[i], i = 1:5, type = "continuous") %>%
+#'   add_variable(z[i], i = 1:2, type = "integer")
+#' nvars(model)
 #' @export
 nvars <- function(model) UseMethod("nvars")
 
@@ -163,6 +190,14 @@ nvars.optimization_model <- function(model) {
 #' One component for each variable in the correct order
 #' @param model the model
 #' @return a factor with levels binary, continuous, integer
+#'
+#' @examples
+#' library(magrittr)
+#' model <- MIPModel() %>%
+#'   add_variable(x, type = "binary") %>%
+#'   add_variable(y, type = "continuous") %>%
+#'   add_variable(z, type = "integer")
+#' variable_types(model)
 #' @export
 variable_types <- function(model) UseMethod("variable_types")
 
@@ -200,6 +235,14 @@ extract_var_bounds_fun <- function(type) {
 #'
 #' @return a list with two components 'lower' and 'upper' each
 #' having a numeric vector of bounds. One for each variable.
+#'
+#' @examples
+#' library(magrittr)
+#' model <- MIPModel() %>%
+#'   add_variable(x, type = "binary") %>%
+#'   add_variable(y, type = "continuous", lb = 2) %>%
+#'   add_variable(z, type = "integer", ub = 3)
+#' variable_bounds(model)
 #' @export
 variable_bounds <- function(model) UseMethod("variable_bounds")
 

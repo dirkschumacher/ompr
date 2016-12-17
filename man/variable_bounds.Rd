@@ -16,4 +16,12 @@ having a numeric vector of bounds. One for each variable.
 \description{
 Variable lower and upper bounds of a model
 }
+\examples{
+library(magrittr)
+model <- MIPModel() \%>\%
+  add_variable(x, type = "binary") \%>\%
+  add_variable(y, type = "continuous", lb = 2) \%>\%
+  add_variable(z, type = "integer", ub = 3)
+variable_bounds(model)
+}
 

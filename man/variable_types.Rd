@@ -15,4 +15,12 @@ a factor with levels binary, continuous, integer
 \description{
 One component for each variable in the correct order
 }
+\examples{
+library(magrittr)
+model <- MIPModel() \%>\%
+  add_variable(x, type = "binary") \%>\%
+  add_variable(y, type = "continuous") \%>\%
+  add_variable(z, type = "integer")
+variable_types(model)
+}
 

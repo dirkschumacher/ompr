@@ -12,4 +12,11 @@ objective_function(model)
 \description{
 Extract the objective function from a model
 }
+\examples{
+library(magrittr)
+model <- MIPModel() \%>\%
+  add_variable(x[i], i = 1:5) \%>\%
+  set_objective(sum_expr(i * x[i], i = 1:5) + 10)
+objective_function(model)
+}
 
