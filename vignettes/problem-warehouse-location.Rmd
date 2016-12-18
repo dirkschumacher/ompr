@@ -21,7 +21,7 @@ As a practical example: you run the logistics for an NGO and want to regularly d
 
 ## The mathematical model
 
-We start with a set of customers $C = \{1 \ldots n\}$ and a set of possible warehouses $W = \{1 \ldots m\}$ that could be built. In addition we have a cost function giving us the transportation cost from a warehouse to a customer. Furthermore there is a fixed cost associated with each warehouse if it will be built. This basic version of the warehouse location problem is adopted from the [German Wikipedia page](https://de.wikipedia.org/wiki/Facility_location_problem) about the problem.
+We start with a set of customers $C = \{1 \ldots n\}$ and a set of possible warehouses $W = \{1 \ldots m\}$ that could be built. In addition we have a cost function giving us the transportation cost from a warehouse to a customer. Furthermore there is a fixed cost associated with each warehouse if it will be built. This basic version of the warehouse location problem is adopted from the [German Wikipedia page](https://de.wikipedia.org/wiki/Warehouse_Location_Problem) about the problem.
 
 $$
 \begin{equation*}
