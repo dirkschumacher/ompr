@@ -40,6 +40,7 @@ articles:
     - problem-mtsp
     - problem-graph-coloring
     - problem-course-assignment
+    - problem-warehouse-location
 
 navbar:
   title: ompr
