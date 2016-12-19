@@ -41,7 +41,7 @@
       <h1>The Warehouse Location Problem</h1>
                         <h4 class="author">Dirk Schumacher</h4>
             
-            <h4 class="date">2016-12-18</h4>
+            <h4 class="date">2016-12-19</h4>
           </div>
 
     
@@ -59,7 +59,7 @@
 <p><span class="math display">\[
 \begin{equation*}
 \begin{array}{ll@{}ll}
-\text{min}  &amp; \displaystyle\sum\limits_{i=1}^{n}\sum\limits_{j=1}^{m}transportcost_{i,j} \cdot x_{i, j} +  \sum\limits_{j=1}^{m}fixedcost_{j} \cdot y_{j}&amp; &amp;\\
+\text{min}  &amp; \displaystyle\sum\limits_{i=1}^{n}\sum\limits_{j=1}^{m}\operatorname{transportcost}_{i,j} \cdot x_{i, j} +  \sum\limits_{j=1}^{m}\operatorname{fixedcost}_{j} \cdot y_{j}&amp; &amp;\\
 \text{subject to} &amp; \displaystyle\sum\limits_{j=1}^{m}   x_{i, j} = 1  &amp; i=1 ,\ldots, n&amp;\\
                   &amp; \displaystyle x_{i, j} \leq y_j,  &amp; i=1 ,\ldots, n &amp; j=1 ,\ldots, m&amp;\\
                  &amp;                                                x_{i,j} \in \{0,1\} &amp;i=1 ,\ldots, n, &amp; j=1 ,\ldots, m \\
@@ -70,7 +70,7 @@
 </div>
 <div id="the-model-in-r" class="section level2">
 <h2 class="hasAnchor"><html><body><a href="#the-model-in-r" class="anchor"> </a></body></html>The model in R</h2>
-<p>The first thing we need is the data. In this article we will generate it randomly.</p>
+<p>The first thing we need is the data. In this article we will simply generate artificial data.</p>
 <p>We assume the <strong>customers</strong> are located in a grid with euclidian distances:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
 grid_size &lt;-<span class="st"> </span><span class="dv">1000</span>
@@ -104,13 +104,14 @@ fixedcost &lt;-<span class="st"> </span><span class="kw">round</span>(<span clas
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
 p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(customer_locations, <span class="kw">aes</span>(x, y)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_point</span>() +<span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> warehouse_locations, <span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> warehouse_locations, <span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">shape =</span> <span class="dv">17</span>) +
 <span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, grid_size)) +
 <span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, grid_size)) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.title =</span> <span class="kw">element_blank</span>(), 
         <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
         <span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>())
-p +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">"Warehouse location problem"</span>)</code></pre></div>
+p +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">"Warehouse location problem"</span>, 
+          <span class="st">"Black dots are customers. Light tred triangles represent potential warehouse locations."</span>)</code></pre></div>
 <p><img src="problem-warehouse-location_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
 <p>The model in <code>ompr</code> then looks like this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr)
@@ -163,7 +164,7 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/solv
 ## +   856: mip =   3.322200000e+04 &gt;=     tree is empty   0.0% (0; 1)
 ## INTEGER OPTIMAL SOLUTION FOUND
 ## &lt;!SOLVER MSG&gt; ----</code></pre>
-<p>We solved the problem with an objective value of 3.322210^{4}.</p>
+<p>We solved the problem with an objective value of 33222.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(dplyr))
 matching &lt;-<span class="st"> </span>result %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(x[i,j]) %&gt;%
@@ -180,11 +181,13 @@ plot_warehouses &lt;-<span class="st"> </span>warehouse_locations %&gt;%<span cl
 <span class="st">  </span><span class="kw">filter</span>(id %in%<span class="st"> </span><span class="kw">unique</span>(matching$j))
 p +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_segment</span>(<span class="dt">data =</span> plot_assignment, <span class="kw">aes</span>(<span class="dt">x =</span> x.y, <span class="dt">y =</span> y.y, <span class="dt">xend =</span> x.x, <span class="dt">yend =</span> y.x)) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data  =</span> plot_warehouses, <span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">size =</span> <span class="dv">3</span>) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data  =</span> plot_warehouses, <span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">size =</span> <span class="dv">3</span>, <span class="dt">shape =</span> <span class="dv">17</span>) +
 <span class="st">  </span>ggrepel::<span class="kw">geom_label_repel</span>(<span class="dt">data  =</span> plot_warehouses, 
                             <span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">paste0</span>(<span class="st">"fixed costs:"</span>, costs, <span class="st">"; customers: "</span>, n)), 
                             <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">nudge_y =</span> <span class="dv">20</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">paste0</span>(<span class="st">"Cost optimal warehouse locations and customer assignment"</span>))</code></pre></div>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">paste0</span>(<span class="st">"Cost optimal warehouse locations and customer assignment"</span>),
+          <span class="st">"Big red triangles are warehouses built, light red unused warehouses. </span>
+<span class="st">Dots represent customers served by the respective warehouses."</span>)</code></pre></div>
 <p><img src="problem-warehouse-location_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
 <p>The fixed costs for setting up the 4 warehouses is:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(fixedcost[<span class="kw">unique</span>(matching$j)])</code></pre></div>

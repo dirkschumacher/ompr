@@ -26,7 +26,7 @@ We start with a set of customers $C = \{1 \ldots n\}$ and a set of possible ware
 $$
 \begin{equation*}
 \begin{array}{ll@{}ll}
-\text{min}  & \displaystyle\sum\limits_{i=1}^{n}\sum\limits_{j=1}^{m}transportcost_{i,j} \cdot x_{i, j} +  \sum\limits_{j=1}^{m}fixedcost_{j} \cdot y_{j}& &\\
+\text{min}  & \displaystyle\sum\limits_{i=1}^{n}\sum\limits_{j=1}^{m}\operatorname{transportcost}_{i,j} \cdot x_{i, j} +  \sum\limits_{j=1}^{m}\operatorname{fixedcost}_{j} \cdot y_{j}& &\\
 \text{subject to} & \displaystyle\sum\limits_{j=1}^{m}   x_{i, j} = 1  & i=1 ,\ldots, n&\\
                   & \displaystyle x_{i, j} \leq y_j,  & i=1 ,\ldots, n & j=1 ,\ldots, m&\\
                  &                                                x_{i,j} \in \{0,1\} &i=1 ,\ldots, n, & j=1 ,\ldots, m \\
@@ -37,7 +37,7 @@ $$
 
 ## The model in R
 
-The first thing we need is the data. In this article we will generate it randomly.
+The first thing we need is the data. In this article we will simply generate artificial data.
 
 We assume the **customers** are located in a grid with euclidian distances:
 ```{r}
@@ -83,13 +83,14 @@ Now let's plot everything. Black dots are customers and red dots are possible wa
 library(ggplot2)
 p <- ggplot(customer_locations, aes(x, y)) + 
   geom_point() + 
-  geom_point(data = warehouse_locations, color = "red", alpha = 0.5) +
+  geom_point(data = warehouse_locations, color = "red", alpha = 0.5, shape = 17) +
   scale_x_continuous(limits = c(0, grid_size)) +
   scale_y_continuous(limits = c(0, grid_size)) +
   theme(axis.title = element_blank(), 
         axis.ticks = element_blank(), 
         axis.text = element_blank(), panel.grid = element_blank())
-p + ggtitle("Warehouse location problem")
+p + ggtitle("Warehouse location problem", 
+          "Black dots are customers. Light tred triangles represent potential warehouse locations.")
 ```
 
 The model in `ompr` then looks like this:
@@ -126,7 +127,7 @@ library(ROI.plugin.glpk)
 result <- solve_model(model, with_ROI(solver = "glpk", verbose = TRUE))
 ```
 
-We solved the problem with an objective value of `r objective_value(result)`.
+We solved the problem with an objective value of `r sprintf("%d", objective_value(result))`.
 
 ```{r}
 suppressPackageStartupMessages(library(dplyr))
@@ -149,11 +150,13 @@ plot_warehouses <- warehouse_locations %>%
   filter(id %in% unique(matching$j))
 p + 
   geom_segment(data = plot_assignment, aes(x = x.y, y = y.y, xend = x.x, yend = y.x)) + 
-  geom_point(data  = plot_warehouses, color = "red", size = 3) +
+  geom_point(data  = plot_warehouses, color = "red", size = 3, shape = 17) +
   ggrepel::geom_label_repel(data  = plot_warehouses, 
                             aes(label = paste0("fixed costs:", costs, "; customers: ", n)), 
                             size = 2, nudge_y = 20) + 
-  ggtitle(paste0("Cost optimal warehouse locations and customer assignment"))
+  ggtitle(paste0("Cost optimal warehouse locations and customer assignment"),
+          "Big red triangles are warehouses built, light red unused warehouses. 
+Dots represent customers served by the respective warehouses.")
 ```
 
 The fixed costs for setting up the `r n_distinct(matching$j)` warehouses is:
