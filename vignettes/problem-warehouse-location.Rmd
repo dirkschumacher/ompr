@@ -90,7 +90,7 @@ p <- ggplot(customer_locations, aes(x, y)) +
         axis.ticks = element_blank(), 
         axis.text = element_blank(), panel.grid = element_blank())
 p + ggtitle("Warehouse location problem", 
-          "Black dots are customers. Light tred triangles represent potential warehouse locations.")
+          "Black dots are customers. Light red triangles show potential warehouse locations.")
 ```
 
 The model in `ompr` then looks like this:
@@ -155,7 +155,7 @@ p +
                             aes(label = paste0("fixed costs:", costs, "; customers: ", n)), 
                             size = 2, nudge_y = 20) + 
   ggtitle(paste0("Cost optimal warehouse locations and customer assignment"),
-          "Big red triangles are warehouses built, light red unused warehouses. 
+          "Big red triangles show warehouses that will be built, light red are unused warehouse locations. 
 Dots represent customers served by the respective warehouses.")
 ```
 

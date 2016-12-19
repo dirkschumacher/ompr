@@ -111,7 +111,7 @@ p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(customer_location
         <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
         <span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>())
 p +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">"Warehouse location problem"</span>, 
-          <span class="st">"Black dots are customers. Light tred triangles represent potential warehouse locations."</span>)</code></pre></div>
+          <span class="st">"Black dots are customers. Light red triangles show potential warehouse locations."</span>)</code></pre></div>
 <p><img src="problem-warehouse-location_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
 <p>The model in <code>ompr</code> then looks like this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr)
@@ -186,7 +186,7 @@ p +<span class="st"> </span>
                             <span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">paste0</span>(<span class="st">"fixed costs:"</span>, costs, <span class="st">"; customers: "</span>, n)), 
                             <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">nudge_y =</span> <span class="dv">20</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">paste0</span>(<span class="st">"Cost optimal warehouse locations and customer assignment"</span>),
-          <span class="st">"Big red triangles are warehouses built, light red unused warehouses. </span>
+          <span class="st">"Big red triangles show warehouses that will be built, light red are unused warehouse locations. </span>
 <span class="st">Dots represent customers served by the respective warehouses."</span>)</code></pre></div>
 <p><img src="problem-warehouse-location_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
 <p>The fixed costs for setting up the 4 warehouses is:</p>
