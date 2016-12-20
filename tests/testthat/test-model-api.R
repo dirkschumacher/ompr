@@ -127,6 +127,13 @@ describe("variable_types()", {
     result <- variable_types(model)
     expect_equal(factor(c("binary", "continuous", "integer")), result)
   })
+  it("returns the variable types in the correct order for index variables", {
+    model <- MIPModel() %>%
+      add_variable(x[i], type = "integer", i = 1:2) %>%
+      add_variable(a[i], type = "binary", i = 1:2)
+    expected <- factor(c("binary", "binary", "integer", "integer"))
+    expect_equal(expected, variable_types(model))
+  })
   it("returns an empty vector if model has no variables", {
     expect_equal(factor(), variable_types(MIPModel()))
   })
