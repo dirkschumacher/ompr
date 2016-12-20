@@ -207,7 +207,7 @@ variable_types.optimization_model <- function(model) {
   if (length(vars) == 0) {
     return(factor())
   }
-  factor(unlist(lapply(names(model$variables), function(key) {
+  factor(unlist(lapply(sort(names(model$variables)), function(key) {
     var <- vars[[key]]
     rep.int(x = var$type, times = length(var$instances))
   })))
