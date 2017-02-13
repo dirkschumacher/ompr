@@ -73,7 +73,6 @@ test_that("bug 20161107 #103: bug in extract coefficient (1)", {
   expect_equal(0, result$constant)
 })
 
-
 test_that("bug 20161107 #103: bug in extract coefficient (2)", {
   a <- 47
   m <- MIPModel() %>%
@@ -82,4 +81,12 @@ test_that("bug 20161107 #103: bug in extract coefficient (2)", {
     add_constraint(y - a * x[i] <= 1, i = 1:2)
   result <- extract_coefficients_internal(m$constraints[[1]]$lhs[[1]])
   expect_equal(-47, result$coefficients[["x[1L]"]]$coef)
+})
+
+test_that("sum_expr returns 0 if filter expression yields 0 variables", {
+  m <- MIPModel() %>%
+    add_variable(x[i], i = 1:2) %>%
+    add_variable(y) %>%
+    add_constraint(sum_expr(x[i], i = 1:2, i == 23) == 1)
+  expect_equal(0, m$constraints[[1]]$lhs[[1]])
 })

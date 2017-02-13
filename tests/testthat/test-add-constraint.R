@@ -121,3 +121,10 @@ test_that("quantifier filter expressions work with add_constraint_", {
   m <- add_constraint_(m, ~x[i] == 1, i = 1:10, .dots = ~i <= 2)
   expect_equal(2, length(m$constraints))
 })
+
+test_that("indexes in filter expr. for sum_expr are correctly substituted", {
+  m <- add_variable(MIPModel(), x[i, j], i = 1:2, j = 1:2)
+  m <- add_constraint(m, sum_expr(x[i, j], i = 1:2, j == 1) == 0, j = 1:2)
+  expect_equal("x[1, 1] + x[2, 1]", as.character(m$constraints[[1]]$lhs))
+  expect_equal("0", as.character(m$constraints[[2]]$lhs))
+})

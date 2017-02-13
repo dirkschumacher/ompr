@@ -81,6 +81,9 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
         if (!is_final_sum_expr_call) {
           push(list(path = path, is_final_sum_expr_call = TRUE))
           free_vars <- free_indexes_rec(ast[[2]])
+          # we need to make sure that we exclude only those free vars
+          # that are not part of the calling environment
+          free_vars <- free_vars[names(envir)]
           for (i in 3:length(ast)) {
             new_element <- list(
               ast = ast[[i]],
@@ -453,8 +456,9 @@ sum_expr <- function(expr, ...) {
   subscript_combinations <- build_quantifier_candidates(bound_subscripts,
                                               names(bound_subscripts),
                                               classified_quantifiers$filters)
-  zero_vars_msg <- paste0("The number of different indexes for sum_expr is 0.")
-  validate_quantifier_candidates(subscript_combinations, zero_vars_msg)
+  if (nrow(subscript_combinations) == 0) {
+    return(substitute(0))
+  }
   list_of_eval_exps <- apply(subscript_combinations, 1, function(row) {
     binding_env <- as.environment(as.list(row))
     try_eval_exp_rec(ast, binding_env)
