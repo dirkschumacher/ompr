@@ -21,11 +21,10 @@ variable_keys.optimization_model <- function(model) {
     function(x) {
       var <- model$variables[[x]]
       if (var$arity > 0) {
-        var_codes <- paste0(x, "_", var$instances)
-        vapply(var_codes, function(var_code) {
-          splited_els <- strsplit(var_code, "_", fixed = TRUE)[[1]]
-          paste0(splited_els[1], "[",
-                 paste0(splited_els[2:length(splited_els)], collapse = ","),
+        vapply(var$instances, function(var_code) {
+          splitted_els <- strsplit(var_code, "_", fixed = TRUE)[[1]]
+          paste0(x, "[",
+                 paste0(splitted_els[seq_len(length(splitted_els))], collapse = ","),
                  "]")
         }, character(1))
       } else {
