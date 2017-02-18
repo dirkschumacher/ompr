@@ -116,6 +116,14 @@ describe("extract_constraints()", {
     result <- extract_constraints(model)
     expect_equal(matrix(1, nrow = 1, ncol = 1), result$matrix)
   })
+  it("supports underscores in variables", {
+    # bug #115 20170217
+    model <- MIPModel() %>%
+      add_variable(x_a[i], i = 1:3) %>%
+      set_objective(sum_expr(x_a[i], i = 1:3)) %>%
+      add_constraint(x_a[1] == 1)
+    expect_equal(1, sum(extract_constraints(model)$matrix))
+  })
 })
 
 describe("variable_types()", {
