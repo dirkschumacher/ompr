@@ -19,8 +19,8 @@ new_objective_function <- function(expression,
 #'
 #' A variable can either be a name or an indexed name. See examples.
 #'
-#' @param model the model
-#' @param variable the variable name/definition
+#' @param .model the model
+#' @param .variable the variable name/definition
 #' @param ... quantifiers for the indexed variable. Including filters
 #' @param type must be either continuous, integer or binary
 #' @param lb the lower bound of the variable
@@ -35,10 +35,10 @@ new_objective_function <- function(expression,
 #'
 #' @aliases add_variable_
 #' @export
-add_variable <- function(model, variable, ..., type = "continuous",
+add_variable <- function(.model, .variable, ..., type = "continuous",
                          lb = -Inf, ub = Inf) {
-  add_variable_(model = model,
-                variable = lazyeval::as.lazy(substitute(variable),
+  add_variable_(.model = .model,
+                .variable = lazyeval::as.lazy(substitute(.variable),
                                              parent.frame()),
                 type = type,
                 lb = lb, ub = ub, .dots = lazyeval::lazy_dots(...))
@@ -58,13 +58,13 @@ check_bounds <- function(lb, ub) {
 #' @param .dots Used to work around non-standard evaluation.
 #' @rdname add_variable
 #' @export
-add_variable_ <- function(model, variable, ..., type = "continuous",
+add_variable_ <- function(.model, .variable, ..., type = "continuous",
                           lb = -Inf, ub = Inf, .dots) {
   UseMethod("add_variable_")
 }
 
 #' @export
-add_variable_.optimization_model <- function(model, variable, ...,
+add_variable_.optimization_model <- function(.model, .variable, ...,
                                              type = "continuous",
                                              lb = -Inf, ub = Inf, .dots) {
   if (length(lb) != 1 || length(ub) != 1) {
@@ -93,7 +93,8 @@ add_variable_.optimization_model <- function(model, variable, ...,
       ub <- 1
     }
   }
-  variable <- lazyeval::as.lazy(variable)
+  variable <- lazyeval::as.lazy(.variable)
+  model <- .model
   expr <- variable$expr
   if (lazyeval::is_name(expr)) {
     var_name <- as.character(expr)
@@ -159,8 +160,8 @@ add_variable_.optimization_model <- function(model, variable, ...,
 #' Change the lower and upper bounds of a named variable,
 #' indexed variable or a group of variables.
 #'
-#' @param model the model
-#' @param variable the variable name/definition
+#' @param .model the model
+#' @param .variable the variable name/definition
 #' @param ... quantifiers for the indexed variable
 #' @param lb the lower bound of the variable
 #' @param ub the upper bound of the variable
@@ -174,8 +175,8 @@ add_variable_.optimization_model <- function(model, variable, ...,
 #'  set_bounds(x[i], lb = 3, i = 1:3)
 #'
 #' @export
-set_bounds <- function(model, variable, ..., lb = NULL, ub = NULL) {
-  set_bounds_(model, lazyeval::as.lazy(substitute(variable), parent.frame()),
+set_bounds <- function(.model, .variable, ..., lb = NULL, ub = NULL) {
+  set_bounds_(.model, lazyeval::as.lazy(substitute(.variable), parent.frame()),
               lb = lb, ub = ub,
               .dots = lazyeval::lazy_dots(...))
 }
@@ -184,18 +185,19 @@ set_bounds <- function(model, variable, ..., lb = NULL, ub = NULL) {
 #' @param .dots Used to work around non-standard evaluation.
 #' @rdname set_bounds
 #' @export
-set_bounds_ <- function(model, variable, ...,
+set_bounds_ <- function(.model, .variable, ...,
                         lb = NULL, ub = NULL, .dots) {
   UseMethod("set_bounds_")
 }
 
 #' @export
-set_bounds_.optimization_model <- function(model, variable, ...,
+set_bounds_.optimization_model <- function(.model, .variable, ...,
                                    lb = NULL, ub = NULL, .dots) {
   if (is.numeric(lb) && is.numeric(ub)) {
     check_bounds(lb, ub)
   }
-  variable <- lazyeval::as.lazy(variable)
+  variable <- lazyeval::as.lazy(.variable)
+  model <- .model
   is_single_variable <- lazyeval::is_name(variable$expr)
   is_indexed_variable <- lazyeval::is_call(variable$expr) &&
                           variable$expr[[1]] == "[" &&
@@ -369,8 +371,8 @@ print.optimization_model <- function(x, ...) {
 #'
 #' Add one or more constraints to the model using quantifiers.
 #'
-#' @param model the model
-#' @param constraint_expr the constraint. Must be a linear (in)equality with
+#' @param .model the model
+#' @param .constraint_expr the constraint. Must be a linear (in)equality with
 #'        operator "<=", "==" or ">=".
 #' @param ... quantifiers for the indexed variables. For all combinations of
 #'            bound variables a new constraint is created. In addition
@@ -388,9 +390,9 @@ print.optimization_model <- function(x, ...) {
 #'
 #' @aliases add_constraint_
 #' @export
-add_constraint <- function(model, constraint_expr, ...,
+add_constraint <- function(.model, .constraint_expr, ...,
                                       .show_progress_bar = TRUE) {
-  add_constraint_(model, lazyeval::as.lazy(substitute(constraint_expr),
+  add_constraint_(.model, lazyeval::as.lazy(substitute(.constraint_expr),
                                                      parent.frame()),
                   .dots = lazyeval::lazy_dots(...),
                   .show_progress_bar = .show_progress_bar)
@@ -400,8 +402,8 @@ add_constraint <- function(model, constraint_expr, ...,
 #' @param .dots Used to work around non-standard evaluation.
 #' @rdname add_constraint
 #' @export
-add_constraint_ <- function(model,
-                            constraint_expr,
+add_constraint_ <- function(.model,
+                            .constraint_expr,
                             ...,
                             .dots,
                             .show_progress_bar = TRUE) {
@@ -409,12 +411,13 @@ add_constraint_ <- function(model,
 }
 
 #' @export
-add_constraint_.optimization_model <- function(model,
-                                      constraint_expr,
+add_constraint_.optimization_model <- function(.model,
+                                      .constraint_expr,
                                       ...,
                                       .dots,
                                       .show_progress_bar = TRUE) {
-  constraint_expr <- lazyeval::as.lazy(constraint_expr)
+  constraint_expr <- lazyeval::as.lazy(.constraint_expr)
+  model <- .model
   constraint_ast <- constraint_expr$expr
   if (length(constraint_ast) != 3) {
     stop("constraint not well formed. Must be a linear (in)equality.")

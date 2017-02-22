@@ -5,14 +5,14 @@
 \alias{set_bounds_}
 \title{Set the bounds of a variable}
 \usage{
-set_bounds(model, variable, ..., lb = NULL, ub = NULL)
+set_bounds(.model, .variable, ..., lb = NULL, ub = NULL)
 
-set_bounds_(model, variable, ..., lb = NULL, ub = NULL, .dots)
+set_bounds_(.model, .variable, ..., lb = NULL, ub = NULL, .dots)
 }
 \arguments{
-\item{model}{the model}
+\item{.model}{the model}
 
-\item{variable}{the variable name/definition}
+\item{.variable}{the variable name/definition}
 
 \item{...}{quantifiers for the indexed variable}
 

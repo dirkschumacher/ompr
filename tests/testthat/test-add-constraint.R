@@ -128,3 +128,11 @@ test_that("indexes in filter expr. for sum_expr are correctly substituted", {
   expect_equal("x[1, 1] + x[2, 1]", as.character(m$constraints[[1]]$lhs))
   expect_equal("0", as.character(m$constraints[[2]]$lhs))
 })
+
+test_that("bug 20170222 #117: you can use c as an index variable", {
+  m <- add_variable(MIPModel(), x[m], m = 1:2)
+  m <- add_constraint(m, x[c] == 0, c = 1:2)
+  m <- set_bounds(m, x[m], lb = 0, m = 1:2)
+  expect_equal("x[1]", as.character(m$constraints[[1]]$lhs))
+  expect_equal("x[2]", as.character(m$constraints[[2]]$lhs))
+})
