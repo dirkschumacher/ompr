@@ -5,14 +5,15 @@
 \alias{add_constraint_}
 \title{Add a constraint}
 \usage{
-add_constraint(model, constraint_expr, ..., .show_progress_bar = TRUE)
+add_constraint(.model, .constraint_expr, ..., .show_progress_bar = TRUE)
 
-add_constraint_(model, constraint_expr, ..., .dots, .show_progress_bar = TRUE)
+add_constraint_(.model, .constraint_expr, ..., .dots,
+  .show_progress_bar = TRUE)
 }
 \arguments{
-\item{model}{the model}
+\item{.model}{the model}
 
-\item{constraint_expr}{the constraint. Must be a linear (in)equality with
+\item{.constraint_expr}{the constraint. Must be a linear (in)equality with
 operator "<=", "==" or ">=".}
 
 \item{...}{quantifiers for the indexed variables. For all combinations of
