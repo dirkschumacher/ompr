@@ -1,13 +1,10 @@
-
-
 # this is a generic function to iterativly traverse an AST
 # in a pre-order way.
 #' @noRd
 ast_walker <- function(ast, on_element) {
-  # TODO: do not save ast in element
   # rather just use the path to query ast on demand
-  stack <- rstackdeque::rstack()
-  push <- function(x) stack <<- rstackdeque::insert_top(stack, x)
+  stack_data <- list()
+  push <- function(x) stack_data <<- list(x, stack_data)
   push(list(ast = ast, path = c(), multiplier = NULL))
   get_ast_value <- function(path) {
     if (length(path) > 0) {
@@ -24,9 +21,9 @@ ast_walker <- function(ast, on_element) {
       ast <<- value
     }
   }
-  while (length(stack) > 0) {
-    element <- rstackdeque::peek_top(stack)
-    stack <- rstackdeque::without_top(stack)
+  while (length(stack_data) > 0) {
+    element <- stack_data[[1]]
+    stack_data <- stack_data[[2]]
     on_element(push, inplace_update_ast, get_ast_value, element)
   }
   ast
