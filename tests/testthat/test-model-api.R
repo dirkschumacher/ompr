@@ -52,7 +52,7 @@ describe("variable_keys()", {
     model <- MIPModel() %>%
       add_variable(x[i, j], i = 1:2, j = 1:2)
     result <- variable_keys(model)
-    expect_equal(c("x[1,1]", "x[1,2]", "x[2,1]", "x[2,2]"), result)
+    expect_equal(c("x[1,1]", "x[2,1]", "x[1,2]", "x[2,2]"), result)
   })
   it("works with vars without an index", {
     model <- MIPModel() %>%
@@ -187,4 +187,15 @@ describe("variable_bounds()", {
     expect_equal(c(1, 1, 0, 0, 0, 0), result$lower)
     expect_equal(c(2, 2, 1, 1, 1, 1), result$upper)
   })
+})
+
+test_that("bug 20170312: variable_keys has wrong orderning", {
+  model <- MIPModel() %>%
+    add_variable(x[i, j], i = 1:2, j = 1:3, type = "integer",
+                 lb = 0, ub = 5) %>%
+    set_bounds(x[i, i], i = 1:2, lb = 1, ub = 1)
+  result <- variable_bounds(model)
+  keys <- variable_keys(model)
+  expect_equal(c(1, 0, 0, 1, 0, 0), result$lower)
+  expect_equal(c(1, 5, 5, 1, 5, 5), result$upper)
 })

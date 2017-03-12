@@ -17,7 +17,7 @@ variable_keys.optimization_model <- function(model) {
   if (length(model$variables) == 0) {
     return(character(0))
   }
-  sort(unlist(lapply(sort(names(model$variables)),
+  unlist(lapply(sort(names(model$variables)),
     function(x) {
       var <- model$variables[[x]]
       if (var$arity > 0) {
@@ -31,7 +31,6 @@ variable_keys.optimization_model <- function(model) {
         x
       }
     }), use.names = FALSE)
-  )
 }
 
 # helper function that creates a function
