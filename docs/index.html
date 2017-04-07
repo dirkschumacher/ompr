@@ -157,15 +157,22 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="reference/MIPMode
 <span class="kw">library</span>(ROI.plugin.glpk)
 <span class="kw">library</span>(ompr)
 <span class="kw">library</span>(ompr.roi)
-max_capacity &lt;-<span class="st"> </span><span class="dv">5</span>
+max_capacity &lt;-<span class="st"> </span><span class="dv">3</span>
 n &lt;-<span class="st"> </span><span class="dv">10</span>
-weights &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span class="dt">max =</span> max_capacity)
-<span class="kw"><a href="reference/MIPModel.html">MIPModel</a></span>() %&gt;%
+fibs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">8</span>, <span class="dv">13</span>, <span class="dv">21</span>, <span class="dv">34</span>, <span class="dv">55</span>)
+triangulars &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">c</span>(<span class="dv">21</span>, <span class="dv">28</span>, <span class="dv">36</span>, <span class="dv">45</span>, <span class="dv">55</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">15</span>))
+weights &lt;-<span class="st"> </span>max_capacity *<span class="st"> </span>triangulars /<span class="st"> </span><span class="kw">max</span>(triangulars)
+values &lt;-<span class="st"> </span>fibs
+
+model &lt;-<span class="st"> </span><span class="kw"><a href="reference/MIPModel.html">MIPModel</a></span>() %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span>:n, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n), <span class="st">"max"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(weights[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>max_capacity) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/solve_model.html">solve_model</a></span>(<span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>)) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(x[i]) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(values[i] *<span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span>:n), <span class="st">"max"</span>)
+
+result &lt;-<span class="st"> </span>model %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/solve_model.html">solve_model</a></span>(<span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>))
+
+<span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(result, x[i]) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>)</code></pre></div>
 </div>
 <div id="bin-packing" class="section level3">
@@ -180,15 +187,26 @@ weights &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span cla
 max_bins &lt;-<span class="st"> </span><span class="dv">10</span>
 bin_size &lt;-<span class="st"> </span><span class="dv">3</span>
 n &lt;-<span class="st"> </span><span class="dv">10</span>
-weights &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span class="dt">max =</span> bin_size)
-<span class="kw"><a href="reference/MIPModel.html">MIPModel</a></span>() %&gt;%
+fibs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">8</span>, <span class="dv">13</span>, <span class="dv">21</span>, <span class="dv">34</span>, <span class="dv">55</span>)
+weights &lt;-<span class="st"> </span>bin_size*fibs /<span class="st"> </span><span class="kw">max</span>(fibs)
+
+model &lt;-<span class="st"> </span><span class="kw"><a href="reference/MIPModel.html">MIPModel</a></span>() %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins, <span class="dt">j =</span> <span class="dv">1</span>:n, <span class="dt">type =</span> <span class="st">"binary"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(y[i], <span class="dt">i =</span> <span class="dv">1</span>:max_bins), <span class="st">"min"</span>) %&gt;%
 <span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(weights[j] *<span class="st"> </span>x[i, j], <span class="dt">j =</span> <span class="dv">1</span>:n) &lt;=<span class="st"> </span>y[i] *<span class="st"> </span>bin_size, <span class="dt">i =</span> <span class="dv">1</span>:max_bins) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span>:n) %&gt;%
-<span class="st">  </span><span class="kw"><a href="reference/solve_model.html">solve_model</a></span>(<span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"symphony"</span>, <span class="dt">verbosity =</span> <span class="dv">1</span>)) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(x[i, j]) %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>:max_bins) ==<span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span>:n)
+
+result &lt;-<span class="st"> </span>model %&gt;%
+<span class="st">  </span><span class="kw"><a href="reference/solve_model.html">solve_model</a></span>(<span class="kw">with_ROI</span>(<span class="dt">solver =</span> <span class="st">"symphony"</span>, <span class="dt">verbosity =</span> <span class="dv">1</span>))
+  
+solution &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(result, x[i, j]) %&gt;%<span class="st"> </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>)
+
+<span class="co">#used bins</span>
+<span class="kw">sort</span>(<span class="kw">unique</span>(solution$i))
+
+<span class="co">#elements in bins</span>
+<span class="kw"><a href="reference/get_solution.html">get_solution</a></span>(result, x[i, j]) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(value &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%
 <span class="st">  </span><span class="kw">arrange</span>(i)</code></pre></div>
 </div>
