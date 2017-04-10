@@ -24,4 +24,3 @@ model <- MIPModel() \%>\%
   add_variable(z, type = "integer", ub = 3)
 variable_bounds(model)
 }
-

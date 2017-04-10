@@ -50,7 +50,6 @@ new_solution <- function(model,
 #' solution3 <- get_solution(result, y[i, j])
 #' }
 #'
-#' @aliases get_solution_
 #' @export
 get_solution <- function(solution, expr) {
   get_solution_(solution, lazyeval::lazy(expr))

@@ -23,4 +23,3 @@ model <- MIPModel() \%>\%
   add_variable(z, type = "integer")
 variable_types(model)
 }
-

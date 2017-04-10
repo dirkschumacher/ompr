@@ -33,7 +33,6 @@ new_objective_function <- function(expression,
 #'  add_variable(y[i], i = 1:10, i %% 2 == 0,
 #'                type = "binary") # creates 4 variables
 #'
-#' @aliases add_variable_
 #' @export
 add_variable <- function(.model, .variable, ..., type = "continuous",
                          lb = -Inf, ub = Inf) {
@@ -166,7 +165,6 @@ add_variable_.optimization_model <- function(.model, .variable, ...,
 #' @param lb the lower bound of the variable
 #' @param ub the upper bound of the variable
 #'
-#' @aliases set_bounds_
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
@@ -295,7 +293,6 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
 #'  add_variable(y, lb = 40) %>%
 #'  set_objective(x + y, direction = "min")
 #'
-#' @aliases set_objective_
 #' @export
 set_objective <- function(model, expression,
                                      direction = c("max", "min")) {
@@ -388,7 +385,6 @@ print.optimization_model <- function(x, ...) {
 #'  add_variable(x[i], i = 1:5) %>%
 #'  add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
 #'
-#' @aliases add_constraint_
 #' @export
 add_constraint <- function(.model, .constraint_expr, ...,
                                       .show_progress_bar = TRUE) {

@@ -38,4 +38,3 @@ MIPModel() \%>\%
  add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
 
 }
-

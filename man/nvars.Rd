@@ -26,4 +26,3 @@ model <- MIPModel() \%>\%
   add_variable(z[i], i = 1:2, type = "integer")
 nvars(model)
 }
-

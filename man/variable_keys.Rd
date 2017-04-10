@@ -22,4 +22,3 @@ model <- MIPModel() \%>\%
   add_variable(x[i], i = 1:3)
 variable_keys(model)
 }
-

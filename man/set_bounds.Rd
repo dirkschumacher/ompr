@@ -34,4 +34,3 @@ MIPModel() \%>\%
  set_bounds(x[i], lb = 3, i = 1:3)
 
 }
-

@@ -30,4 +30,3 @@ MIPModel() \%>\%
  set_objective(x + y, direction = "min")
 
 }
-

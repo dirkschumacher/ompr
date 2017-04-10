@@ -15,4 +15,3 @@ character vector being either "infeasible", "optimal" or "unbounded"
 \description{
 Get the solver status from a solution
 }
-

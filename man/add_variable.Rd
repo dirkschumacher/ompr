@@ -37,4 +37,3 @@ MIPModel() \%>\%
                type = "binary") # creates 4 variables
 
 }
-

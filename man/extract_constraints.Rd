@@ -26,4 +26,3 @@ model <- MIPModel() \%>\%
   add_constraint(x[i] + y[i] <= 1, i = 1:3)
 extract_constraints(model)
 }
-

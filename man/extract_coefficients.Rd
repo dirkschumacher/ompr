@@ -21,4 +21,3 @@ Only multiplication and + operators are allowed.
 For each multiplication operation, one operand must be a numeric
 the other a non-numeric.
 }
-

@@ -17,4 +17,3 @@ solver(model)
 \description{
 Solve a model
 }
-

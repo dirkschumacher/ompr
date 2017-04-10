@@ -15,4 +15,3 @@ numeric single item vector
 \description{
 Extract the numerical objective value from a solution
 }
-

@@ -19,4 +19,3 @@ model <- MIPModel() \%>\%
   set_objective(sum_expr(i * x[i], i = 1:5) + 10)
 objective_function(model)
 }
-
