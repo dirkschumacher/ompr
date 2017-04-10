@@ -81,7 +81,7 @@ describe("extract_constraints()", {
       add_constraint(x[i] + y[i] <= 1, i = 1:3)
     result <- extract_constraints(model)
     expect_true(is.list(result))
-    expect_true(all(c("matrix", "rhs", "direction") %in% names(result)))
+    expect_true(all(c("matrix", "rhs", "sense") %in% names(result)))
   })
   it("returns the constraint matrix as a matrix", {
     model <- MIPModel() %>%
@@ -101,13 +101,13 @@ describe("extract_constraints()", {
     result <- extract_constraints(model)
     expect_equal(c(1, 1, 1), result$rhs)
   })
-  it("returns the constraint directions", {
+  it("returns the constraint sense", {
     model <- MIPModel() %>%
       add_variable(x[i], i = 1:3) %>%
       add_variable(y[i], i = 1:3) %>%
       add_constraint(x[i] + y[i] <= 1, i = 1:3)
     result <- extract_constraints(model)
-    expect_equal(c("<=", "<=", "<="), result$direction)
+    expect_equal(c("<=", "<=", "<="), result$sense)
   })
   it("works with non indexed variables", {
     model <- MIPModel() %>%

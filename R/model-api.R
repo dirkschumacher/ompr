@@ -147,7 +147,7 @@ extract_constraints.optimization_model <- function(model) {
 
   list(
     matrix = constraint_matrix,
-    direction = constraint_dir,
+    sense = constraint_dir,
     rhs = constraint_rhs
   )
 }
