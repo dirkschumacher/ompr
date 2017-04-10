@@ -5,16 +5,16 @@
 \alias{set_objective_}
 \title{Set the model objective}
 \usage{
-set_objective(model, expression, direction = c("max", "min"))
+set_objective(model, expression, sense = c("max", "min"))
 
-set_objective_(model, expression, direction = c("max", "min"))
+set_objective_(model, expression, sense = c("max", "min"))
 }
 \arguments{
 \item{model}{the model}
 
 \item{expression}{the linear objective as a sum of variables and constants}
 
-\item{direction}{the optimization direction. Must be either "max" or "min".}
+\item{sense}{the model sense. Must be either "max" or "min".}
 }
 \value{
 a Model with a new objective function definition
@@ -27,6 +27,6 @@ library(magrittr)
 MIPModel() \%>\%
  add_variable(x, lb = 2) \%>\%
  add_variable(y, lb = 40) \%>\%
- set_objective(x + y, direction = "min")
+ set_objective(x + y, sense = "min")
 
 }

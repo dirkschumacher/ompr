@@ -3,27 +3,27 @@ context("model")
 test_that("one can set an objective function", {
   m <- MIPModel()
   m <- add_variable(m, x[i], i = 1:10, type = "binary")
-  m <- set_objective(m, x[1] + x[3], direction = "min")
-  expect_equal(m$objective$direction, "min")
+  m <- set_objective(m, x[1] + x[3], sense = "min")
+  expect_equal(m$objective$sense, "min")
   expect_equal(deparse(m$objective$expression[[1]]), "x[1] + x[3]")
 })
 
 test_that("only max and min are valid directions for an objective function", {
   m <- add_variable(MIPModel(), x[i], i = 1:10, type = "binary")
-  expect_error(set_objective(m, x[1] + x[3], direction = "wat"))
-  set_objective(m, x[1] + x[3], direction = "min")
-  set_objective(m, x[1] + x[3], direction = "max")
+  expect_error(set_objective(m, x[1] + x[3], sense = "wat"))
+  set_objective(m, x[1] + x[3], sense = "min")
+  set_objective(m, x[1] + x[3], sense = "max")
 })
 
 test_that("all symbols in an obj. function need to be variables", {
   m <- add_variable(MIPModel(), x[i], i = 1:2, type = "binary")
-  expect_error(set_objective(m, x[5], direction = "min"))
+  expect_error(set_objective(m, x[5], sense = "min"))
 })
 
 test_that("obj. function can bind external variables", {
   w <- c(1, 2)
   m <- add_variable(MIPModel(), x[i], i = 1:2, type = "binary")
-  m <- set_objective(m, w[1] * x[1], direction = "min")
+  m <- set_objective(m, w[1] * x[1], sense = "min")
   expect_equal(deparse(m$objective$expression[[1]]), "1 * x[1]")
 })
 
@@ -65,7 +65,7 @@ test_that("we can model a tsp", {
   r <- MIPModel() %>%
     add_variable(x[i, j], i = 1:cities, j = 1:cities, type = "binary") %>%
     set_objective(sum_expr(distance_matrix[i, j] * x[i, j],
-                          i = 1:cities, j = 1:cities), direction = "min") %>%
+                          i = 1:cities, j = 1:cities), sense = "min") %>%
     add_constraint(x[i, i] == 0, i = 1:cities) %>%
     add_constraint(x[i, j] == x[j, i], i = 1:cities, j = 1:cities) %>%
     add_constraint(sum_expr(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]) <=
@@ -76,21 +76,21 @@ test_that("bug 20160701: -x as a formula", {
   add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
-    set_objective(-x + y, direction = "max")
+    set_objective(-x + y, sense = "max")
 })
 
 test_that("model has a nice default output", {
   m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
-    set_objective(-x + y, direction = "max")
+    set_objective(-x + y, sense = "max")
   expect_output(print(m), "Constraints: 1")
 })
 
 test_that("model outputs direction on print", {
-  m <- set_objective(add_variable(MIPModel(), x), 0, direction = "max")
+  m <- set_objective(add_variable(MIPModel(), x), 0, sense = "max")
   expect_output(print(m), "maximize")
-  m <- set_objective(add_variable(MIPModel(), x), 0, direction = "min")
+  m <- set_objective(add_variable(MIPModel(), x), 0, sense = "min")
   expect_output(print(m), "minimize")
 })
 
@@ -98,7 +98,7 @@ test_that("model outputs direction on print", {
 test_that("bug 20161011 #83: bounds of binary vars are not 0/1", {
   model <- add_variable(MIPModel(), x, type = "binary") %>%
     add_constraint(x <= 10) %>%
-    set_objective(-x, direction = "max")
+    set_objective(-x, sense = "max")
   expect_equal(0, model$variables[[1]]$lb)
   expect_equal(1, model$variables[[1]]$ub)
 })
@@ -107,7 +107,7 @@ test_that("multiplications in objective fun", {
   m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
-    set_objective(5 * (-x + y), direction = "max")
+    set_objective(5 * (-x + y), sense = "max")
   expect_equal(deparse(m$objective$expression[[1]]), "-5 * x + 5 * y")
 })
 
@@ -120,7 +120,7 @@ test_that("devision in objective fun", {
   m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
-    set_objective(5 / (-x + y), direction = "max")
+    set_objective(5 / (-x + y), sense = "max")
   expect_equal(deparse(m$objective$expression[[1]]), "-0.2 * x + 0.2 * y")
 })
 

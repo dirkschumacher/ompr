@@ -2,16 +2,16 @@
 #'
 #' @param expression the expression in standard form
 #' @param original_expression the original expression as supplied by the user
-#' @param direction the direction of optimization
+#' @param sense the sense of the model
 #' @noRd
 new_objective_function <- function(expression,
                                    original_expression,
-                                   direction) {
-  stopifnot(length(direction) == 1 &&
-              direction %in% c("min", "max"))
+                                   sense) {
+  stopifnot(length(sense) == 1 &&
+              sense %in% c("min", "max"))
   structure(list(expression = expression,
                  original_expression = original_expression,
-                 direction = direction), class = "model_objective")
+                 sense = sense), class = "model_objective")
 }
 
 
@@ -283,7 +283,7 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
 #'
 #' @param model the model
 #' @param expression the linear objective as a sum of variables and constants
-#' @param direction the optimization direction. Must be either "max" or "min".
+#' @param sense the model sense. Must be either "max" or "min".
 #'
 #' @return a Model with a new objective function definition
 #' @examples
@@ -291,30 +291,30 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
 #' MIPModel() %>%
 #'  add_variable(x, lb = 2) %>%
 #'  add_variable(y, lb = 40) %>%
-#'  set_objective(x + y, direction = "min")
+#'  set_objective(x + y, sense = "min")
 #'
 #' @export
 set_objective <- function(model, expression,
-                                     direction = c("max", "min")) {
+                                     sense = c("max", "min")) {
   set_objective_(model, expression = lazyeval::as.lazy(substitute(expression),
                                                        parent.frame()),
-                 direction = direction)
+                 sense = sense)
 }
 
 #' @inheritParams set_objective
 #' @rdname set_objective
 #' @export
 set_objective_ <- function(model, expression,
-                           direction = c("max", "min")) {
+                           sense = c("max", "min")) {
   UseMethod("set_objective_")
 }
 
 #' @export
 set_objective_.optimization_model <- function(model, expression,
-                                      direction = c("max", "min")) {
+                                      sense = c("max", "min")) {
   stopifnot(length(expression) != 1)
   expression <- lazyeval::as.lazy(expression)
-  direction <- match.arg(direction)
+  sense <- match.arg(sense)
   obj_ast <- expression$expr
   ast <- normalize_expression(model, obj_ast, expression$env)
   var_names <- names(model$variables)
@@ -325,7 +325,7 @@ set_objective_.optimization_model <- function(model, expression,
   obj <- new_objective_function(
              expression = as.expression(ast),
              original_expression = as.expression(obj_ast),
-             direction = direction)
+             sense = sense)
   model$objective <- obj
   model
 }
@@ -351,9 +351,9 @@ print.optimization_model <- function(x, ...) {
             # obj function
             objective <- x$objective
             if (!is.null(objective) &&
-                length(objective$direction) == 1) {
-              cat("Search direction:",
-                if (objective$direction == "max") "maximize" else "minimize",
+                length(objective$sense) == 1) {
+              cat("Model sense:",
+                if (objective$sense == "max") "maximize" else "minimize",
                 "\n")
             } else {
               cat("No objective function. \n")
@@ -418,8 +418,8 @@ add_constraint_.optimization_model <- function(.model,
   if (length(constraint_ast) != 3) {
     stop("constraint not well formed. Must be a linear (in)equality.")
   }
-  direction <- as.character(constraint_ast[[1]])
-  if (!direction %in% c(">=", "<=", "==")) {
+  sense <- as.character(constraint_ast[[1]])
+  if (!sense %in% c(">=", "<=", "==")) {
     stop("Does not recognize constraint expr. Missing the constraint relation")
   }
   lhs_ast <- constraint_ast[[2]]
@@ -448,7 +448,7 @@ add_constraint_.optimization_model <- function(.model,
     }
     new_constraint(lhs = as.expression(lhs_ast),
                       rhs = as.expression(rhs_ast),
-                      direction = direction)
+                      sense = sense)
   }
   constraints <- model$constraints
   if (is.list(bound_subscripts) && length(bound_subscripts) > 0) {

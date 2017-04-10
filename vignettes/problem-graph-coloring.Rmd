@@ -75,7 +75,7 @@ model <- MIPModel() %>%
   add_variable(y[k], type = "binary", k = 1:max_colors) %>% 
   
   # minimize colors
-  set_objective(sum_expr(y[k], k = 1:max_colors), direction = "min") %>% 
+  set_objective(sum_expr(y[k], k = 1:max_colors), sense = "min") %>% 
   
   # each node is colored
   add_constraint(sum_expr(x[i, k], k = 1:max_colors) == 1, i = 1:n) %>% 

@@ -69,6 +69,10 @@ build_coefficent_vector_fun <- function(model_var_keys) {
 #'
 #' @param model the model
 #'
+#' @return a list with two named elements, 'solution' and 'constant'.
+#' 'solution' is a vector with a coefficient for each model variable.
+#' 'constant' is a constant that needs to be added to get the final obj. value.
+#'
 #' @examples
 #' library(magrittr)
 #' model <- MIPModel() %>%
@@ -91,20 +95,20 @@ objective_function.optimization_model <- function(model) {
     coefficients <- coefficients$coefficients
     names(coefficients) <- NULL
     obj_vector <- build_coefficent_vector(coefficients)
-    list(vector = obj_vector, constant = obj_constant)
+    list(solution = obj_vector, constant = obj_constant)
   } else {
     n_vars <- sum(unlist(nvars(model)))
-    list(vector = rep.int(0, n_vars), constant = 0)
+    list(solution = rep.int(0, n_vars), constant = 0)
   }
 }
 
-#' Extract the constraint matrix, the right hand side and the directions from a model
+#' Extract the constraint matrix, the right hand side and the sense from a model
 #'
 #' @param model the model
 #' @return a list with three named elements.
 #'         'matrix' is the constraint matrix.
 #'         'rhs' is the right hand side vector in the order of the matrix.
-#'         'direction' is a vector of the constraint directions
+#'         'sense' is a vector of the constraint senses
 #'
 #' @examples
 #' library(magrittr)
@@ -122,11 +126,11 @@ extract_constraints.optimization_model <- function(model) {
   matrices <- lapply(model$constraints, function(constraint) {
     coefficients_lhs <- extract_coefficients_internal(constraint$lhs[[1]])
     coefficients_rhs <- extract_coefficients_internal(constraint$rhs[[1]])
-    direction <- constraint$direction
+    sense <- constraint$sense
     list(
       lhs = build_coefficent_vector(coefficients_lhs$coefficients),
       rhs = build_coefficent_vector(coefficients_rhs$coefficients),
-      direction = direction,
+      sense = sense,
       lhs_constant = coefficients_lhs$constant,
       rhs_constant = coefficients_rhs$constant
     )
@@ -142,7 +146,7 @@ extract_constraints.optimization_model <- function(model) {
   }, numeric(1))
 
   constraint_dir <- vapply(matrices, function(constraint) {
-    constraint$direction
+    constraint$sense
   }, character(1))
 
   list(

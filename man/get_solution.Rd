@@ -36,7 +36,6 @@ result <- MIPModel() \%>\%
 solution <- get_solution(result, x[i])
 solution2 <- get_solution(result, y[i, 1])
 solution3 <- get_solution(result, y[i, j])
-solution4 <- get_solution(result)
 }
 
 }

@@ -29,14 +29,14 @@ describe("objective_function()", {
       add_variable(x[i], i = 1:9) %>%
       set_objective(sum_expr(i * x[i], i = 1:9) + 10)
     result <- objective_function(model)
-    expect_equal(c(1:9), result$vector)
+    expect_equal(c(1:9), result$solution)
     expect_equal(10, result$constant)
   })
   it("returns handles models without objective function", {
     model <- MIPModel() %>%
       add_variable(x[i], i = 1:10)
     result <- objective_function(model)
-    expect_equal(rep.int(0, 10), result$vector)
+    expect_equal(rep.int(0, 10), result$solution)
     expect_equal(0, result$constant)
   })
 })
