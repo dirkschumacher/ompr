@@ -15,7 +15,7 @@ test_that("constraints should be saved with only + operators", {
   m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x - y <= 10) %>%
-    set_objective(5 / (-x + y), direction = "max")
+    set_objective(5 / (-x + y), sense = "max")
   expect_equal(deparse(m$constraints[[1]]$lhs[[1]]), "x + -1 * y")
 })
 
@@ -23,7 +23,7 @@ test_that("constraints can have an unary + operator", {
   m <- add_variable(MIPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(+x - y <= 10) %>%
-    set_objective(5 / (-x + y), direction = "max")
+    set_objective(5 / (-x + y), sense = "max")
   expect_equal(deparse(m$constraints[[1]]$lhs[[1]]), "1 * x + -1 * y")
 })
 
@@ -46,7 +46,7 @@ test_that("we can add complicated constraints", {
   expect_equal(length(m$constraints), 1)
   constraint <- m$constraints[[1]]
   expect_equal(constraint$rhs[[1]], 1)
-  expect_equal(constraint$direction, "==")
+  expect_equal(constraint$sense, "==")
   expect_equal(deparse(constraint$lhs[[1]]), "x[1L] + x[2L] + x[3]")
 })
 
@@ -93,7 +93,7 @@ test_that("we can add constraints", {
   m <- add_constraint(m, x[3] <= x[6])
 })
 
-test_that("add_constraint only allows a fixed set of directions", {
+test_that("add_constraint only allows a fixed set of senses", {
   m <- MIPModel()
   m <- add_variable(m, x[i], i = 1:10, type = "binary")
   add_constraint(m, x[3] <= x[6])

@@ -18,4 +18,3 @@ new_solution(model, objective_value, status, solution)
 \description{
 This function/class should only be used if you develop your own solver.
 }
-

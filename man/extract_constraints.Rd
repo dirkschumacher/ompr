@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-api.R
 \name{extract_constraints}
 \alias{extract_constraints}
-\title{Extract the constraint matrix, the right hand side and the directions from a model}
+\title{Extract the constraint matrix, the right hand side and the sense from a model}
 \usage{
 extract_constraints(model)
 }
@@ -13,10 +13,10 @@ extract_constraints(model)
 a list with three named elements.
         'matrix' is the constraint matrix.
         'rhs' is the right hand side vector in the order of the matrix.
-        'direction' is a vector of the constraint directions
+        'sense' is a vector of the constraint senses
 }
 \description{
-Extract the constraint matrix, the right hand side and the directions from a model
+Extract the constraint matrix, the right hand side and the sense from a model
 }
 \examples{
 library(magrittr)
@@ -26,4 +26,3 @@ model <- MIPModel() \%>\%
   add_constraint(x[i] + y[i] <= 1, i = 1:3)
 extract_constraints(model)
 }
-

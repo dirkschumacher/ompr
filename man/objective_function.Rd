@@ -9,6 +9,11 @@ objective_function(model)
 \arguments{
 \item{model}{the model}
 }
+\value{
+a list with two named elements, 'solution' and 'constant'.
+'solution' is a vector with a coefficient for each model variable.
+'constant' is a constant that needs to be added to get the final obj. value.
+}
 \description{
 Extract the objective function from a model
 }
@@ -19,4 +24,3 @@ model <- MIPModel() \%>\%
   set_objective(sum_expr(i * x[i], i = 1:5) + 10)
 objective_function(model)
 }
-

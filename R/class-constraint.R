@@ -3,11 +3,11 @@
 #'
 #' @noRd
 new_constraint <- function(lhs,
-                           direction,
+                           sense,
                            rhs) {
-  stopifnot(direction %in% c("<=", "==", ">="))
+  stopifnot(sense %in% c("<=", "==", ">="))
   structure(list(lhs = lhs,
-                 direction = direction,
+                 sense = sense,
                  rhs = rhs),
             class = "model_constraint")
 }

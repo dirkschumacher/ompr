@@ -39,4 +39,3 @@ solution3 <- get_solution(result, y[i, j])
 }
 
 }
-

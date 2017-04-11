@@ -31,4 +31,3 @@ sum_expr(x[i], i = 1:10, i \%\% 2 == 0)
 
 \code{\link{set_objective}}
 }
-

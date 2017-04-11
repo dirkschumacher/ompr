@@ -9,4 +9,3 @@ MIPModel()
 \description{
 Create a new MIP Model
 }
-
