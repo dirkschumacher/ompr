@@ -17,7 +17,7 @@ environment:
   matrix:
   - R_VERSION: stable
 
-  - R_VERSION: patched
+  - R_VERSION: oldrel
 
   - R_VERSION: devel
 
