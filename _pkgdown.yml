@@ -1,9 +1,5 @@
 title: ompr
 
-templates:
-  params:
-    bootswatch: cerulean
-
 reference:
   - title: Build a model
     contents:
@@ -35,23 +31,4 @@ articles:
     - modelling
   - title: "Example problems"
     contents:
-    - problem-sudoku
-    - problem-tsp
-    - problem-mtsp
-    - problem-graph-coloring
-    - problem-course-assignment
-    - problem-warehouse-location
-
-navbar:
-  title: ompr
-  type: default
-  left:
-  - text: Home
-    href: index.html
-  - text: Overview
-    href: articles/index.html
-  - text: Reference
-    href: reference/index.html
-  right:
-  - icon: fa-github fa-lg
-    href: https://github.com/dirkschumacher/ompr
+    - starts_with("problem")

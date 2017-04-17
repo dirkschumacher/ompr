@@ -1,4 +1,4 @@
-# Mathematical programming in R
+# Mixed integer linear programming in R
 
 [![Build Status](https://travis-ci.org/dirkschumacher/ompr.svg?branch=master)](https://travis-ci.org/dirkschumacher/ompr)
 [![Build Status Windows](https://ci.appveyor.com/api/projects/status/github/dirkschumacher/ompr?branch=master&svg=true)](https://ci.appveyor.com/project/dirkschumacher/ompr)
