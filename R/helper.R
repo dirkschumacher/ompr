@@ -342,12 +342,7 @@ normalize_expression <- function(model, expression, envir) {
 #' @param ast the abstract syntax tree (usually a call)
 #'
 #' @return a list with values for constants and coefficients
-#' @export
-extract_coefficients <- function(ast) {
-  .Deprecated("Functions are now available to extract elements from a model")
-  extract_coefficients_internal(ast)
-}
-
+#' @noRd
 extract_coefficients_internal <- function(ast) {
   result <- list()
   on_element <- function(push, inplace_update_ast, get_ast_value, element) {

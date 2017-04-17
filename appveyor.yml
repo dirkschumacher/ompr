@@ -18,6 +18,7 @@ environment:
   - R_VERSION: stable
 
   - R_VERSION: oldrel
+    RTOOLS_VERSION: 33
 
   - R_VERSION: devel
 

@@ -14,7 +14,8 @@ new_solution <- function(model,
                          solution) {
   stopifnot(is.numeric(objective_value))
   stopifnot(status %in% c("infeasible",
-                         "unbounded", "optimal"))
+                         "unbounded", "optimal",
+                         "userlimit", "error"))
   stopifnot(all(nchar(names(solution))))
   structure(list(model = model,
                  objective_value = objective_value,
@@ -93,11 +94,13 @@ get_solution_.solution <- function(solution, expr) {
                                      pattern = instance_pattern)])
     } else {
       # the solution is sorted lexigographically
-      var_index <- stringr::str_match(names(solution$solution),
-                                      pattern = instance_pattern)
+      solution_names <- names(solution$solution)
+      var_index <- do.call(rbind,
+                           regmatches(solution_names,
+                                      regexec(instance_pattern, solution_names)))
       na_rows <- as.logical(apply(is.na(var_index), 1, all))
       var_index <- var_index[!na_rows, ]
-      var_values <- solution$solution[grepl(names(solution$solution),
+      var_values <- solution$solution[grepl(solution_names,
                                             pattern = instance_pattern)]
       result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
       for (x in colnames(result_df)) {
@@ -145,7 +148,7 @@ objective_value.solution <- function(solution) {
 #' Get the solver status from a solution
 #'
 #' @param solution a solution
-#' @return character vector being either "infeasible", "optimal" or "unbounded"
+#' @return character vector being either "infeasible", "optimal", "unbounded", "userlimit" or "error
 #'
 #' @export
 solver_status <- function(solution) UseMethod("solver_status")
