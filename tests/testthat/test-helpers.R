@@ -46,11 +46,6 @@ test_that("extract_coefficients can extract coefficients #2", {
   expect_equivalent(5, result$coefficients[["x"]]$coef)
 })
 
-test_that("extract_coefficients is now deprecated", {
-  ast <- substitute(5 * x)
-  expect_warning(extract_coefficients(ast))
-})
-
 test_that("extract_coefficients fails if unkown operator is used", {
   ast <- substitute(5 ^ x)
   expect_error(extract_coefficients_internal(ast))
