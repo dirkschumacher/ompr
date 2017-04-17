@@ -24,7 +24,8 @@ variable_keys.optimization_model <- function(model) {
         vapply(var$instances, function(var_code) {
           splitted_els <- strsplit(var_code, "_", fixed = TRUE)[[1]]
           paste0(x, "[",
-                 paste0(splitted_els[seq_len(length(splitted_els))], collapse = ","),
+                 paste0(splitted_els[seq_len(length(splitted_els))],
+                        collapse = ","),
                  "]")
         }, character(1))
       } else {
