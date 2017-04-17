@@ -222,9 +222,9 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
       stop("Variable does not exists in model")
     }
     model_variable <- model$variables[[var_name]]
-    index_names <- sapply(3:length(variable$expr), function(i) {
+    index_names <- vapply(3:length(variable$expr), function(i) {
       as.character(variable$expr[i])
-    })
+    }, character(1))
     indexes <- suppressWarnings(as.integer(index_names))
     quantified_indexes <- !is.integer(indexes) || any(is.na(indexes))
     lazy_dots <- lazyeval::lazy_dots(...)
@@ -261,9 +261,9 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
     bound_subscripts <- as.data.frame(bound_subscripts)
     indexes <- apply(bound_subscripts, 1, as.list)
 
-    instance_keys <- sapply(indexes, function(x) {
+    instance_keys <- vapply(indexes, function(x) {
       paste0(x, collapse = "_")
-    })
+    }, character(1))
     var_indexes <- which(model_variable$instances %in% instance_keys)
     if (any(!instance_keys %in% model_variable$instances)) {
       stop("Indexed variable out of bounds.")
