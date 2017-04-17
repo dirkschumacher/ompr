@@ -14,7 +14,8 @@ new_solution <- function(model,
                          solution) {
   stopifnot(is.numeric(objective_value))
   stopifnot(status %in% c("infeasible",
-                         "unbounded", "optimal"))
+                         "unbounded", "optimal",
+                         "userlimit", "error"))
   stopifnot(all(nchar(names(solution))))
   structure(list(model = model,
                  objective_value = objective_value,
@@ -145,7 +146,8 @@ objective_value.solution <- function(solution) {
 #' Get the solver status from a solution
 #'
 #' @param solution a solution
-#' @return character vector being either "infeasible", "optimal" or "unbounded"
+#' @return character vector being either "infeasible", "optimal", "unbounded",
+#' "userlimit" or "error
 #'
 #' @export
 solver_status <- function(solution) UseMethod("solver_status")
