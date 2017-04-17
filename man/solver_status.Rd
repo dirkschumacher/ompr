@@ -10,8 +10,7 @@ solver_status(solution)
 \item{solution}{a solution}
 }
 \value{
-character vector being either "infeasible", "optimal", "unbounded",
-"userlimit" or "error
+character vector being either "infeasible", "optimal", "unbounded", "userlimit" or "error
 }
 \description{
 Get the solver status from a solution
