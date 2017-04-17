@@ -18,18 +18,6 @@ The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives
 
 This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
 
-## Supported problem classes
-
-### Objective types
-* Linear
-
-### Constraint types
-* Linear
-
-### Variable types
-* Continuous
-* Integer-valued
-
 ## Install
 
 To install the current development version use devtools:
