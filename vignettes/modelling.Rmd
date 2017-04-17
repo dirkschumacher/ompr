@@ -13,7 +13,7 @@ This vignettes discribes the modelling techniques available in `ompr` to make yo
 
 ## A MIP Model
 
-You can think of a MIP Model as a big constraint maxtrix and a set of vectors. But you can also think of it as a set of decision variables, an objective function and a number of constraints. `ompr` implements the latter approach.
+You can think of a MIP Model as a big constraint maxtrix and a set of vectors. But you can also think of it as a set of decision variables, an objective function and a number of constraints as equations/inequalities. `ompr` implements the latter approach.
 
 For example, [Wikipedia](https://en.wikipedia.org/wiki/Knapsack_problem) describes the Knapsack problem like this:
 $$
