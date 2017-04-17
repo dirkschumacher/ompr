@@ -16,9 +16,18 @@ Here are some problems you could solve with this package:
   
 The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming) article gives a good starting point if you would like to learn more about the topic.
 
-This is a beta version. Currently working towards a first stable version for CRAN. At the moment not recommended for production systems / important analyses. Although most obvious bugs should be gone. Happy to get bug reports or feedback. 
+I am always happy to get bug reports or feedback. 
 
 ## Install
+
+## CRAN
+
+```R 
+install.packages("ompr")
+#install.packages("ompr.roi") # not yet working, use dev. version
+```
+
+### Development version
 
 To install the current development version use devtools:
 
@@ -132,13 +141,13 @@ Currently GPL.
 
 ## Contributing
 
-As long as the package is under initial development please post an issue first before sending a PR.
+Please post an issue first before sending a PR.
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
 
 ## Versioning
 
-This package will use [Semantic Versioning 2.0.0](http://semver.org/) once the first version is on CRAN.
+This package uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 Given a version number MAJOR.MINOR.PATCH, increment the:
 

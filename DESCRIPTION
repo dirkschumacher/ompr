@@ -1,14 +1,14 @@
 Package: ompr
 Type: Package
 Title: Model and Solve Mixed Integer Linear Programs
-Version: 0.5.0.9003
+Version: 0.6.0
 Authors@R: person("Dirk", "Schumacher", email = "mail@dirk-schumacher.net",
             role = c("aut", "cre", "cph"))
 Description: Model mixed integer linear programs in an algebraic way directly in R.
              The model is solver-independent and thus offers the possibility
              to solve a model with different solvers. It currently only supports
              linear constraints and objective functions. See the 'ompr'
-             website <https://dirkschumacher.github.io/ompr/> for more information, 
+             website <https://dirkschumacher.github.io/ompr> for more information, 
              documentation and examples.
 License: GPL-3 | file LICENSE
 LazyData: TRUE
