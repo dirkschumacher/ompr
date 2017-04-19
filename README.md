@@ -24,7 +24,7 @@ I am always happy to get bug reports or feedback.
 
 ```R 
 install.packages("ompr")
-#install.packages("ompr.roi") # not yet working, use dev. version
+install.packages("ompr.roi")
 ```
 
 ### Development version
