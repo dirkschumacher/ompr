@@ -20,7 +20,7 @@ I am always happy to get bug reports or feedback.
 
 ## Install
 
-## CRAN
+### CRAN
 
 ```R 
 install.packages("ompr")
