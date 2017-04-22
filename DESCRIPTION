@@ -10,7 +10,7 @@ Description: Model mixed integer linear programs in an algebraic way directly in
              linear constraints and objective functions. See the 'ompr'
              website <https://dirkschumacher.github.io/ompr> for more information, 
              documentation and examples.
-License: GPL-3 | file LICENSE
+License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.0.1
 URL: https://github.com/dirkschumacher/ompr
