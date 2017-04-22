@@ -11,5 +11,6 @@
 ^cran-comments\.md$
 ^README\.md$
 ^README\.Rmd$
+^LICENSE
 ^\.gitignore$
 ^\.Rhistory$
