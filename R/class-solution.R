@@ -95,6 +95,8 @@ get_solution_.solution <- function(solution, expr) {
     } else {
       # the solution is sorted lexigographically
       solution_names <- names(solution$solution)
+      rexp_c <- regexec(instance_pattern, solution_names)
+      var_index <- do.call(rbind, regmatches(solution_names, rexp_c))
       na_rows <- as.logical(apply(is.na(var_index), 1, all))
       var_index <- var_index[!na_rows, ]
       var_values <- solution$solution[grepl(solution_names,
