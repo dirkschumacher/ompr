@@ -2,6 +2,10 @@
 
 * ...
 
+## Minor changes
+
+* New progress bar based on the `progress` package.
+
 # ompr 0.6.0
 
 * First version on CRAN
