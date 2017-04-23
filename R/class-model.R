@@ -467,13 +467,16 @@ add_constraint_.optimization_model <- function(.model,
     validate_quantifier_candidates(var_combinations, zero_vars_msg)
 
     # let's init a progress bar
-    p <- dplyr::progress_estimated(nrow(var_combinations), min_time = 2)
+    progress_format <- "  adding constraints [:bar] :percent eta :eta"
+    p <- progress::progress_bar$new(total = nrow(var_combinations),
+                                    format = progress_format)
+    p$tick(0)
     new_constraints <- apply(var_combinations, 1, function(row) {
       calling_env <- as.environment(as.list(row))
       parent.env(calling_env) <- parent_env
       constraint <- add_constraint_internal(calling_env)
       if (.show_progress_bar) {
-        p$tick()$print()
+        p$tick()
       }
       constraint
     })

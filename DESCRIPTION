@@ -19,6 +19,7 @@ Depends: R (>= 3.2.0)
 Imports:
   dplyr,
   lazyeval,
+  progress,
   Rcpp
 Suggests:
   magrittr,
