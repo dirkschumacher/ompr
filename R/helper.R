@@ -112,7 +112,7 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
         }
       }
     } else {
-      stop("Does not compute.")
+      stop("Does not compute.", call. = FALSE)
     }
   }
   ast_walker(base_ast, on_element)
@@ -179,7 +179,7 @@ bind_variables <- function(model, ast, calling_env) {
                    " with your defined model variables: ",
                    paste0(problematic_vars, collapse = ","),
                    ". This can lead",
-                   " to unexpected behaviour."))
+                   " to unexpected behaviour."), call. = FALSE)
   }
   try_eval_exp_rec(ast, calling_env)
 }
@@ -379,7 +379,8 @@ extract_coefficients_internal <- function(ast) {
         result <<- c(result, list(list(constant = 0,
              coefficients = list(list(ast = local_ast, coef = 1)))))
       } else {
-        stop(paste0("Unexpected operator '", operator, "' found."))
+        stop(paste0("Unexpected operator '", operator, "' found."),
+             call. = FALSE)
       }
     } else {
       if (is.numeric(local_ast)) {

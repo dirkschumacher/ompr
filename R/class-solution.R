@@ -71,7 +71,7 @@ get_solution_.solution <- function(solution, expr) {
   stopifnot(!is_indexed_var || ast[[1]] == "[" && length(ast) >= 3)
   var_name <- as.character(if (is_indexed_var) ast[[2]] else ast)
   if (is.null(solution$model$variables[[var_name]])) {
-    stop("Variable not found")
+    stop("Variable not found", call. = FALSE)
   }
   if (is_indexed_var) {
     free_vars <- c()
@@ -95,9 +95,8 @@ get_solution_.solution <- function(solution, expr) {
     } else {
       # the solution is sorted lexigographically
       solution_names <- names(solution$solution)
-      var_index <- do.call(rbind,
-                           regmatches(solution_names,
-                                      regexec(instance_pattern, solution_names)))
+      rexp_c <- regexec(instance_pattern, solution_names)
+      var_index <- do.call(rbind, regmatches(solution_names, rexp_c))
       na_rows <- as.logical(apply(is.na(var_index), 1, all))
       var_index <- var_index[!na_rows, ]
       var_values <- solution$solution[grepl(solution_names,
@@ -118,7 +117,7 @@ get_solution_.solution <- function(solution, expr) {
   } else {
     if (!var_name %in% names(solution$solution)) {
       stop(paste0("Either variable is not part of the model or you",
-                  " have to specify the indexes."))
+                  " have to specify the indexes."), call. = FALSE)
     }
     return(solution$solution[var_name])
   }
