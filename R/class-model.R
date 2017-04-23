@@ -46,10 +46,11 @@ add_variable <- function(.model, .variable, ..., type = "continuous",
 # helper function to check variable bounds
 check_bounds <- function(lb, ub) {
   if (any(ub < lb)) {
-    stop("The upper bound must not be smaller than the lower bound.")
+    stop("The upper bound must not be smaller than the lower bound.",
+         call. = FALSE)
   }
   if (any(!is.numeric(lb) | !is.numeric(ub))) {
-    stop("lb and ub must be a number.")
+    stop("lb and ub must be a number.", call. = FALSE)
   }
 }
 
@@ -67,12 +68,13 @@ add_variable_.optimization_model <- function(.model, .variable, ...,
                                              type = "continuous",
                                              lb = -Inf, ub = Inf, .dots) {
   if (length(lb) != 1 || length(ub) != 1) {
-    stop("lb and ub must be of length 1. I.e. just a single number.")
+    stop("lb and ub must be of length 1. I.e. just a single number.",
+         call. = FALSE)
   }
   check_bounds(lb, ub)
   if (length(type) != 1 || !type %in% c("continuous", "binary", "integer")) {
     stop(paste0("The type of a variable needs to be either",
-                " continuous, binary or integer."))
+                " continuous, binary or integer."), call. = FALSE)
   }
   if (type == "binary") {
     if (is.infinite(lb)) {
@@ -83,12 +85,12 @@ add_variable_.optimization_model <- function(.model, .variable, ...,
     }
     if (!lb %in% c(0, 1)) {
       warning(paste0("lower bound of binary variable can ",
-              "either be 0 or 1. Setting it to 0"))
+              "either be 0 or 1. Setting it to 0"), call. = FALSE)
       lb <- 0
     }
     if (!ub %in% c(0, 1)) {
       warning(paste0("upper bound of binary variable can ",
-                     "either be 0 or 1. Setting it to 1"))
+                     "either be 0 or 1. Setting it to 1"), call. = FALSE)
       ub <- 1
     }
   }
@@ -148,7 +150,7 @@ add_variable_.optimization_model <- function(.model, .variable, ...,
   } else {
     stop(paste0("The variable definition does not seem to be right.",
                 " Take a look at the example models on the website on how",
-                " to formulate variables"))
+                " to formulate variables"), call. = FALSE)
   }
   model
 }
@@ -206,7 +208,7 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
   if (is_single_variable) {
     var_name <- as.character(variable$expr)
     if (!var_name %in% model_variable_names) {
-      stop("Variable does not exists in model")
+      stop("Variable does not exists in model", call. = FALSE)
     }
     variable <- model$variables[[var_name]]
     if (replace_lb) {
@@ -219,7 +221,7 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
   } else if (is_indexed_variable) {
     var_name <- as.character(variable$expr[[2]])
     if (!var_name %in% model_variable_names) {
-      stop("Variable does not exists in model")
+      stop("Variable does not exists in model", call. = FALSE)
     }
     model_variable <- model$variables[[var_name]]
     index_names <- vapply(3:length(variable$expr), function(i) {
@@ -252,7 +254,8 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
       } else {
         i_name <- as.character(x)
         if (!i_name %in% colnames(quantifier_combinations)) {
-          stop(paste0("Index ", i_name, " not bound by quantifier"))
+          stop(paste0("Index ", i_name, " not bound by quantifier"),
+               call. = FALSE)
         }
         quantifier_combinations[[i_name]]
       }
@@ -266,7 +269,7 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
     }, character(1))
     var_indexes <- which(model_variable$instances %in% instance_keys)
     if (any(!instance_keys %in% model_variable$instances)) {
-      stop("Indexed variable out of bounds.")
+      stop("Indexed variable out of bounds.", call. = FALSE)
     }
     if (replace_lb) {
       model_variable$lb[var_indexes] <- lb
@@ -320,7 +323,8 @@ set_objective_.optimization_model <- function(model, expression,
   var_names <- names(model$variables)
   if (is_non_linear(var_names, ast)) {
     stop(paste0("The objective is probably non-linear. ",
-                "Currently, only linear functions are supported."))
+                "Currently, only linear functions are supported."),
+         call. = FALSE)
   }
   obj <- new_objective_function(
              expression = as.expression(ast),
@@ -416,11 +420,13 @@ add_constraint_.optimization_model <- function(.model,
   model <- .model
   constraint_ast <- constraint_expr$expr
   if (length(constraint_ast) != 3) {
-    stop("constraint not well formed. Must be a linear (in)equality.")
+    stop("constraint not well formed. Must be a linear (in)equality.",
+         call. = FALSE)
   }
   sense <- as.character(constraint_ast[[1]])
   if (!sense %in% c(">=", "<=", "==")) {
-    stop("Does not recognize constraint expr. Missing the constraint relation")
+    stop("Does not recognize constraint expr. Missing the constraint relation",
+         call. = FALSE)
   }
   lhs_ast <- constraint_ast[[2]]
   rhs_ast <- constraint_ast[[3]]
@@ -439,12 +445,12 @@ add_constraint_.optimization_model <- function(.model,
     if (is_non_linear(var_names, lhs_ast)) {
       stop(paste0("The left-hand-side is probably non-linear. ",
                   "Currently, only linear constraints are ",
-                  "supported."))
+                  "supported."), call. = FALSE)
     }
     if (is_non_linear(var_names, rhs_ast)) {
       stop(paste0("The right-hand-side is probably non-linear. ",
                   "Currently, only linear constraints are ",
-                  "supported."))
+                  "supported."), call. = FALSE)
     }
     new_constraint(lhs = as.expression(lhs_ast),
                       rhs = as.expression(rhs_ast),
