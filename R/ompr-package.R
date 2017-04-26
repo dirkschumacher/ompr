@@ -10,6 +10,10 @@
 #' @docType package
 #' @keywords package
 #' @useDynLib ompr
+#' @importFrom dplyr %>%
 #' @importFrom Rcpp sourceCpp
 #' @name ompr
 NULL
+
+# Quiets R CMD check NOTEs for `.` in pipelines
+utils::globalVariables(".")

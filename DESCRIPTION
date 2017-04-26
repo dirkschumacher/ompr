@@ -23,6 +23,7 @@ Imports:
   Rcpp
 Suggests:
   magrittr,
-  testthat
+  testthat,
+  knitr
 ByteCompile: Yes
 LinkingTo: Rcpp
