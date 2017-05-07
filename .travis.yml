@@ -1,26 +1,28 @@
 language: r
-r:
-  - release
-  - devel
-  - oldrel
-sudo: false
 cache: packages
+
+matrix:
+  include:
+    - os: linux
+      env: R_CODECOV=true R_VERSION=stable LINTR_COMMENT_BOT=false
+    - os: linux
+      env: R_VERSION=devel LINTR_COMMENT_BOT=false
+    - os: linux
+      env: R_VERSION=oldrel LINTR_COMMENT_BOT=false
+    - os: osx
+      osx_image: xcode8.3
 
 r_github_packages:
   - hadley/testthat
   - jimhester/covr
   - jimhester/lintr
 
+warnings_are_errors: true
+
 notifications:
   email:
     on_success: change
     on_failure: change
 
-warnings_are_errors: true
-
 after_success:
-  - Rscript -e 'covr::coveralls()'
-  - Rscript -e 'lintr::lint_package()'
-
-env:
-  - LINTR_COMMENT_BOT=false
+  - if [[ "${{R_CODECOV}}" ]]; then R -e 'covr::codecov()'; fi
