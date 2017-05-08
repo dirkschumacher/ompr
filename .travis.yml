@@ -4,11 +4,18 @@ cache: packages
 matrix:
   include:
     - os: linux
-      env: R_CODECOV=true R_VERSION=stable LINTR_COMMENT_BOT=false
+      env:
+        - R_CODECOV=true
+        - R_VERSION=stable
+        - LINTR_COMMENT_BOT=false
     - os: linux
-      env: R_VERSION=devel LINTR_COMMENT_BOT=false
+      env:
+        - R_VERSION=devel
+        - LINTR_COMMENT_BOT=false
     - os: linux
-      env: R_VERSION=oldrel LINTR_COMMENT_BOT=false
+      env:
+        - R_VERSION=oldrel
+        - LINTR_COMMENT_BOT=false
     - os: osx
       osx_image: xcode8.3
 
