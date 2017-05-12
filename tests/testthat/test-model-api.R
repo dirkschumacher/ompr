@@ -29,15 +29,27 @@ describe("objective_function()", {
       add_variable(x[i], i = 1:9) %>%
       set_objective(sum_expr(i * x[i], i = 1:9) + 10)
     result <- objective_function(model)
-    expect_equal(c(1:9), result$solution)
+    expect_equal(c(1:9), as.vector(result$solution))
     expect_equal(10, result$constant)
   })
   it("returns handles models without objective function", {
     model <- MIPModel() %>%
       add_variable(x[i], i = 1:10)
     result <- objective_function(model)
-    expect_equal(rep.int(0, 10), result$solution)
+    expect_equal(rep.int(0, 10), as.vector(result$solution))
     expect_equal(0, result$constant)
+  })
+  it("returns a sparse vector", {
+    n <- 2
+    model <- MIPModel() %>%
+      add_variable(x[i, j], i = 1:n, j = 1:n,
+                   type = "integer", lb = 0, ub = 1) %>%
+      set_bounds(x[i, j], i = 1:n, j = 1:n, lb = 0, ub = 0) %>%
+      set_objective(sum_expr(x[i, j], i = 1:n, j = 1:n)) %>%
+      add_constraint(sum_expr(x[i, j], i = 1:n, j = 1:n) <= 10)
+    result <- objective_function(model)
+    expected <- Matrix::sparseVector(rep.int(1, n^2), seq_len(n^2), n^2)
+    expect_equal(expected, result$solution)
   })
 })
 
@@ -91,7 +103,7 @@ describe("extract_constraints()", {
     result <- extract_constraints(model)
     exp_matrix <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1,
                            1, 0, 0, 0, 1, 0, 0, 0, 1), ncol = 6, nrow = 3)
-    expect_equal(exp_matrix, result$matrix)
+    expect_equivalent(exp_matrix, as.matrix(result$matrix))
   })
   it("returns the constraint right hand side", {
     model <- MIPModel() %>%
@@ -109,12 +121,20 @@ describe("extract_constraints()", {
     result <- extract_constraints(model)
     expect_equal(c("<=", "<=", "<="), result$sense)
   })
+  it("returns a sparse Matrix with column-oriented encoding", {
+    model <- MIPModel() %>%
+      add_variable(x[i], i = 1:3) %>%
+      add_variable(y[i], i = 1:3) %>%
+      add_constraint(x[i] + y[i] <= 1, i = 1:3)
+    result <- extract_constraints(model)
+    expect_s4_class(result$matrix, "dgCMatrix")
+  })
   it("works with non indexed variables", {
     model <- MIPModel() %>%
       add_variable(x) %>%
       add_constraint(x <= 1)
     result <- extract_constraints(model)
-    expect_equal(matrix(1, nrow = 1, ncol = 1), result$matrix)
+    expect_equivalent(matrix(1, nrow = 1, ncol = 1), as.matrix(result$matrix))
   })
   it("supports underscores in variables", {
     # bug #115 20170217
