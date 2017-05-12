@@ -20,7 +20,8 @@ Imports:
   dplyr,
   lazyeval,
   progress,
-  Rcpp
+  Rcpp,
+  Matrix
 Suggests:
   magrittr,
   testthat

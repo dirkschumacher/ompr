@@ -40,7 +40,7 @@ variable_keys.optimization_model <- function(model) {
 build_coefficent_vector_fun <- function(model_var_keys) {
   n_cols <- length(model_var_keys)
   function(extracted_coefficients) {
-    coef_vector <- rep.int(0, n_cols)
+    coef_vector <- Matrix::spMatrix(1, n_cols)
     coefficients <- extracted_coefficients
     names(coefficients) <- NULL
     bound_coefs <- unlist(Map(function(var_coef) {
@@ -71,7 +71,7 @@ build_coefficent_vector_fun <- function(model_var_keys) {
 #' @param model the model
 #'
 #' @return a list with two named elements, 'solution' and 'constant'.
-#' 'solution' is a vector with a coefficient for each model variable.
+#' 'solution' is a sparse vector from the Matrix package.
 #' 'constant' is a constant that needs to be added to get the final obj. value.
 #'
 #' @examples
@@ -96,10 +96,15 @@ objective_function.optimization_model <- function(model) {
     coefficients <- coefficients$coefficients
     names(coefficients) <- NULL
     obj_vector <- build_coefficent_vector(coefficients)
+    ordered_i <- order(obj_vector@j)
+    obj_vector <- Matrix::sparseVector(x = obj_vector@x[ordered_i],
+                                       i = obj_vector@j[ordered_i] + 1,
+                                       length = ncol(obj_vector))
     list(solution = obj_vector, constant = obj_constant)
   } else {
     n_vars <- sum(unlist(nvars(model)))
-    list(solution = rep.int(0, n_vars), constant = 0)
+    obj <- Matrix::sparseVector(integer(), integer(), n_vars)
+    list(solution = obj, constant = 0)
   }
 }
 
@@ -107,7 +112,7 @@ objective_function.optimization_model <- function(model) {
 #'
 #' @param model the model
 #' @return a list with three named elements.
-#'         'matrix' is the constraint matrix.
+#'         'matrix' the (sparse) constraint matrix from the Matrix package.
 #'         'rhs' is the right hand side vector in the order of the matrix.
 #'         'sense' is a vector of the constraint senses
 #'
@@ -136,10 +141,9 @@ extract_constraints.optimization_model <- function(model) {
       rhs_constant = coefficients_rhs$constant
     )
   })
-
-  constraint_matrix <- t(rbind(sapply(matrices, function(constraint) {
+  constraint_matrix <- Reduce(Matrix::rbind2, lapply(matrices, function(constraint) {
     constraint$lhs - constraint$rhs
-  })))
+  }))
 
   # build row upper bound (aka b)
   constraint_rhs <- vapply(matrices, function(constraint) {
@@ -149,7 +153,6 @@ extract_constraints.optimization_model <- function(model) {
   constraint_dir <- vapply(matrices, function(constraint) {
     constraint$sense
   }, character(1))
-
   list(
     matrix = constraint_matrix,
     sense = constraint_dir,

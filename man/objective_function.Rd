@@ -11,7 +11,7 @@ objective_function(model)
 }
 \value{
 a list with two named elements, 'solution' and 'constant'.
-'solution' is a vector with a coefficient for each model variable.
+'solution' is a sparse vector from the Matrix package.
 'constant' is a constant that needs to be added to get the final obj. value.
 }
 \description{

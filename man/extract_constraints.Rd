@@ -11,7 +11,7 @@ extract_constraints(model)
 }
 \value{
 a list with three named elements.
-        'matrix' is the constraint matrix.
+        'matrix' the (sparse) constraint matrix from the Matrix package.
         'rhs' is the right hand side vector in the order of the matrix.
         'sense' is a vector of the constraint senses
 }
