@@ -33,8 +33,7 @@ knitr_math <- function(x, fmt = "\\[%s\\]", ...) {
          call. = FALSE)
   }
 
-  latex_math(x, fmt) %>%
-    knitr::asis_output(...)
+  knitr::asis_output(latex_math(x, fmt), ...)
 
 }
 
@@ -43,15 +42,11 @@ knitr_math <- function(x, fmt = "\\[%s\\]", ...) {
 latex_constraints <- function(model, fmt = "%s", collapse = ", ") {
 
   latex <- lapply(model$constraints, function(x) {
-    c(x$lhs, x$sense, x$rhs) %>%
-      paste(collapse = " ") %>%
-      parse(text = .) %>%
-      latex_math()
+    cons <- paste(c(x$lhs, x$sense, x$rhs), collapse = " ")
+    latex_math(parse(text = cons))
   })
 
-  unlist(latex) %>%
-    paste(collapse = collapse) %>%
-    sprintf(fmt, .)
+  sprintf(fmt, paste(unlist(latex), collapse = collapse))
 
 }
 
@@ -59,8 +54,7 @@ latex_constraints <- function(model, fmt = "%s", collapse = ", ") {
 #' @export
 knitr_constraints <- function(model, fmt = "\\[%s\\]", collapse = ", ", ...) {
 
-  latex_constraints(model, fmt, collapse, ...) %>%
-    knitr::asis_output(...)
+   knitr::asis_output(latex_constraints(model, fmt, collapse, ...), ...)
 
 }
 
@@ -70,11 +64,9 @@ latex_objective <- function(model, expand = FALSE, sense = TRUE, fmt = "%s") {
 
   obj <- ifelse(expand, model$objective$expression, model$objective$original_expression)
   dir <- sprintf("\\text{%s}\\hspace{1em}", model$objective$sense)
-
   m <- latex_math(obj, fmt = "%s")
 
-  ifelse(sense, paste(dir, m), m) %>%
-    sprintf(fmt, .)
+  sprintf(fmt, ifelse(sense, paste(dir, m), m))
 
 }
 
@@ -82,8 +74,7 @@ latex_objective <- function(model, expand = FALSE, sense = TRUE, fmt = "%s") {
 #' @export
 knitr_objective <- function(model, expand = FALSE, sense = TRUE, fmt = "\\[%s\\]", ...) {
 
-  latex_objective(model, expand, sense, fmt) %>%
-    knitr::asis_output(...)
+  knitr::asis_output(latex_objective(model, expand, sense, fmt), ...)
 
 }
 
@@ -103,22 +94,15 @@ latex_env <- function(x) {
   x <- parse(text = x)[[1]]
 
   # Get expression symbols (i.e., decision variables)
-  symbols <-
-    all_symbols(x) %>%
-    setNames(., .) %>%
-    lapply(force)
+  sym <- all_symbols(x)
+  symbols <- lapply(setNames(sym, sym), force)
 
   # Handle unknown function calls
-  unknown <-
-    all_calls(x) %>%
-    setdiff(ls(lenv)) %>%
-    setNames(., .) %>%
-    lapply(unknown_op)
+  unk <- setdiff(all_calls(x), ls(lenv))
+  unknown <- lapply(setNames(unk, unk), unknown_op)
 
   # Create Latex environment
-  env <-
-    c(as.list(lenv), unknown, symbols) %>%
-    list2env(parent = emptyenv())
+  env <- list2env(c(as.list(lenv), unknown, symbols), parent = emptyenv())
 
   eval(x, env)
 
