@@ -40,6 +40,11 @@ knitr_math <- function(x, fmt = "\\[%s\\]", ...) {
 #' @rdname latex_math
 #' @export
 latex_constraints <- function(model, fmt = "%s", collapse = ", ") {
+  UseMethod("latex_constraints")
+}
+
+#' @export
+latex_constraints.optimization_model <- function(model, fmt = "%s", collapse = ", ") {
 
   latex <- lapply(model$constraints, function(x) {
     cons <- paste(c(x$lhs, x$sense, x$rhs), collapse = " ")
@@ -53,6 +58,11 @@ latex_constraints <- function(model, fmt = "%s", collapse = ", ") {
 #' @rdname latex_math
 #' @export
 knitr_constraints <- function(model, fmt = "\\[%s\\]", collapse = ", ", ...) {
+  UseMethod("knitr_constraints")
+}
+
+#' @export
+knitr_constraints.optimization_model <- function(model, fmt = "\\[%s\\]", collapse = ", ", ...) {
 
    knitr::asis_output(latex_constraints(model, fmt, collapse, ...), ...)
 
@@ -61,6 +71,11 @@ knitr_constraints <- function(model, fmt = "\\[%s\\]", collapse = ", ", ...) {
 #' @rdname latex_math
 #' @export
 latex_objective <- function(model, expand = FALSE, sense = TRUE, fmt = "%s") {
+  UseMethod("latex_objective")
+}
+
+#' @export
+latex_objective.optimization_model <- function(model, expand = FALSE, sense = TRUE, fmt = "%s") {
 
   obj <- ifelse(expand, model$objective$expression, model$objective$original_expression)
   dir <- sprintf("\\text{%s}\\hspace{1em}", model$objective$sense)
@@ -73,6 +88,11 @@ latex_objective <- function(model, expand = FALSE, sense = TRUE, fmt = "%s") {
 #' @rdname latex_math
 #' @export
 knitr_objective <- function(model, expand = FALSE, sense = TRUE, fmt = "\\[%s\\]", ...) {
+  UseMethod("knitr_objective")
+}
+
+#' @export
+knitr_objective.optimization_model <- function(model, expand = FALSE, sense = TRUE, fmt = "\\[%s\\]", ...) {
 
   knitr::asis_output(latex_objective(model, expand, sense, fmt), ...)
 
