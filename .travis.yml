@@ -4,25 +4,15 @@ cache: packages
 matrix:
   include:
     - os: linux
+      r: release
       env:
         - R_CODECOV=true
-        - R_VERSION=stable
-        - LINTR_COMMENT_BOT=false
     - os: linux
-      env:
-        - R_VERSION=devel
-        - LINTR_COMMENT_BOT=false
+      r: devel
     - os: linux
-      env:
-        - R_VERSION=oldrel
-        - LINTR_COMMENT_BOT=false
+      r: oldrel
     - os: osx
       osx_image: xcode8.3
-
-r_github_packages:
-  - hadley/testthat
-  - jimhester/covr
-  - jimhester/lintr
 
 warnings_are_errors: true
 
@@ -32,4 +22,4 @@ notifications:
     on_failure: change
 
 after_success:
-  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi
+  - if [[ "${{R_CODECOV}}" ]]; then Rscript -e 'covr::codecov()'; fi
