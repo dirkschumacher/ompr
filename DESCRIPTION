@@ -3,7 +3,7 @@ Type: Package
 Title: Model and Solve Mixed Integer Linear Programs
 Version: 0.6.0.9000
 Authors@R: person("Dirk", "Schumacher", email = "mail@dirk-schumacher.net",
-            role = c("aut", "cre", "cph"))
+            role = c("aut", "cre"))
 Description: Model mixed integer linear programs in an algebraic way directly in R.
              The model is solver-independent and thus offers the possibility
              to solve a model with different solvers. It currently only supports
