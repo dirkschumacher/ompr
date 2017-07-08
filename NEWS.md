@@ -5,6 +5,7 @@
 ## Breaking changes
 
 * ompr now uses sparse constraint matrices. `extract_constraints` now returns a sparse matrix and `objective_function` returns a sparse vector.
+* The minimum supported R version is now `3.3.0`
 
 ## Minor changes
 
