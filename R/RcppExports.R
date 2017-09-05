@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 check_for_unknown_vars_impl <- function(model, x) {
-    invisible(.Call('ompr_check_for_unknown_vars_impl', PACKAGE = 'ompr', model, x))
+    invisible(.Call('_ompr_check_for_unknown_vars_impl', PACKAGE = 'ompr', model, x))
 }
 
 is_non_linear_impl <- function(var_names, x) {
-    .Call('ompr_is_non_linear_impl', PACKAGE = 'ompr', var_names, x)
+    .Call('_ompr_is_non_linear_impl', PACKAGE = 'ompr', var_names, x)
 }
 
