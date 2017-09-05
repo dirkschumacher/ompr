@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // check_for_unknown_vars_impl
 void check_for_unknown_vars_impl(List model, SEXP x);
-RcppExport SEXP ompr_check_for_unknown_vars_impl(SEXP modelSEXP, SEXP xSEXP) {
+RcppExport SEXP _ompr_check_for_unknown_vars_impl(SEXP modelSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type model(modelSEXP);
@@ -18,7 +18,7 @@ END_RCPP
 }
 // is_non_linear_impl
 bool is_non_linear_impl(CharacterVector var_names, SEXP x);
-RcppExport SEXP ompr_is_non_linear_impl(SEXP var_namesSEXP, SEXP xSEXP) {
+RcppExport SEXP _ompr_is_non_linear_impl(SEXP var_namesSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
