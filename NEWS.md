@@ -11,6 +11,9 @@
 
 * New progress bar based on the `progress` package.
 
+
+* `get_solution` always returns a solution, regardles of the solver status
+
 # ompr 0.6.0
 
 * First version on CRAN

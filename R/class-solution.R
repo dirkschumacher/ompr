@@ -109,9 +109,6 @@ get_solution_.solution <- function(solution, expr) {
       result_df$variable <- var_name
       colnames(result_df) <- c(free_vars, "value", "variable")
       result_df <- result_df[, c("variable", free_vars, "value")]
-      if (solution$status != "optimal") {
-        result_df <- result_df[FALSE, ]
-      }
       return(result_df)
     }
   } else {

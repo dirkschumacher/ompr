@@ -66,7 +66,7 @@ test_that("export infeasible solutions to data.frame", {
                   solution = setNames(c(1, 1, 1), c("x[1]", "x[3]", "x[3]")))
   result <- get_solution(solution, x[i])
   expect_s3_class(result, "data.frame")
-  expect_equal(nrow(result), 0)
+  expect_equal(nrow(result), 3)
 })
 
 
