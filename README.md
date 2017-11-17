@@ -4,8 +4,7 @@
 [![Build Status Windows](https://ci.appveyor.com/api/projects/status/github/dirkschumacher/ompr?branch=master&svg=true)](https://ci.appveyor.com/project/dirkschumacher/ompr)
 [![codecov](https://codecov.io/gh/dirkschumacher/ompr/branch/master/graph/badge.svg)](https://codecov.io/gh/dirkschumacher/ompr)
 [![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/GPL-3.0/)
-[![CRAN Status](http://www.r-pkg.org/badges/version/ompr)](http://www.r-pkg.org/badges/version/ompr)
-[![Join the chat at https://gitter.im/dirkschumacher/ompr](https://badges.gitter.im/dirkschumacher/ompr.svg)](https://gitter.im/dirkschumacher/ompr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![CRAN Status](http://www.r-pkg.org/badges/version/ompr)](https://cran.r-project.org/package=ompr)
 
 OMPR (Optimization Modelling Package) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
 
