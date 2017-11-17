@@ -1,7 +1,7 @@
 Package: ompr
 Type: Package
 Title: Model and Solve Mixed Integer Linear Programs
-Version: 0.6.0.9000
+Version: 0.7.0
 Authors@R: person("Dirk", "Schumacher", email = "mail@dirk-schumacher.net",
             role = c("aut", "cre"))
 Description: Model mixed integer linear programs in an algebraic way directly in R.
@@ -20,7 +20,7 @@ Imports:
   dplyr,
   lazyeval,
   progress,
-  Rcpp,
+  Rcpp (>= 0.12.12),
   Matrix
 Suggests:
   magrittr,
