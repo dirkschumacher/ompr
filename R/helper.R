@@ -125,7 +125,7 @@ free_indexes <- function(expr) {
   if (expr[[1]] == "[" && length(expr) >= 3) {
     vars <- vapply(3:length(expr), function(i) {
       x <- expr[[i]]
-      if (lazyeval::is_name(x)) {
+      if (is.name(x)) {
         as.character(x)
       } else {
         NA_character_
@@ -477,13 +477,15 @@ classify_quantifiers <- function(lazy_dots) {
 build_quantifier_candidates <- function(subscripts,
                                         subscript_names, filter_dots) {
   candidates <- expand.grid(subscripts)
-  names(candidates) <- subscript_names
+  colnames(candidates) <- subscript_names
   if (length(filter_dots) > 0) {
-    filter_dots <- lapply(filter_dots, function(x) {
-      rlang::as_quosure(x$expr, x$env)
-    })
-    candidates <- dplyr::filter(candidates, !!!filter_dots)
+    filter <- Reduce(function(acc, x) {
+      rlang::quo(!!(acc) & (!!rlang::as_quosure(x$expr, x$env)))
+    }, filter_dots, init = TRUE)
+    filtered_candidates <- rlang::quo(candidates[(!!filter), , drop = FALSE])
+    candidates <- rlang::eval_tidy(filtered_candidates, data = candidates)
   }
+  rownames(candidates) <- NULL
   candidates
 }
 
