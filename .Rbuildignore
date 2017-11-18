@@ -14,3 +14,4 @@
 ^LICENSE
 ^\.gitignore$
 ^\.Rhistory$
+^_pkgdown\.yml$
