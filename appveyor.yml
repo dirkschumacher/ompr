@@ -13,6 +13,7 @@ install:
 environment:
   global:
     USE_RTOOLS: true
+    RTOOLS_VERSION: 34
 
   matrix:
   - R_VERSION: stable
