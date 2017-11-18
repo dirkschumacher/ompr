@@ -75,13 +75,14 @@ model <- MIPModel() %>%
   add_variable(y[k], type = "binary", k = 1:max_colors) %>% 
   
   # minimize colors
-  set_objective(sum_expr(y[k], k = 1:max_colors), sense = "min") %>% 
+  # multiply by k for symmetrie breaking (signifcant diff. in solution time)
+  set_objective(sum_expr(k * y[k], k = 1:max_colors), sense = "min") %>% 
   
   # each node is colored
   add_constraint(sum_expr(x[i, k], k = 1:max_colors) == 1, i = 1:n) %>% 
   
   # if a color k is used, set y[k] to 1
-  add_constraint(sum_expr(x[i, k], i = 1:n) <= n * y[k], k = 1:max_colors) %>% 
+  add_constraint(x[i, k] <= y[k], i = 1:n, k = 1:max_colors) %>% 
   
   # no adjacent nodes have the same color
   add_constraint(x[i, k] + x[j, k] <= 1, i = 1:n, j = 1:n, k = 1:max_colors, is_adjacent(i, j))
@@ -99,16 +100,16 @@ This code generates a constraint for each combination of i, j and k with the add
 
 ## Solve it
 
-Now since we have built the model, we will solve it using the excellent `ROI` package and the `symphony` solver. `ompr.roi` is a solver that takes an `ompr` package and translates it to `ROI`: this makes it possible to use range of solvers out of the box.
+Now since we have built the model, we will solve it using the excellent `ROI` package and the `GLPK` solver. `ompr.roi` is a solver that takes an `ompr` package and translates it to `ROI`: this makes it possible to use range of solvers out of the box.
 
 ```{r, message=FALSE}
 library(ROI)
-library(ROI.plugin.symphony)
+library(ROI.plugin.glpk)
 library(ompr.roi)
 ```
 
 ```{r, warning=FALSE}
-result <- solve_model(model, with_ROI("symphony"))
+result <- solve_model(model, with_ROI("glpk", presolve = TRUE, verbose = TRUE))
 ```
 
 ```{r}
