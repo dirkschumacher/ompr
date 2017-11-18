@@ -1,6 +1,6 @@
 # ompr 0.7.0.9000
 
-...
+* Use `dplyr` interface `>= 0.7.0`
 
 # ompr 0.7.0
 
