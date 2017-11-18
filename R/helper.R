@@ -479,7 +479,10 @@ build_quantifier_candidates <- function(subscripts,
   candidates <- expand.grid(subscripts)
   names(candidates) <- subscript_names
   if (length(filter_dots) > 0) {
-    candidates <- dplyr::filter_(candidates, .dots = filter_dots)
+    filter_dots <- lapply(filter_dots, function(x) {
+      rlang::as_quosure(x$expr, x$env)
+    })
+    candidates <- dplyr::filter(candidates, !!!filter_dots)
   }
   candidates
 }
