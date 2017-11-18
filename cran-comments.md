@@ -9,4 +9,4 @@
 
 ## Reverse dependencies
 
-* `ompr.roi` will be updated by me after `ompr` is on CRAN.
+* `ompr.roi` breaks. It will be updated by me after `ompr` is on CRAN.
