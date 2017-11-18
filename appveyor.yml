@@ -22,6 +22,7 @@ environment:
     RTOOLS_VERSION: 33
 
   - R_VERSION: devel
+    PKGTYPE: source
 
 
 # Adapt as necessary starting from here
