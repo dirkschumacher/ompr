@@ -20,6 +20,8 @@ Imports:
   lazyeval,
   progress,
   rlang,
+  methods,
+  data.table,
   Rcpp (>= 0.12.12),
   Matrix
 Suggests:
