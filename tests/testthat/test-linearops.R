@@ -1,6 +1,6 @@
 context("linear ops")
 
-new_var <- function(var_name) {
+new_arity2_var <- function(var_name) {
   d <- expand.grid(variable = var_name, V1 = 1:10, V2 = 1:10)
   d[["col"]] <- seq_len(nrow(d))
   index_map <- function(x) {
@@ -9,7 +9,18 @@ new_var <- function(var_name) {
   new("LinearVariableCollection", index_mapping = index_map)
 }
 
-x <- new_var("x")
+new_arity3_var <- function(var_name) {
+  d <- expand.grid(variable = var_name, V1 = 1:3, V2 = 1:3, V3 = 1:3)
+  d[["col"]] <- seq_len(nrow(d))
+  index_map <- function(x) {
+    d[d$variable == x, ]
+  }
+  new("LinearVariableCollection", index_mapping = index_map)
+}
+
+
+x <- new_arity2_var("x")
+y <- new_arity3_var("y")
 
 test_that("expanding rows", {
   res <- x[1:3, 1:3]
@@ -27,6 +38,10 @@ test_that("adding constants", {
   expect_equal(res@constant$row, 1:3)
 
   expect_error(x[1:3, 1:3] + 1:4)
+
+  res <- (x[1:3, 1:3] + 1:3) + 1:3
+  expect_equal(res@constant$constant, 1:3 + 1:3)
+  expect_equal(res@constant$row, 1:3)
 })
 
 test_that("multiplying constants", {
@@ -64,5 +79,15 @@ test_that("index colwise", {
   res <- x[1:3, as_colwise(1:3)]
   expect_equal(nrow(res@variables[res@variables$row == 1, ]), 3)
   expect_equal(nrow(res@variables[res@variables$row == 2, ]), 3)
+  expect_equal(nrow(res@variables[res@variables$row == 3, ]), 3)
+})
+
+test_that("index arity 3", {
+  # y[1, 1, 1]
+  # y[1, 1, 2] + y[1, 2, 2]
+  # y[1, 1, 3] + y[1, 2, 3] + y[1, 2, 3]
+  res <- y[colwise(1, 1:2, 1:3), colwise(1), 1:3]
+  expect_equal(nrow(res@variables[res@variables$row == 1, ]), 1)
+  expect_equal(nrow(res@variables[res@variables$row == 2, ]), 2)
   expect_equal(nrow(res@variables[res@variables$row == 3, ]), 3)
 })

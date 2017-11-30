@@ -3,7 +3,7 @@
 \docType{methods}
 \name{[,LinearVariableCollection,ANY,ANY,missing-method}
 \alias{[,LinearVariableCollection,ANY,ANY,missing-method}
-\title{Subset}
+\title{Subset model variables}
 \usage{
 \S4method{[}{LinearVariableCollection,ANY,ANY,missing}(x, i, j, ...,
   drop = TRUE)
@@ -11,11 +11,11 @@
 \arguments{
 \item{x}{an object of type 'LinearVariableCollection'}
 
-\item{i}{a numeric vector or a list of numeric vectors}
+\item{i}{a numeric vector or a colwise vector/list}
 
-\item{j}{a numeric vector or a list of numeric vectors}
+\item{j}{a numeric vector or a colwise vector/list}
 
-\item{...}{more a numeric vectors or a lists of numeric vectors}
+\item{...}{more a numeric vectors or a colwise vector/list}
 
 \item{drop}{do not use this parameter}
 }
@@ -23,5 +23,25 @@
 a new object of type 'LinearVariableCollection'
 }
 \description{
-TODO: to be documented when ready
+This creates a new variable collection as a subset of the previously defined indexed variable.
+A variable collection essentially is a data frame having values for rows and columns of the final model matrix.
+}
+\examples{
+\dontrun{
+  # vectors create matrix rows
+  # x[1, 1]
+  # x[2, 1]
+  # x[3, 1]
+  x[1:3, 1]
+
+  # colwise() creates columns per row
+  # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
+  colwise(1, 2, 3) * x[1, colwise(1, 2, 3)]
+
+  # you can also combine the two
+  # x[1, 1]
+  # x[2, 1] + x[2, 2]
+  # x[3, 1] + x[3, 2] + x[3, 2]
+  x[1:3, colwise(1, 1:2, 1:3)]
+}
 }

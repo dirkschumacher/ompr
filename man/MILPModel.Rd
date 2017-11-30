@@ -7,7 +7,7 @@
 MILPModel()
 }
 \description{
-This is work in progress and an experimental proof of concept.
+This is work in progress and an experimental.
 It will eventually replace the old `MIPModel` backend for linear models.
 Use with caution and please report any bugs you find.
 }

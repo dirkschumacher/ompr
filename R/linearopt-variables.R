@@ -33,7 +33,24 @@ is_colwise <- function(x) {
 #' Cowise
 #'
 #' @param ... create a colwise vector
+#' @example
+#' \dontrun{
+#'   # vectors create matrix rows
+#'   # x[1, 1]
+#'   # x[2, 1]
+#'   # x[3, 1]
+#'   x[1:3, 1]
 #'
+#'   # colwise() creates columns per row
+#'   # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
+#'   colwise(1, 2, 3) * x[1, colwise(1, 2, 3)]
+#'
+#'   # you can also combine the two
+#'   # x[1, 1]
+#'   # x[2, 1] + x[2, 2]
+#'   # x[3, 1] + x[3, 2] + x[3, 2]
+#'   x[1:3, colwise(1, 1:2, 1:3)]
+#' }
 #' @export
 colwise <- function(...) {
   elements <- list(...)
@@ -412,16 +429,36 @@ setMethod("*", signature(e1 = "numeric", e2 = "LinearVariableCollection"), funct
 })
 
 
-#' Subset
+#' Subset model variables
 #'
-#' TODO: to be documented when ready
+#' This creates a new variable collection as a subset of the previously defined indexed variable.
+#' A variable collection essentially is a data frame having values for rows and columns of the final model matrix.
 #'
 #' @param x an object of type 'LinearVariableCollection'
-#' @param i a numeric vector or a list of numeric vectors
-#' @param j a numeric vector or a list of numeric vectors
-#' @param ... more a numeric vectors or a lists of numeric vectors
+#' @param i a numeric vector or a colwise vector/list
+#' @param j a numeric vector or a colwise vector/list
+#' @param ... more a numeric vectors or a colwise vector/list
 #' @param drop do not use this parameter
 #' @return a new object of type 'LinearVariableCollection'
+#'
+#' @examples
+#' \dontrun{
+#'   # vectors create matrix rows
+#'   # x[1, 1]
+#'   # x[2, 1]
+#'   # x[3, 1]
+#'   x[1:3, 1]
+#'
+#'   # colwise() creates columns per row
+#'   # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
+#'   colwise(1, 2, 3) * x[1, colwise(1, 2, 3)]
+#'
+#'   # you can also combine the two
+#'   # x[1, 1]
+#'   # x[2, 1] + x[2, 2]
+#'   # x[3, 1] + x[3, 2] + x[3, 2]
+#'   x[1:3, colwise(1, 1:2, 1:3)]
+#' }
 setMethod("[", signature("LinearVariableCollection", i = "ANY", j = "ANY", drop = "missing"), function(x, i, j, ..., drop) {
   var_name <- as.character(as.name(substitute(x)))
   counter <- 0
@@ -431,25 +468,32 @@ setMethod("[", signature("LinearVariableCollection", i = "ANY", j = "ANY", drop 
   llength <- function(x) {
     if (is_colwise(x) && is.numeric(x)) 1L else length(x)
   }
+  update_indexes <- function(x) {
+    counter <<- counter + 1
+    indexes[[counter]] <<- if (is.list(x)) {
+      lapply(x, as.integer)
+    } else if (is_colwise(x)) {
+      list(as.integer(x))
+    } else {
+      as.integer(x)
+    }
+  }
   if (!missing(i)) {
     stopifnot(is.numeric(i) | is.list(i) || is_colwise(i))
     rows <- pmax(llength(i), rows)
-    counter <- counter + 1
-    indexes[[counter]] <- if (is.list(i)) lapply(i, as.integer) else if (is_colwise(i)) list(as.integer(i)) else as.integer(i)
+    update_indexes(i)
   }
   if (!missing(j)) {
     stopifnot(is.numeric(j) | is.list(j) || is_colwise(j))
     rows <- pmax(llength(j), rows)
     stopifnot(rows == length(j) || length(j) == 1L || is_colwise(j))
-    counter <- counter + 1
-    indexes[[counter]] <- if (is.list(j)) lapply(j, as.integer) else if (is_colwise(j)) list(as.integer(j)) else as.integer(j)
+    update_indexes(j)
   }
   for (arg in list(...)) {
     stopifnot(is.numeric(arg) | is.list(arg) || is_colwise(arg))
     rows <- pmax(llength(arg), rows)
     stopifnot(rows == length(arg) || length(arg) == 1L || is_colwise(arg))
-    counter <- counter + 1
-    indexes[[counter]] <- if (is.list(arg)) lapply(arg, as.integer) else if (is_colwise(arg)) list(as.integer(arg)) else as.integer(arg)
+    update_indexes(arg)
   }
   index_mapping <- x@index_mapping(var_name)
   list_indexes <- vapply(indexes, is.list, logical(1L))

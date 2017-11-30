@@ -115,13 +115,12 @@ test_that("quantifier filter expressions work with add_constraint_", {
   expect_equal(2, nconstraints(m))
 })
 
-# TODO: change in semantics, document
-# test_that("indexes in filter expr. for sum_expr are correctly substituted", {
-#   m <- add_variable(MILPModel(), x[i, j], i = 1:2, j = 1:2)
-#   m <- add_constraint(m, sum_expr(x[i, j], i = 1:2, j == 1) == 0, j = 1:2)
-#   expect_equal(m$constraints[[1]]$lhs@variables$col, c(1, 2))
-#   expect_equal(m$constraints[[2]]$lhs, 0)
-# })
+test_that("indexes in filter expr. for sum_expr are correctly substituted", {
+  m <- add_variable(MILPModel(), x[i, j], i = 1:2, j = 1:2)
+  m <- add_constraint(m, sum_expr(x[i, j], i = 1:2, j = 1) == 0, j = 1:2)
+  expect_equal(m$constraints[[1]]$lhs@variables$col, c(1, 2))
+  expect_equal(m$constraints[[1]]$lhs@variables$row, c(1, 1))
+})
 
 test_that("bug 20170222 #117: you can use c as an index variable", {
   m <- add_variable(MILPModel(), x[m], m = 1:2)

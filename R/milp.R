@@ -2,9 +2,11 @@
 
 #' Create a new MILP Model
 #'
-#' This is work in progress and an experimental proof of concept.
+#' This is work in progress and an experimental.
 #' It will eventually replace the old `MIPModel` backend for linear models.
 #' Use with caution and please report any bugs you find.
+#'
+#'
 #'
 #' @export
 MILPModel <- function() structure(list(variables = list(),
@@ -227,7 +229,6 @@ sum_expr_milp <- function(expr, ...) {
   if (nrow(subscript_combinations) == 0L) {
     return(0)
   }
-  #browser()
   idx_bindings <- lapply(seq_len(ncol(subscript_combinations)), function(i) {
     as_colwise(subscript_combinations[[i]])
   })
@@ -549,8 +550,7 @@ set_bounds_.milp_model <- function(.model, .variable, ...,
       stopifnot(length(columns) >= 1L)
       and <- `&`
       row_selected <- if (length(columns) > 1L) {
-        # TODO: fail if length(columns) > 2L
-        rlang::quo(and(!!! columns))
+        Reduce(function(acc, el) rlang::quo(and(!!acc, !!el)), columns)
       } else {
         columns[[1L]]
       }
