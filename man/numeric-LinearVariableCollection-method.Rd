@@ -13,5 +13,5 @@
 \item{e2}{an object of type 'LinearVariableCollection'}
 }
 \description{
-Equivalent to `e2 - e1`
+Equivalent to `-1 * (e2 - e1)`
 }

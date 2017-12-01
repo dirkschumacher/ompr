@@ -33,7 +33,7 @@ is_colwise <- function(x) {
 #' Cowise
 #'
 #' @param ... create a colwise vector
-#' @example
+#' @examples
 #' \dontrun{
 #'   # vectors create matrix rows
 #'   # x[1, 1]
