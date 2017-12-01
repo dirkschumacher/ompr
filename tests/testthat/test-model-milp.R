@@ -126,7 +126,7 @@ test_that("devision in objective fun", {
   m <- add_variable(MILPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
-    set_objective(5 / (-x + y), sense = "max")
+    set_objective((-x + y) / 5, sense = "max")
   expect_equal(m$objective$objective@variables$coef,
                c(-0.2, 0.2))
   expect_equal(m$objective$objective@variables$variable,

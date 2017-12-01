@@ -15,7 +15,7 @@ test_that("constraints can have an unary + and - operator", {
   m <- add_variable(MILPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(+x - y <= 10) %>%
-    set_objective(5 / (-x + y), sense = "max")
+    set_objective((-x + y) / 5, sense = "max")
   expect_equal(m$constraints[[1]]$lhs@variables$coef, c(1, -1))
 })
 
