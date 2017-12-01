@@ -520,4 +520,3 @@ setMethod("[", signature("LinearVariableCollection", i = "ANY", j = "ANY", drop 
   x@variables <- new_vars
   x
 })
-
