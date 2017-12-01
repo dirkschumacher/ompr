@@ -44,6 +44,17 @@ test_that("adding constants", {
   expect_equal(res@constant$row, 1:3)
 })
 
+test_that("substracting length 1 vectors", {
+  res <- x[1:3, 1:3] + x[4, 4]
+  expect_equal(res@variables$row, c(1,1,2,2,3,3))
+
+  res <- x[4, 4] + x[1:3, 1:3]
+  expect_equal(res@variables$row, c(1,1,2,2,3,3))
+
+  res <- (x[1:3, 1:3] + 4) + x[4, 4]
+  expect_equal(res@variables@variables$row, c(1,1,2,2,3,3))
+})
+
 test_that("multiplying constants", {
   res <- (x[1:3, 1:3] + 1) * 2
   expect_equal(res@constant$constant, rep.int(2, 3))

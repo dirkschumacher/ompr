@@ -75,6 +75,13 @@ These functions currently form the public API. More detailed docs can be found i
 * `solve_model()` solves a model with a given solver
 * `get_solution()` returns the solution of a solved model for a given variable or group of variables
 
+### Backends
+
+There are currently two backends. A backend is the function that initializes an empty model. 
+
+* `MIPModel()` is the standard MILP Model
+* `MILPModel()` is a new backend specifically optimized for linear models and is about 1000 times faster than `MIPModel()`. It has slightly different semantics, as it is vectorized. Currently experimental, but it will replace the `MIPModel` eventually.
+
 ### Solver
 
 Solvers are in different packages. `ompr.ROI` uses the ROI package which offers support for all kinds of solvers.

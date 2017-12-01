@@ -358,6 +358,25 @@ setMethod("/", signature(e1 = "LinearVariableSum", e2 = "numeric"), function(e1,
 #'
 #' @import data.table
 setMethod("+", signature(e1 = "LinearVariableCollection", e2 = "LinearVariableCollection"), function(e1, e2) {
+  expand_e2 <- nrow(e2@variables) == 1L &&
+      nrow(e1@variables) > 1L &&
+      length(unique(e1@variables$variable)) == 1L
+  if (expand_e2) {
+    temp <- e2
+    e2 <- e1
+    e1 <- temp
+  }
+  expand_e1 <- nrow(e1@variables) == 1L &&
+      nrow(e2@variables) > 1L &&
+      length(unique(e2@variables$variable)) == 1L
+  if (expand_e1) {
+    e1_vars <- e1@variables
+    e1@variables <- data.table::data.table(variable = e1_vars[["variable"]],
+                                           row = sort(unique(e2@variables$row)),
+                                           col = e1_vars[["col"]],
+                                           coef = e1_vars[["coef"]])
+  }
+
   new_vars <- data.table::rbindlist(list(e1@variables, e2@variables))
   idx_names <- c("variable", "row", "col")
   data.table::setkeyv(new_vars, idx_names)
