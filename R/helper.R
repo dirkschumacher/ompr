@@ -476,7 +476,7 @@ classify_quantifiers <- function(lazy_dots) {
 # construct a quantifier candidate table
 build_quantifier_candidates <- function(subscripts,
                                         subscript_names, filter_dots) {
-  candidates <- expand.grid(subscripts)
+  candidates <- expand.grid(subscripts, stringsAsFactors = FALSE)
   colnames(candidates) <- subscript_names
   if (length(filter_dots) > 0) {
     filter <- Reduce(function(acc, x) {
@@ -495,7 +495,7 @@ validate_quantifier_candidates <- function(candidates, zero_vars_msg) {
     stop(zero_vars_msg)
   }
   only_integer_candidates <- apply(candidates, 1, function(r) {
-    all(!is.na(suppressWarnings(as.integer(r))))
+    !anyNA(suppressWarnings(as.integer(r)))
   })
   stopifnot(only_integer_candidates)
 }

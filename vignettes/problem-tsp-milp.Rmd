@@ -81,8 +81,7 @@ library(ompr)
 ```
 
 ```{r}
-model <- MIPModel() %>%
-  
+model <- MILPModel() %>%
   # we create a variable that is 1 iff we travel from city i to j
   add_variable(x[i, j], i = 1:n, j = 1:n, 
                type = "integer", lb = 0, ub = 1) %>%
@@ -91,7 +90,7 @@ model <- MIPModel() %>%
   add_variable(u[i], i = 1:n, lb = 1, ub = n) %>% 
   
   # minimize travel distance
-  set_objective(sum_expr(colwise(dist(i, j)) * x[i, j], i = 1:n, j = 1:n), "min") %>%
+  set_objective(sum_expr(colwise(dist_fun(i, j)) * x[i, j], i = 1:n, j = 1:n), "min") %>%
   
   # you cannot go to the same city
   set_bounds(x[i, i], ub = 0, i = 1:n) %>%

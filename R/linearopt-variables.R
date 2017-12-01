@@ -297,6 +297,8 @@ numeric_to_constant_dt <- function(variables, vec, error_msg) {
     stop(error_msg, call. = FALSE)
   }
   constant <- data.table::data.table(row = row_vec, constant = vec)
+  data.table::setkeyv(constant, "row")
+  constant
 }
 
 #' Plus
@@ -462,6 +464,7 @@ setMethod("[", signature("LinearVariableCollection", i = "ANY", j = "ANY", drop 
   var_name <- as.character(as.name(substitute(x)))
   counter <- 0
   indexes <- list()
+  min_length <- 1L
   rows <- 1L
 
   llength <- function(x) {
@@ -480,17 +483,20 @@ setMethod("[", signature("LinearVariableCollection", i = "ANY", j = "ANY", drop 
   if (!missing(i)) {
     stopifnot(is.numeric(i) | is.list(i) || is_colwise(i))
     rows <- pmax(llength(i), rows)
+    min_length <- pmin(length(i), min_length)
     update_indexes(i)
   }
   if (!missing(j)) {
     stopifnot(is.numeric(j) | is.list(j) || is_colwise(j))
     rows <- pmax(llength(j), rows)
+    min_length <- pmin(length(j), min_length)
     stopifnot(rows == length(j) || length(j) == 1L || is_colwise(j))
     update_indexes(j)
   }
   for (arg in list(...)) {
     stopifnot(is.numeric(arg) | is.list(arg) || is_colwise(arg))
     rows <- pmax(llength(arg), rows)
+    min_length <- pmin(length(arg), min_length)
     stopifnot(rows == length(arg) || length(arg) == 1L || is_colwise(arg))
     update_indexes(arg)
   }
@@ -501,6 +507,12 @@ setMethod("[", signature("LinearVariableCollection", i = "ANY", j = "ANY", drop 
     list(row = seq_len(rows)),
     indexes
   ))
+  any_length_0 <- min_length == 0L
+  if (any_length_0) {
+    stop("One of the indexes of variable '", var_name, "' has a length 0 subscript.",
+         " That means that you passed an empty vector as one of the indexes to this variable.",
+         call. = FALSE)
+  }
 
   if (any(list_indexes)) {
     dt_j <- lapply(names(indexes)[list_indexes], function(x) rlang::get_expr(rlang::quo(unlist(!! as.name(x)))))

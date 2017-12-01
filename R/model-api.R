@@ -148,11 +148,11 @@ extract_constraints.optimization_model <- function(model) {
   # build row upper bound (aka b)
   constraint_rhs <- vapply(matrices, function(constraint) {
     constraint$rhs_constant - constraint$lhs_constant
-  }, numeric(1))
+  }, numeric(1L))
 
   constraint_dir <- vapply(matrices, function(constraint) {
     constraint$sense
-  }, character(1))
+  }, character(1L))
   list(
     matrix = constraint_matrix,
     sense = constraint_dir,

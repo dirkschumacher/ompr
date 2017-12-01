@@ -117,6 +117,7 @@ add_variable_.milp_model <- function(.model, .variable, ...,
       names(bound_subscripts) %in% subscripts]
     replacement_idxs <- subscripts %in% names(bound_subscripts)
     subscripts[replacement_idxs] <- bound_subscripts
+    subscripts <- suppressWarnings(lapply(subscripts, as.integer))
 
     # now generate all variables
     candidates <- build_quantifier_candidates(subscripts,
@@ -124,8 +125,18 @@ add_variable_.milp_model <- function(.model, .variable, ...,
                                               classified_quantifiers$filters)
     zero_vars_msg <- paste0("The number of different indexes for variable ",
                             var_name, " is 0.")
-    validate_quantifier_candidates(candidates, zero_vars_msg)
     n_vars <- nrow(candidates)
+    any_col_non_numeric <- any(vapply(seq_len(ncol(candidates)), function(j) {
+      !is.numeric(candidates[[j]]) || anyNA(candidates[[j]])
+    }, logical(1L)))
+    if (n_vars == 0L) {
+      stop("The number of different indexes for variable ",
+           var_name, " is 0.", call. = FALSE)
+    }
+    if (any_col_non_numeric) {
+      stop("At least one index of ", var_name, " is not an integer vector.",
+           call. = FALSE)
+    }
     colnames(candidates) <- paste0("V", seq_len(ncol(candidates)))
 
     model$var_index_mapping_list[[var_name]] <- cbind(
@@ -206,8 +217,9 @@ add_constraint_.milp_model <- function(.model,
     var_combinations <- build_quantifier_candidates(bound_subscripts,
                                                     names(bound_subscripts),
                                                     classified_quantifiers$filters)
-    zero_vars_msg <- "The number of different indexes is 0 for this constraint"
-    validate_quantifier_candidates(var_combinations, zero_vars_msg)
+    if (nrow(var_combinations) == 0L) {
+      stop("The number of different indexes is 0 for this constraint", call.= FALSE)
+    }
     constraint <- eval_constraint(lhs_ast, rhs_ast, sense, data = var_combinations)
   } else {
     constraint <- eval_constraint(lhs_ast, rhs_ast, sense)
@@ -295,7 +307,8 @@ nvars.milp_model <- function(model) {
 }
 
 variable_ordering <- function(model) {
-  ordering <- data.table::rbindlist(lapply(model$variables, function(x) {
+  ordering <- data.table::rbindlist(lapply(sort(names(model$variables)), function(i) {
+    x <- model$variables[[i]]
     x$index_mapping[, c("variable", "col"), with = FALSE]
   }))
   ordering[["order"]] <- seq_len(nrow(ordering))
@@ -515,10 +528,9 @@ set_bounds_.milp_model <- function(.model, .variable, ...,
     quantifier_combinations <- build_quantifier_candidates(bound_subscripts,
                                                            names(bound_subscripts),
                                                            classified_quantifiers$filters)
-    zero_vars_msg <- paste0("The number of different indexes for set_bounds ",
-                            "for variable ", var_name, " is 0.")
-    if (quantified_indexes) {
-      validate_quantifier_candidates(quantifier_combinations, zero_vars_msg)
+    if (quantified_indexes && nrow(quantifier_combinations) == 0L) {
+      stop("The number of different indexes for set_bounds ",
+           "for variable ", var_name, " is 0.", call. = FALSE)
     }
     # now we have a pool of quantifiers
     # let's now generate combinations of variable indexes
