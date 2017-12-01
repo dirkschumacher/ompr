@@ -156,16 +156,6 @@ setMethod("-", signature(e1 = "LinearVariableSum", e2 = "LinearVariableSum"), fu
   e1 + (-1) * e2
 })
 
-#' Minus
-#'
-#' Equivalent to `e1 + -1 * e2`
-#'
-#' @param e1 an object of type 'LinearVariableSum'
-#' @param e2 an object of type 'LinearVariableCollection'
-setMethod("-", signature(e1 = "LinearVariableSum", e2 = "LinearVariableCollection"), function(e1, e2) {
-  e1 + -1 * e2
-})
-
 #' Plus
 #'
 #' Adds the variables in the rhs to the variables in the lhs and returns another 'LinearVariableSum'.
@@ -179,16 +169,6 @@ setMethod("+", signature(e1 = "LinearVariableSum", e2 = "LinearVariableCollectio
   e1
 })
 
-#' Minus
-#'
-#' Equivalent to `e2 - e1`
-#'
-#' @param e1 an object of type 'LinearVariableCollection'
-#' @param e2 an object of type 'LinearVariableSum'
-setMethod("-", signature(e1 = "LinearVariableCollection", e2 = "LinearVariableSum"), function(e1, e2) {
-  e2 - e1
-})
-
 #' Plus
 #'
 #' Equivalent to `e2 + e1`
@@ -197,6 +177,26 @@ setMethod("-", signature(e1 = "LinearVariableCollection", e2 = "LinearVariableSu
 #' @param e2 an object of type 'LinearVariableSum'
 setMethod("+", signature(e1 = "LinearVariableCollection", e2 = "LinearVariableSum"), function(e1, e2) {
   e2 + e1
+})
+
+#' Minus
+#'
+#' Equivalent to `-1 * (e2 - e1)`
+#'
+#' @param e1 an object of type 'LinearVariableCollection'
+#' @param e2 an object of type 'LinearVariableSum'
+setMethod("-", signature(e1 = "LinearVariableCollection", e2 = "LinearVariableSum"), function(e1, e2) {
+  -1 * (e2 - e1)
+})
+
+#' Minus
+#'
+#' Equivalent to `e1 + -1 * e2`
+#'
+#' @param e1 an object of type 'LinearVariableSum'
+#' @param e2 an object of type 'LinearVariableCollection'
+setMethod("-", signature(e1 = "LinearVariableSum", e2 = "LinearVariableCollection"), function(e1, e2) {
+  e1 + -1 * e2
 })
 
 #' Plus
@@ -321,12 +321,12 @@ setMethod("-", signature(e1 = "LinearVariableCollection", e2 = "numeric"), funct
 
 #' Minus
 #'
-#' Equivalent to `e2 - e1`
+#' Equivalent to `-1 * (e2 - e1)`
 #'
 #' @param e1 a numeric value
 #' @param e2 an object of type 'LinearVariableCollection'
 setMethod("-", signature(e1 = "numeric", e2 = "LinearVariableCollection"), function(e1, e2) {
-  e2 - e1
+  -1 * (e2 - e1)
 })
 
 #' Division
@@ -341,32 +341,12 @@ setMethod("/", signature(e1 = "LinearVariableCollection", e2 = "numeric"), funct
 
 #' Division
 #'
-#' Equivalent to `e2 / e1`
-#'
-#' @param e1 a numeric value
-#' @param e2 an object of type 'LinearVariableCollection'
-setMethod("/", signature(e1 = "numeric", e2 = "LinearVariableCollection"), function(e1, e2) {
-  e2 / e1
-})
-
-#' Division
-#'
 #' Equivalent to `e1 * (1 / e2)`
 #'
 #' @param e2 a numeric value
 #' @param e1 an object of type 'LinearVariableCollection'
 setMethod("/", signature(e1 = "LinearVariableSum", e2 = "numeric"), function(e1, e2) {
   e1 * (1 / e2)
-})
-
-#' Division
-#'
-#' Equivalent to `e2 / e1`
-#'
-#' @param e1 a numeric value
-#' @param e2 an object of type 'LinearVariableSum'
-setMethod("/", signature(e1 = "numeric", e2 = "LinearVariableSum"), function(e1, e2) {
-  e2 / e1
 })
 
 #' Plus

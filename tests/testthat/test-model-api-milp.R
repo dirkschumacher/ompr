@@ -154,6 +154,17 @@ describe("extract_constraints()", {
       add_constraint(x_a[1] == 1)
     expect_equal(1, sum(extract_constraints(model)$matrix))
   })
+  it("does not emit 0 coefficients", {
+    model <- MILPModel() %>%
+      add_variable(x[i], i = 1:3) %>%
+      add_constraint(x[i] <= 1 + x[c(2, 2, 2)], i = 1:3)
+    result <- extract_constraints(model)
+    expect_equal(result$rhs, c(1, 1, 1))
+    expect_equivalent(as.matrix(result$matrix), t(matrix(c(1, -1, 0,
+                                                    0, 0, 0,
+                                                    0, -1, 1), ncol = 3, nrow = 3)))
+    expect_true(all(result$matrix@x != 0))
+  })
 })
 
 describe("variable_types()", {

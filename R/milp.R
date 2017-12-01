@@ -394,9 +394,10 @@ extract_constraints.milp_model <- function(model) {
     ordering <- variable_ordering(model)
     coefs <- merge(ordering, var_collection, by = c("variable", "col"))
     n_rows <- length(unique(coefs[["row"]]))
-    mat <- Matrix::sparseMatrix(i = coefs[["row"]],
-                                j = coefs[["order"]],
-                                x = coefs[["coef"]],
+    non_zero <- coefs[["coef"]] != 0
+    mat <- Matrix::sparseMatrix(i = coefs[["row"]][non_zero],
+                                j = coefs[["order"]][non_zero],
+                                x = coefs[["coef"]][non_zero],
                                 dims = c(n_rows, nrow(ordering)))
     rhs_constraint_constant <- rep.int(0, n_rows)
     rhs_constraint_constant[rhs_constraint_dt[["row"]]] <- rhs_constraint_dt[["constant"]]
