@@ -458,26 +458,7 @@ nconstraints.milp_model <- function(model) {
 #' @inheritParams print
 #' @importFrom stats setNames
 print.milp_model <- function(x, ...) {
-  cat("Mixed linear integer optimization problem\n")
-  var_count <- nvars(x)
-  cat("Variables:\n")
-  cat("  Continuous:", var_count$continuous, "\n")
-  cat("  Integer:", var_count$integer, "\n")
-  cat("  Binary:", var_count$binary, "\n")
-
-  # obj function
-  objective <- x$objective
-  if (!is.null(objective) &&
-      length(objective$sense) == 1) {
-    cat("Model sense:",
-        if (objective$sense == "max") "maximize" else "minimize",
-        "\n")
-  } else {
-    cat("No objective function. \n")
-  }
-
-  # constraints
-  cat("Constraints:", nconstraints(x), "\n")
+  print_model(x)
 }
 
 #' @export

@@ -338,34 +338,8 @@ set_objective_.optimization_model <- function(model, expression,
 #' @inheritParams print
 #' @importFrom stats setNames
 print.optimization_model <- function(x, ...) {
-            cat("Mixed linear integer optimization problem\n")
-            mapped_vars <- Map(f = function(var) {
-              setNames(length(var$instances), var$type)
-            }, x$variables)
-            var_count <- Reduce(f = function(acc, el) {
-              acc[[names(el)]] <- acc[[names(el)]] + el
-              acc
-            }, mapped_vars, init = list(continuous = 0, integer = 0,
-                                        binary = 0))
-            cat("Variables:\n")
-            cat("  Continuous:", var_count$continuous, "\n")
-            cat("  Integer:", var_count$integer, "\n")
-            cat("  Binary:", var_count$binary, "\n")
-
-            # obj function
-            objective <- x$objective
-            if (!is.null(objective) &&
-                length(objective$sense) == 1) {
-              cat("Model sense:",
-                if (objective$sense == "max") "maximize" else "minimize",
-                "\n")
-            } else {
-              cat("No objective function. \n")
-            }
-
-            # constraints
-            cat("Constraints:", length(x$constraints), "\n")
-          }
+  print_model(x)
+}
 
 
 #' Add a constraint
