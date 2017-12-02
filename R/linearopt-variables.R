@@ -71,7 +71,7 @@ colwise <- function(...) {
 #'
 #' @export
 as_colwise <- function(x) {
-  all_numeric <- vapply(x, is.numeric, logical(1L))
+  all_numeric <- if (is.list(x)) vapply(x, is.numeric, logical(1L)) else TRUE
   if (!(is.numeric(x) || (is.list(x) && all(all_numeric)))) {
     stop("Only numeric vectors or list of numeric vectors can be made colwise.", call. = FALSE)
   }

@@ -245,11 +245,10 @@ sum_expr_milp <- function(expr, ...) {
   if (nrow(subscript_combinations) == 0L) {
     return(0)
   }
-  idx_bindings <- lapply(seq_len(ncol(subscript_combinations)), function(i) {
-    as_colwise(subscript_combinations[[i]])
-  })
-  names(idx_bindings) <- colnames(subscript_combinations)
-  rlang::eval_tidy(ast, data = idx_bindings)
+  for (col in colnames(subscript_combinations)) {
+    subscript_combinations[[col]] <- as_colwise(subscript_combinations[[col]])
+  }
+  rlang::eval_tidy(ast, data = subscript_combinations)
 }
 
 
