@@ -172,6 +172,12 @@ new_milp_constraint <- function(lhs, sense, rhs) {
             class = "milp_model_constraint")
 }
 
+create_model_env <- function(model) {
+  as.environment(
+    lapply(model$variables, function(x) x$variable)
+  )
+}
+
 #' @export
 add_constraint_.milp_model <- function(.model,
                                        .constraint_expr,
@@ -201,10 +207,8 @@ add_constraint_.milp_model <- function(.model,
   bound_subscripts <- lapply(classified_quantifiers$quantifiers,
                              lazyeval::lazy_eval)
 
+  var_envir <- create_model_env(model)
   eval_constraint <- function(lhs_ast, rhs_ast, sense, data = NULL, envir = parent_env) {
-    var_envir <- as.environment(
-      lapply(model$variables, function(x) x$variable)
-    )
     parent.env(var_envir) <- parent_env
     var_envir$`sum_expr` <- sum_expr_milp
     lhs <- rlang::eval_tidy(lhs_ast, env = var_envir, data = data)
@@ -263,9 +267,7 @@ new_milp_objective_function <- function(objective,
 set_objective_.milp_model <- function(model, expression,
                                               sense = c("max", "min")) {
 
-  var_envir <- as.environment(
-    lapply(model$variables, function(x) x$variable)
-  )
+  var_envir <- create_model_env(model)
   expression <- lazyeval::as.lazy(expression)
   parent.env(var_envir) <- expression$env
   var_envir$`sum_expr` <- sum_expr_milp
@@ -532,44 +534,18 @@ set_bounds_.milp_model <- function(.model, .variable, ...,
       stop("The number of different indexes for set_bounds ",
            "for variable ", var_name, " is 0.", call. = FALSE)
     }
-    # now we have a pool of quantifiers
-    # let's now generate combinations of variable indexes
-    bound_subscripts <- setNames(lapply(index_names, function(x) {
-      index_value <- suppressWarnings(as.integer(x))
-      if (is.integer(index_value) && !is.na(index_value)) {
-        index_value
-      } else {
-        i_name <- as.character(x)
-        if (!i_name %in% colnames(quantifier_combinations)) {
-          stop(paste0("Index ", i_name, " not bound by quantifier"),
-               call. = FALSE)
-        }
-        quantifier_combinations[[i_name]]
-      }
-    }), index_names)
 
-    bound_subscripts <- as.data.frame(bound_subscripts)
-    indexes <- apply(bound_subscripts, 1, as.list)
     var_mapping <- model$var_index_mapping_list[[var_name]]
-    # TODO: this needs to be done better
-    var_indexes <- Reduce(function(acc, el) {
-      index_tuple <- indexes[[el]]
-      columns <- lapply(seq_along(index_tuple), function(i) {
-        if (any(!index_tuple[[i]] %in% var_mapping[[paste0("V", i)]])) {
-          stop("You tried to change the bounds of variable ", var_name, ", with an index that is not part of the variable.", call. = FALSE)
-        }
-        rlang::quo(var_mapping[[paste0("V", i)]] == !!index_tuple[[i]])
-      })
-      stopifnot(length(columns) >= 1L)
-      and <- `&`
-      row_selected <- if (length(columns) > 1L) {
-        Reduce(function(acc, el) rlang::quo(and(!!acc, !!el)), columns)
-      } else {
-        columns[[1L]]
-      }
-      acc | rlang::eval_tidy(row_selected)
-    }, seq_along(indexes), init = rep.int(FALSE, nrow(var_mapping)))
+    var_envir <- create_model_env(model)
+    parent.env(var_envir) <- variable$env
+    expr <- rlang::as_quosure(variable$expr, var_envir)
+    var_collection <- rlang::eval_tidy(expr,
+                                       data = quantifier_combinations)
+    if (!inherits(var_collection, "LinearVariableCollection")) {
+      stop("You can only set bounds one variable at a time.", call. = FALSE)
+    }
 
+    var_indexes <- var_collection@variables$col
     if (replace_lb && any(var_indexes)) {
       model_variable$lb[var_indexes] <- lb
     }
