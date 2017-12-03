@@ -67,13 +67,21 @@ get_solution(result, y)
 These functions currently form the public API. More detailed docs can be found in the package function docs or on the [website](https://dirkschumacher.github.io/ompr)
 
 ### DSL
-* `MIPModel()` create an empty mixed integer linear model
+* `MIPModel()` create an empty mixed integer linear model (the old way)
+* `MILPModel()` create an empty mixed integer linear model (the new way; experimental, especially suitable for large models)
 * `add_variable()` adds variables to a model
 * `set_objective()` sets the objective function of a model
 * `set_bounds()`sets bounds of variables
 * `add_constraint()` add constraints
 * `solve_model()` solves a model with a given solver
 * `get_solution()` returns the solution of a solved model for a given variable or group of variables
+
+### Backends
+
+There are currently two backends. A backend is the function that initializes an empty model. 
+
+* `MIPModel()` is the standard MILP Model
+* `MILPModel()` is a new backend specifically optimized for linear models and is about 1000 times faster than `MIPModel()`. It has slightly different semantics, as it is vectorized. Currently experimental, but it will replace the `MIPModel` eventually.
 
 ### Solver
 

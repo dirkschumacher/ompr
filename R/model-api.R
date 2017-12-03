@@ -148,11 +148,11 @@ extract_constraints.optimization_model <- function(model) {
   # build row upper bound (aka b)
   constraint_rhs <- vapply(matrices, function(constraint) {
     constraint$rhs_constant - constraint$lhs_constant
-  }, numeric(1))
+  }, numeric(1L))
 
   constraint_dir <- vapply(matrices, function(constraint) {
     constraint$sense
-  }, character(1))
+  }, character(1L))
   list(
     matrix = constraint_matrix,
     sense = constraint_dir,
@@ -265,4 +265,25 @@ variable_bounds.optimization_model <- function(model) {
     lower = extract_bounds_l(model_vars, keys),
     upper = extract_bounds_u(model_vars, keys)
   )
+}
+
+#' Number of variables (rows) of the model
+#'
+#' @param model the model
+#'
+#' @return An integer equal to the number of variables. A
+#' variable is here a column in the resulting constraint matrix.
+#'
+#' @examples
+#' library(magrittr)
+#' model <- MIPModel() %>%
+#'   add_variable(x) %>%
+#'   add_variable(y[i], i = 1:10)
+#' nconstraints(model) # 11
+#' @export
+nconstraints <- function(model) UseMethod("nconstraints")
+
+#' @export
+nconstraints.optimization_model <- function(model) {
+  length(model$constraints)
 }
