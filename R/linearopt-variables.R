@@ -1,5 +1,5 @@
 # for data.table code
-utils::globalVariables(c("coef", "constant"))
+utils::globalVariables(c("coef", "constant", "mult"))
 
 #' An S4 class that represents a collection of variables
 #'
@@ -92,7 +92,7 @@ setMethod("*", signature(e1 = "LinearVariableSum", e2 = "numeric"), function(e1,
   mult_dt <- data.table::data.table(row = if (length(e2) == 1L) seq_len(max(e1@variables@variables$row)) else seq_along(e2), mult = e2)
   new_vars <- e1@constant
   new_vars <- merge(new_vars, mult_dt, "row")
-  new_vars[["constant"]] <- new_vars[["constant"]] * new_vars[["mult"]]
+  new_vars <- setDT(new_vars)[, constant := constant * mult]
   e1@constant <- new_vars[, c("row", "constant")]
   e1
 })
@@ -125,7 +125,7 @@ setMethod("-", signature(e1 = "LinearVariableSum", e2 = "numeric"), function(e1,
 #' @param e1 a numeric vector
 #' @param e2 an object of type 'LinearVariableSum'
 setMethod("-", signature(e1 = "numeric", e2 = "LinearVariableSum"), function(e1, e2) {
-  e2 - e1
+  (-1 * e2) - (-1 * e1)
 })
 
 #' Plus
@@ -296,9 +296,7 @@ numeric_to_constant_dt <- function(variables, vec, error_msg) {
   if (no_rows != length(vec) && !is_scalar) {
     stop(error_msg, call. = FALSE)
   }
-  constant <- data.table::data.table(row = row_vec, constant = vec)
-  data.table::setkeyv(constant, "row")
-  constant
+  data.table::data.table(row = row_vec, constant = vec, key = "row")
 }
 
 #' Plus
@@ -410,10 +408,12 @@ setMethod("*", signature(e1 = "LinearVariableCollection", e2 = "numeric"), funct
     e1@variables[["coef"]] <- e1@variables[, list(coef = coef * val), by = c("variable", "row")][["coef"]]
     e1
   } else {
-    mult_dt <- data.table::data.table(row = if (length(e2) == 1L) seq_len(nrow(e1@variables)) else seq_along(e2), mult = e2)
+    row_indexes <- if (length(e2) == 1L) unique(e1@variables[["row"]]) else seq_along(e2)
+    mult_dt <- data.table::data.table(row = row_indexes,
+                                      mult = e2, key = "row")
     new_vars <- e1@variables
     new_vars <- merge(new_vars, mult_dt, "row")
-    new_vars[["coef"]] <- new_vars[["coef"]] * new_vars[["mult"]]
+    new_vars <- setDT(new_vars)[, coef := coef * mult]
     e1@variables <- new_vars[, c("variable", "row", "col", "coef")]
     e1
   }
