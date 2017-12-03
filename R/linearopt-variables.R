@@ -120,7 +120,7 @@ setMethod("-", signature(e1 = "LinearVariableSum", e2 = "numeric"), function(e1,
 
 #' Minus
 #'
-#' Equivalent to `e2 - e1`
+#' Equivalent to `(-1 * e2) - (-1 * e1)`
 #'
 #' @param e1 a numeric vector
 #' @param e2 an object of type 'LinearVariableSum'
@@ -321,12 +321,12 @@ setMethod("-", signature(e1 = "LinearVariableCollection", e2 = "numeric"), funct
 
 #' Minus
 #'
-#' Equivalent to `-1 * (e2 - e1)`
+#' Equivalent to `(-1 * e2) - (-1 * e1)`
 #'
 #' @param e1 a numeric value
 #' @param e2 an object of type 'LinearVariableCollection'
 setMethod("-", signature(e1 = "numeric", e2 = "LinearVariableCollection"), function(e1, e2) {
-  -1 * (e2 - e1)
+  (-1 * e2) - (-1 * e1)
 })
 
 #' Division
