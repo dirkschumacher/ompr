@@ -8,5 +8,6 @@ MILPModel()
 }
 \description{
 It will eventually replace the old `MIPModel` backend for linear models.
+Somewhat experimental and subject to API changes.
 Use with caution and please report any bugs you find.
 }
