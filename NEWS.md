@@ -1,7 +1,7 @@
 # ompr 0.7.0.9000
 
 * Removed `dplyr` dependency
-* Added `MILPModel`, a new, vectorized backend for mixed integer linear programs that can handle very large models. It will eventually replace `MIPModel`.
+* Added `MILPModel`, a new, vectorized backend for mixed integer linear programs that can handle very large models. It will eventually replace `MIPModel` - planned for release `0.8`.
 
 # ompr 0.7.0
 
