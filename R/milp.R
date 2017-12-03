@@ -2,7 +2,6 @@
 
 #' Create a new MILP Model
 #'
-#' This is work in progress and an experimental.
 #' It will eventually replace the old `MIPModel` backend for linear models.
 #' Use with caution and please report any bugs you find.
 #'
@@ -184,6 +183,10 @@ add_constraint_.milp_model <- function(.model,
                                        ...,
                                        .dots,
                                        .show_progress_bar = TRUE) {
+  if (any(.show_progress_bar != TRUE)) {
+    warning("A progress bar is deprecated for MILPModel, please do not explicitly use it",
+            call. = FALSE)
+  }
   constraint_expr <- lazyeval::as.lazy(.constraint_expr)
   model <- .model
   constraint_ast <- constraint_expr$expr
