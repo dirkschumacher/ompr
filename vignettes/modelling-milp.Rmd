@@ -220,9 +220,10 @@ MILPModel() %>%
   add_constraint(x[1:n, colwise(1:n)] == 1) # this this equivalent
 
 ```
+
 Another example:
 
-Say you want to express the following matrix:
+Say you want to express the below matrix:
 ```{r, eval=FALSE}
 x[1, 1]
 x[1, 1] + x[1, 2]
