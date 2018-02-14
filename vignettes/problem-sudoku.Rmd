@@ -12,7 +12,7 @@ vignette: >
 
 ## Solve Sudokus using MILP
 
-In this vignettes we will solve Sudoku puzzles using MILP. [Sudoku](https://en.wikipedia.org/wiki/Sudoku) in its most popular form is a constraint satistication problem and by setting the objective function to $0$ you transform the optimization problem into a pure constraint satistication problem. In this document we will consider Sudokus in a 9x9 grid with 3x3 sub-matrices.
+In this vignettes we will solve Sudoku puzzles using MILP. [Sudoku](https://en.wikipedia.org/wiki/Sudoku) in its most popular form is a constraint satisfaction problem and by setting the objective function to $0$ you transform the optimization problem into a pure constraint satistication problem. In this document we will consider Sudokus in a 9x9 grid with 3x3 sub-matrices.
 
 Of course you can formulate an objective function as well that directs the solver towards solutions maximizing a certain linear function.
 
