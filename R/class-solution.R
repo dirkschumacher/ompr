@@ -6,8 +6,8 @@
 #' @param model the optimization model that was solved
 #' @param status the status of the solution
 #' @param solution a named numeric vector containing the primal solution values
-#' @param solution_column_duals a numeric vector containing the column dual solution values
-#' @param solution_row_duals a numeric vector containing the column dual solution values
+#' @param solution_column_duals a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
+#' @param solution_row_duals a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
 #'
 #' @export
 new_solution <- function(model,
@@ -172,6 +172,8 @@ solver_status.solution <- function(solution) {
 #'
 #' @param solution a solution
 #'
+#' @return Either a numeric vector with one element per column or `NA_real_`.
+#'
 #' @export
 get_column_duals <- function(solution) UseMethod("get_column_duals")
 
@@ -183,6 +185,8 @@ get_column_duals.solution <- function(solution) {
 #' Gets the row duals of a solution
 #'
 #' @param solution a solution
+#'
+#' @return Either a numeric vector with one element per row or `NA_real_`.
 #'
 #' @export
 get_row_duals <- function(solution) UseMethod("get_row_duals")
