@@ -174,6 +174,19 @@ solver_status.solution <- function(solution) {
 #'
 #' @return Either a numeric vector with one element per column or `NA_real_`.
 #'
+#' @examples
+#' \dontrun{
+#' result <- MIPModel() %>%
+#'   add_variable(x[i], i = 1:5) %>%
+#'   add_variable(y[i, j], i = 1:5, j = 1:5) %>%
+#'   add_constraint(x[i] >= 1, i = 1:5) %>%
+#'   set_bounds(x[i], lb = 3, i = 1:3) %>%
+#'   set_objective(sum_expr(i * x[i], i = 1:5)) %>%
+#'   solve_model(with_ROI("glpk"))
+#'
+#' get_column_duals(result)
+#' }
+#'
 #' @export
 get_column_duals <- function(solution) UseMethod("get_column_duals")
 
@@ -188,6 +201,18 @@ get_column_duals.solution <- function(solution) {
 #'
 #' @return Either a numeric vector with one element per row or `NA_real_`.
 #'
+#' @examples
+#' \dontrun{
+#' result <- MIPModel() %>%
+#'   add_variable(x[i], i = 1:5) %>%
+#'   add_variable(y[i, j], i = 1:5, j = 1:5) %>%
+#'   add_constraint(x[i] >= 1, i = 1:5) %>%
+#'   set_bounds(x[i], lb = 3, i = 1:3) %>%
+#'   set_objective(sum_expr(i * x[i], i = 1:5)) %>%
+#'   solve_model(with_ROI("glpk"))
+#'
+#' get_row_duals(result)
+#' }
 #' @export
 get_row_duals <- function(solution) UseMethod("get_row_duals")
 
