@@ -3,6 +3,7 @@
 * Removed `dplyr` dependency
 * Added `MILPModel`, a new, vectorized backend for mixed integer linear programs that can handle very large models. It will eventually replace `MIPModel` - planned for release `0.8`.
 * Added two functions (`get_column_duals`, `get_row_duals`) to extract the dual (column and row) values from an LP.
+* The minimum supported R version is now `3.2.0`
 
 # ompr 0.7.0
 
