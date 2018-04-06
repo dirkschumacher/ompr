@@ -168,3 +168,35 @@ test_that("solver_status gets the solver_status", {
                                          "x[11,10]", "x[11,11]", "x[11,12]")))
   expect_equal("optimal", solver_status(solution))
 })
+
+test_that("duals can be accessed", {
+  model <- MIPModel() %>%
+    add_variable(x, ub = 1) %>%
+    add_variable(y, ub = 1) %>%
+    add_constraint(x + y <= 1) %>%
+    set_objective(x + y)
+  solution <- new_solution(status = "optimal",
+                           model = model,
+                           objective_value = 1,
+                           solution = setNames(c(0.5, 0.5),
+                                               c("x", "y")),
+                           solution_column_duals = c(0, 0),
+                           solution_row_duals = c(0, 0))
+  expect_equal(get_column_duals(solution), c(0, 0))
+  expect_equal(get_row_duals(solution), c(0, 0))
+})
+
+test_that("duals are NA by default", {
+  model <- MIPModel() %>%
+    add_variable(x, ub = 1) %>%
+    add_variable(y, ub = 1) %>%
+    add_constraint(x + y <= 1) %>%
+    set_objective(x + y)
+  solution <- new_solution(status = "optimal",
+                           model = model,
+                           objective_value = 1,
+                           solution = setNames(c(0.5, 0.5),
+                                               c("x", "y")))
+  expect_equal(get_column_duals(solution), NA_real_)
+  expect_equal(get_row_duals(solution), NA_real_)
+})
