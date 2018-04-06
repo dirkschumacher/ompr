@@ -4,7 +4,8 @@
 \alias{new_solution}
 \title{Create a new solution}
 \usage{
-new_solution(model, objective_value, status, solution)
+new_solution(model, objective_value, status, solution,
+  solution_column_duals = NA_real_, solution_row_duals = NA_real_)
 }
 \arguments{
 \item{model}{the optimization model that was solved}
@@ -13,7 +14,11 @@ new_solution(model, objective_value, status, solution)
 
 \item{status}{the status of the solution}
 
-\item{solution}{a named numeric vector containing the solution values}
+\item{solution}{a named numeric vector containing the primal solution values}
+
+\item{solution_column_duals}{a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.}
+
+\item{solution_row_duals}{a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.}
 }
 \description{
 This function/class should only be used if you develop your own solver.

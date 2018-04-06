@@ -5,22 +5,33 @@
 #' @param objective_value a numeric objective value
 #' @param model the optimization model that was solved
 #' @param status the status of the solution
-#' @param solution a named numeric vector containing the solution values
+#' @param solution a named numeric vector containing the primal solution values
+#' @param solution_column_duals a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
+#' @param solution_row_duals a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
 #'
 #' @export
 new_solution <- function(model,
                          objective_value,
                          status,
-                         solution) {
+                         solution,
+                         solution_column_duals = NA_real_,
+                         solution_row_duals = NA_real_) {
   stopifnot(is.numeric(objective_value))
   stopifnot(status %in% c("infeasible",
                          "unbounded", "optimal",
                          "userlimit", "error"))
   stopifnot(all(nchar(names(solution))))
+  stopifnot(is.numeric(solution_column_duals),
+            (length(solution_column_duals) == 1L && is.na(solution_column_duals)) ||
+              (length(solution_column_duals) == length(solution)))
+  stopifnot(is.numeric(solution_row_duals),
+            (length(solution_row_duals) != 1L || is.na(solution_row_duals)))
   structure(list(model = model,
                  objective_value = objective_value,
                  status = status,
-                 solution = solution), class = "solution")
+                 solution = solution,
+                 solution_column_duals = solution_column_duals,
+                 solution_row_duals = solution_row_duals), class = "solution")
 }
 
 #' Get variable values from a solution
@@ -155,4 +166,57 @@ solver_status <- function(solution) UseMethod("solver_status")
 #' @export
 solver_status.solution <- function(solution) {
   solution$status
+}
+
+#' Gets the column duals of a solution
+#'
+#' @param solution a solution
+#'
+#' @return Either a numeric vector with one element per column or `NA_real_`.
+#'
+#' @examples
+#' \dontrun{
+#' result <- MIPModel() %>%
+#'   add_variable(x[i], i = 1:5) %>%
+#'   add_variable(y[i, j], i = 1:5, j = 1:5) %>%
+#'   add_constraint(x[i] >= 1, i = 1:5) %>%
+#'   set_bounds(x[i], lb = 3, i = 1:3) %>%
+#'   set_objective(sum_expr(i * x[i], i = 1:5)) %>%
+#'   solve_model(with_ROI("glpk"))
+#'
+#' get_column_duals(result)
+#' }
+#'
+#' @export
+get_column_duals <- function(solution) UseMethod("get_column_duals")
+
+#' @export
+get_column_duals.solution <- function(solution) {
+  solution$solution_column_duals
+}
+
+#' Gets the row duals of a solution
+#'
+#' @param solution a solution
+#'
+#' @return Either a numeric vector with one element per row or `NA_real_`.
+#'
+#' @examples
+#' \dontrun{
+#' result <- MIPModel() %>%
+#'   add_variable(x[i], i = 1:5) %>%
+#'   add_variable(y[i, j], i = 1:5, j = 1:5) %>%
+#'   add_constraint(x[i] >= 1, i = 1:5) %>%
+#'   set_bounds(x[i], lb = 3, i = 1:3) %>%
+#'   set_objective(sum_expr(i * x[i], i = 1:5)) %>%
+#'   solve_model(with_ROI("glpk"))
+#'
+#' get_row_duals(result)
+#' }
+#' @export
+get_row_duals <- function(solution) UseMethod("get_row_duals")
+
+#' @export
+get_row_duals.solution <- function(solution) {
+  solution$solution_row_duals
 }
