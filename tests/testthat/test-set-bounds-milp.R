@@ -109,3 +109,9 @@ test_that("quantifiers support filter expressions with SE", {
   expect_equal(m$variables[["x"]]$lb[1], 1)
   expect_equal(m$variables[["x"]]$ub[1], 2)
 })
+
+test_that("fails if expression is not a linear collection", {
+  m <- add_variable(MILPModel(), x[i, j], i = 1:3, j = 1:10)
+  m <- add_variable(m, y)
+  expect_error(set_bounds(m, y[1, 1], lb = 0), "variable")
+})

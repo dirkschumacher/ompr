@@ -6,26 +6,22 @@
 #' @param model the optimization model that was solved
 #' @param status the status of the solution
 #' @param solution a named numeric vector containing the primal solution values
-#' @param solution_column_duals a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
-#' @param solution_row_duals a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
+#' @param solution_column_duals A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
+#' @param solution_row_duals A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
 #'
 #' @export
 new_solution <- function(model,
                          objective_value,
                          status,
                          solution,
-                         solution_column_duals = NA_real_,
-                         solution_row_duals = NA_real_) {
+                         solution_column_duals = function() NA_real_,
+                         solution_row_duals = function() NA_real_) {
   stopifnot(is.numeric(objective_value))
   stopifnot(status %in% c("infeasible",
                          "unbounded", "optimal",
                          "userlimit", "error"))
   stopifnot(all(nchar(names(solution))))
-  stopifnot(is.numeric(solution_column_duals),
-            (length(solution_column_duals) == 1L && is.na(solution_column_duals)) ||
-              (length(solution_column_duals) == length(solution)))
-  stopifnot(is.numeric(solution_row_duals),
-            (length(solution_row_duals) != 1L || is.na(solution_row_duals)))
+  stopifnot(is.function(solution_column_duals), is.function(solution_row_duals))
   structure(list(model = model,
                  objective_value = objective_value,
                  status = status,
@@ -82,7 +78,7 @@ get_solution_.solution <- function(solution, expr) {
   stopifnot(!is_indexed_var || ast[[1]] == "[" && length(ast) >= 3)
   var_name <- as.character(if (is_indexed_var) ast[[2]] else ast)
   if (is.null(solution$model$variables[[var_name]])) {
-    stop("Variable not found", call. = FALSE)
+    stop("Variable '", var_name, "' not found", call. = FALSE)
   }
   if (is_indexed_var) {
     free_vars <- c()
@@ -192,7 +188,11 @@ get_column_duals <- function(solution) UseMethod("get_column_duals")
 
 #' @export
 get_column_duals.solution <- function(solution) {
-  solution$solution_column_duals
+  solution_column_duals <- solution$solution_column_duals()
+  stopifnot(is.numeric(solution_column_duals),
+            (length(solution_column_duals) == 1L && is.na(solution_column_duals)) ||
+              (length(solution_column_duals) == length(solution$solution)))
+  solution_column_duals
 }
 
 #' Gets the row duals of a solution
@@ -218,5 +218,8 @@ get_row_duals <- function(solution) UseMethod("get_row_duals")
 
 #' @export
 get_row_duals.solution <- function(solution) {
-  solution$solution_row_duals
+  solution_row_duals <- solution$solution_row_duals()
+  stopifnot(is.numeric(solution_row_duals),
+            (!is.na(solution_row_duals) || length(solution_row_duals) == 1L))
+  solution_row_duals
 }

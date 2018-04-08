@@ -49,7 +49,6 @@ library(magrittr)
 `ompr` supppots different backends. A backend is the empty model to which you add variables, constraints etc. Currently two backends exist: `MIPModel` and `MILPModel`. This vignette describes the latter as the first will become deprecated.
 
 Compared to the old `MIPModel` backend, `MILPModel` has vectorized semantics. Meaning that model variables accept and expect vectors. This enables a speedup by a factor of 1000 and more. More details can be found at the end of this document.
-
  
 ## Pipes
 
@@ -243,6 +242,30 @@ MILPModel() %>%
   add_constraint(sum_expr(x[1, j], j = colwise(1, 1:2, 1:3)) == 1)
 ```
 
+
+### Adding varialbes - vectorized
+
+Sometimes, you want to control both variable indexes and their bounds very specifically. You can either use filter expressions together with `set_bounds` or pass in the concrete variable indexes explicitly.
+
+The following code is equivalent:
+
+```{r}
+MILPModel() %>% 
+  add_variable(x[i, j], i = 1:10, j = 1:10) 
+
+grid <- expand.grid(i = 1:10, j = 1:10)
+MILPModel() %>% 
+  add_variable(x[grid$i, grid$j]) 
+```
+
+In addition to the first block of code, you can also set bounds on the variables in the same way:
+
+```{r}
+MILPModel() %>% 
+  add_variable(x[grid$i, grid$j], lb = grid$i * 10, ub = grid$i * 20) 
+```
+
+This is especially handy if you work with large models where a lot of index combinations are invalid. An example is routing problem, where you define a connection between two cities by a binary variable `x[i, j]` - a lot of `i,j` combinations are usually invalid and do not need to enter the model explicitly. Although a lot of solvers remove those variables during presolve.
 
 ## Feedback 
 

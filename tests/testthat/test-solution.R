@@ -14,6 +14,19 @@ test_that("export single var to numeric", {
  expect_equivalent(result, 1)
 })
 
+test_that("get_solution: fails if variable not present", {
+  model <- MIPModel() %>%
+    add_variable(x, ub = 1) %>%
+    add_variable(y, ub = 1) %>%
+    add_constraint(x + y <= 1) %>%
+    set_objective(x + y)
+  solution <- new_solution(status = "optimal",
+                           model = model,
+                           objective_value = 2,
+                           solution = setNames(c(1, 1), c("x", "y")))
+  expect_error(result <- get_solution(solution, my_var), "my_var")
+})
+
 test_that("export solutions to data.frame if var is indexed", {
  model <- MIPModel() %>%
    add_variable(x[i], i = 1:3, ub = 1) %>%
@@ -167,4 +180,24 @@ test_that("solver_status gets the solver_status", {
                                        c("x[10,10]", "x[10,11]", "x[10,12]",
                                          "x[11,10]", "x[11,11]", "x[11,12]")))
   expect_equal("optimal", solver_status(solution))
+})
+
+test_that("get_column_duals works", {
+  model <- MILPModel()
+  solution <- new_solution(model, 0, "optimal", 1, solution_column_duals = function() 1)
+  expect_equal(1, get_column_duals(solution))
+
+  # NA by default
+  solution <- new_solution(model, 0, "optimal", 1)
+  expect_true(is.na(get_column_duals(solution)) && is.numeric(get_column_duals(solution)))
+})
+
+test_that("get_row_duals works", {
+  model <- MILPModel()
+  solution <- new_solution(model, 0, "optimal", 1, solution_row_duals = function() 1)
+  expect_equal(1, get_row_duals(solution))
+
+  # NA by default
+  solution <- new_solution(model, 0, "optimal", 1)
+  expect_true(is.na(get_row_duals(solution)) && is.numeric(get_row_duals(solution)))
 })

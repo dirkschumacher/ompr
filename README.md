@@ -71,10 +71,12 @@ These functions currently form the public API. More detailed docs can be found i
 * `MILPModel()` create an empty mixed integer linear model (the new way; experimental, especially suitable for large models)
 * `add_variable()` adds variables to a model
 * `set_objective()` sets the objective function of a model
-* `set_bounds()`sets bounds of variables
+* `set_bounds()` sets bounds of variables
 * `add_constraint()` add constraints
 * `solve_model()` solves a model with a given solver
 * `get_solution()` returns the solution of a solved model for a given variable or group of variables
+* `get_row_duals()` returns the row duals of a solution (only if it is an LP)
+* `get_column_duals()` returns the column duals of a solution (only if it is an LP)
 
 ### Backends
 

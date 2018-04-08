@@ -71,7 +71,7 @@ test_that("throw error if lower bound > upper bound", {
 
 test_that("add_variable_ supports standard eval.", {
   m <- MILPModel()
-  add_variable_(m, ~x)
+  expect_silent(add_variable_(m, ~x))
 })
 
 test_that("add_variable throws error when lb or ub is of length > 1", {
@@ -162,4 +162,35 @@ test_that("bug 20161014: division with number in rhs", {
     add_variable(x) %>%
     add_constraint(x / 5 <= 1)
   expect_equal(m$constraints[[1L]]$lhs@variables$coef, 1 / 5)
+})
+
+test_that("vectorized variable adding", {
+  i <- 1:10
+  j <- 1:10
+
+  var_comb <- expand.grid(i = i, j = j)
+
+  m1 <- MILPModel() %>%
+    add_variable(x[var_comb$i, var_comb$j])
+
+  m2 <- MILPModel() %>%
+    add_variable(x[i, j], i = 1:10, j = 1:10)
+
+  expect_equal(nvars(m2), nvars(m1))
+})
+
+test_that("cannot mix vectorized variable adding and quantifiers", {
+  j <- 1:10
+  expect_error(
+    add_variable(MILPModel(), x[i, j], i = 1:10, i < 5),
+    "bound"
+  )
+})
+
+test_that("you can initialize bounds on a per element basis with vectorized indexes", {
+  m1 <- MILPModel() %>%
+    add_variable(x[c(1, 2, 3)], lb = c(1, 2, 3), ub = c(4, 5, 6))
+  expect_equal(m1$variables$x$lb, 1:3)
+  expect_equal(m1$variables$x$ub, 4:6)
+  expect_error(add_variable(MILPModel(), x[i], i = 1:3, lb = c(1, 2, 3)), "lb")
 })
