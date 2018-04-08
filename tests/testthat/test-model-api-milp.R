@@ -51,6 +51,15 @@ describe("objective_function()", {
                                      i = seq_len(n^2), length = n^2)
     expect_equal(result$solution, expected)
   })
+  it("returns an all 0 vector if objective function is numeric", {
+    model <- MILPModel() %>%
+      add_variable(x[i], i = 1:10) %>%
+      set_objective(1)
+    result <- objective_function(model)
+    expect_equal(length(result$solution), 10L)
+    expect_equal(sum(result$solution), 0)
+    expect_equal(result$constant, 1)
+  })
 })
 
 describe("variable_keys()", {
@@ -138,6 +147,17 @@ describe("extract_constraints()", {
       add_constraint(x[i] + y[i] <= 1, i = 1:3)
     result <- extract_constraints(model)
     expect_s4_class(result$matrix, "dgCMatrix")
+
+    model <- MILPModel() %>%
+      add_variable(x[i], i = 1:3) %>%
+      add_constraint(x[i] <= 0, i = 1:3)
+    result <- extract_constraints(model)
+    expect_s4_class(result$matrix, "dgCMatrix")
+    expect_equal(result$rhs, rep.int(0, 3))
+    expect_equivalent(as.matrix(result$matrix),
+                      matrix(c(1, 0, 0,
+                               0, 1, 0,
+                               0, 0, 1), ncol = 3))
   })
   it("works with non indexed variables", {
     model <- MILPModel() %>%
