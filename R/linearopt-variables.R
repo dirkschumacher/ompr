@@ -520,7 +520,12 @@ setMethod("[", signature("LinearVariableCollection", i = "ANY", j = "ANY", drop 
     new_indexes <- rlang::eval_tidy(dt_call)
     colnames(new_indexes) <- c("row", names(indexes)[!list_indexes], names(indexes)[list_indexes])
   }
-  cols <- merge(new_indexes, index_mapping, by = names(indexes))
+  join_cols <- names(indexes)
+  if (!(all(join_cols %in% colnames(new_indexes))) ||
+      !(all(join_cols %in% colnames(index_mapping)))) {
+    stop("The variable '", var_name, "' does not seem to be defined properly", call. = FALSE)
+  }
+  cols <- merge(new_indexes, index_mapping, by = join_cols)
   if (nrow(cols) != nrow(new_indexes)) {
     stop("You used the variable '", var_name, "' with at least one index that does not exists.", call. = FALSE)
   }
