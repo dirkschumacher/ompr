@@ -19,7 +19,7 @@ Depends: R (>= 3.3.0)
 Imports:
   lazyeval,
   progress,
-  rlang,
+  rlang (>= 0.2.0),
   methods,
   data.table,
   Rcpp (>= 0.12.12),
