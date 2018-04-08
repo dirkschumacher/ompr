@@ -291,3 +291,13 @@ test_that("nice error message if sum_expr selected non existent variable", {
     "variable"
   )
 })
+
+test_that("bug 20180408: scalar variable and multiple constraints need to be handled differently", {
+  model <- MILPModel() %>%
+    add_variable(y) %>%
+    set_objective(10 * y, sense = "min") %>%
+    add_constraint(y[rep.int(1, 5)] <= i, i = 1:5)
+  constr <- ompr::extract_constraints(model)
+  expected_matrix <- matrix(rep.int(1, 5), ncol = 1)
+  expect_equivalent(as.matrix(constr$matrix), expected_matrix)
+})
