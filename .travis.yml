@@ -11,6 +11,8 @@ matrix:
       r: devel
     - os: linux
       r: oldrel
+    - os: linux
+      r: 3.2
     - os: osx
       osx_image: xcode8.3
 
