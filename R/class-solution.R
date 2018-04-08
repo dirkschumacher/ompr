@@ -82,7 +82,7 @@ get_solution_.solution <- function(solution, expr) {
   stopifnot(!is_indexed_var || ast[[1]] == "[" && length(ast) >= 3)
   var_name <- as.character(if (is_indexed_var) ast[[2]] else ast)
   if (is.null(solution$model$variables[[var_name]])) {
-    stop("Variable not found", call. = FALSE)
+    stop("Variable '", var_name, "' not found", call. = FALSE)
   }
   if (is_indexed_var) {
     free_vars <- c()

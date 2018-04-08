@@ -14,6 +14,19 @@ test_that("export single var to numeric", {
  expect_equivalent(result, 1)
 })
 
+test_that("get_solution: fails if variable not present", {
+  model <- MIPModel() %>%
+    add_variable(x, ub = 1) %>%
+    add_variable(y, ub = 1) %>%
+    add_constraint(x + y <= 1) %>%
+    set_objective(x + y)
+  solution <- new_solution(status = "optimal",
+                           model = model,
+                           objective_value = 2,
+                           solution = setNames(c(1, 1), c("x", "y")))
+  expect_error(result <- get_solution(solution, my_var), "my_var")
+})
+
 test_that("export solutions to data.frame if var is indexed", {
  model <- MIPModel() %>%
    add_variable(x[i], i = 1:3, ub = 1) %>%
