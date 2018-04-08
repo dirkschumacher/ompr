@@ -48,37 +48,42 @@ new_milp_variable <- function(name, arity, type, lb, ub, index_mapping_dt,
 add_variable_.milp_model <- function(.model, .variable, ...,
                                      type = "continuous",
                                      lb = -Inf, ub = Inf, .dots) {
-  if (length(lb) != 1 || length(ub) != 1) {
-    stop("lb and ub must be of length 1. I.e. just a single number.",
-         call. = FALSE)
-  }
-  check_bounds(lb, ub)
   if (length(type) != 1 || !type %in% c("continuous", "binary", "integer")) {
     stop(paste0("The type of a variable needs to be either",
                 " continuous, binary or integer."), call. = FALSE)
   }
+  check_bounds(lb, ub)
+
   if (type == "binary") {
-    if (is.infinite(lb)) {
-      lb <- 0
+    lb_inf <- is.infinite(lb)
+    if (lb_inf) {
+      lb[lb_inf] <- 0L
     }
-    if (is.infinite(ub)) {
-      ub <- 1
+    ub_inf <- is.infinite(ub)
+    if (ub_inf) {
+      ub[ub_inf] <- 1L
     }
-    if (!lb %in% c(0, 1)) {
+    lb <- as.integer(lb)
+    ub <- as.integer(ub)
+    lb_out_of_bounds <- is.na(lb) | lb < 0L | lb > 1L
+    ub_out_of_bounds <- is.na(ub) | ub < 0L | ub > 1L
+    if (any(lb_out_of_bounds)) {
       warning(paste0("lower bound of binary variable can ",
                      "either be 0 or 1. Setting it to 0"), call. = FALSE)
-      lb <- 0
+      lb[lb_out_of_bounds] <- 0L
     }
-    if (!ub %in% c(0, 1)) {
+    if (any(ub_out_of_bounds)) {
       warning(paste0("upper bound of binary variable can ",
                      "either be 0 or 1. Setting it to 1"), call. = FALSE)
-      ub <- 1
+      ub[ub_out_of_bounds] <- 1L
     }
   }
+
   variable <- lazyeval::as.lazy(.variable)
   model <- .model
   expr <- variable$expr
   if (lazyeval::is_name(expr)) {
+    assert_var_bounds_length_1(lb, ub)
     var_name <- as.character(expr)
     model$var_index_mapping_list[[var_name]] <- data.table::data.table(variable = var_name,
                                                                    V1 = 1L, col = 1L)
@@ -106,36 +111,53 @@ add_variable_.milp_model <- function(.model, .variable, ...,
                                lazyeval::lazy_eval)
     bound_expr <- bind_expression(var_name, expr, variable$env,
                                   bound_subscripts)
-    arity <- as.integer(length(bound_expr) - 2)
+    arity <- length(bound_expr) - 2L
 
-    # then check if all free variables are present in "..."
-    subscripts <- lapply(3:length(bound_expr),
-                         function(x) as.character(bound_expr[x]))
-    bound_subscripts <- bound_subscripts[
-      names(bound_subscripts) %in% subscripts]
-    replacement_idxs <- subscripts %in% names(bound_subscripts)
-    subscripts[replacement_idxs] <- bound_subscripts
-    subscripts <- suppressWarnings(lapply(subscripts, as.integer))
+    # two options, either we have bounded indexes
+    # or the variable is initialized directly with vectors
+    # in any case we create a variable with the correct arity first and then
+    # initialize it using standard evaluation
+    no_bound_variables <- all(vapply(classified_quantifiers, length, integer(1L)) == 0L)
+    if (no_bound_variables) {
+      parent_env <- variable$env
+      index_values <- lapply(seq_len(arity), function(i) {
+        eval(bound_expr[[2L + i]], envir = parent_env)
+      })
+      candidates <- do.call(data.frame, setNames(index_values, paste0("V", seq_len(arity))))
+      n_vars <- nrow(candidates)
+    } else {
+      assert_var_bounds_length_1(lb, ub)
 
-    # now generate all variables
-    candidates <- build_quantifier_candidates(subscripts,
-                                              names(bound_subscripts),
-                                              classified_quantifiers$filters)
-    zero_vars_msg <- paste0("The number of different indexes for variable ",
-                            var_name, " is 0.")
-    n_vars <- nrow(candidates)
-    any_col_non_numeric <- any(vapply(seq_len(ncol(candidates)), function(j) {
-      !is.numeric(candidates[[j]]) || anyNA(candidates[[j]])
-    }, logical(1L)))
-    if (n_vars == 0L) {
-      stop("The number of different indexes for variable ",
-           var_name, " is 0.", call. = FALSE)
+      # then check if all free variables are present in "..."
+      subscripts <- lapply(3:length(bound_expr),
+                           function(x) as.character(bound_expr[x]))
+      bound_subscripts <- bound_subscripts[
+        names(bound_subscripts) %in% subscripts]
+      replacement_idxs <- subscripts %in% names(bound_subscripts)
+      subscripts[replacement_idxs] <- bound_subscripts
+      subscripts <- suppressWarnings(lapply(subscripts, as.integer))
+
+      # now generate all variables
+      candidates <- build_quantifier_candidates(subscripts,
+                                                names(bound_subscripts),
+                                                classified_quantifiers$filters)
+      n_vars <- nrow(candidates)
+      zero_vars_msg <- paste0("The number of different indexes for variable ",
+                              var_name, " is 0.")
+      any_col_non_numeric <- any(vapply(seq_len(ncol(candidates)), function(j) {
+        !is.numeric(candidates[[j]]) || anyNA(candidates[[j]])
+      }, logical(1L)))
+
+      if (n_vars == 0L) {
+        stop("The number of different indexes for variable ",
+             var_name, " is 0.", call. = FALSE)
+      }
+      if (any_col_non_numeric) {
+        stop("At least one index of ", var_name, " is not an integer vector or not bound.",
+             call. = FALSE)
+      }
+      colnames(candidates) <- paste0("V", seq_len(ncol(candidates)))
     }
-    if (any_col_non_numeric) {
-      stop("At least one index of ", var_name, " is not an integer vector.",
-           call. = FALSE)
-    }
-    colnames(candidates) <- paste0("V", seq_len(ncol(candidates)))
 
     model$var_index_mapping_list[[var_name]] <- cbind(
       data.table::data.table(variable = var_name),
@@ -144,8 +166,8 @@ add_variable_.milp_model <- function(.model, .variable, ...,
     )
     model$var_index_mapping <- function(x) model$var_index_mapping_list[[x]]
 
-    if (length(lb) == 1L) lb <- rep.int(lb, nrow(model$var_index_mapping(var_name)))
-    if (length(ub) == 1L) ub <- rep.int(ub, nrow(model$var_index_mapping(var_name)))
+    if (length(lb) == 1L) lb <- rep.int(lb, n_vars)
+    if (length(ub) == 1L) ub <- rep.int(ub, n_vars)
     var <- new_milp_variable(var_name,
                              arity = arity,
                              type = type,
@@ -160,6 +182,13 @@ add_variable_.milp_model <- function(.model, .variable, ...,
                 " to formulate variables"), call. = FALSE)
   }
   model
+}
+
+assert_var_bounds_length_1 <- function(lb, ub) {
+  if (length(lb) != 1L || length(ub) != 1L) {
+    stop("lb and ub must be of length 1. I.e. just a single number.",
+         call. = FALSE)
+  }
 }
 
 new_milp_constraint <- function(lhs, sense, rhs) {
