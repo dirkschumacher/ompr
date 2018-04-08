@@ -181,3 +181,23 @@ test_that("solver_status gets the solver_status", {
                                          "x[11,10]", "x[11,11]", "x[11,12]")))
   expect_equal("optimal", solver_status(solution))
 })
+
+test_that("get_column_duals works", {
+  model <- MILPModel()
+  solution <- new_solution(model, 0, "optimal", 1, solution_column_duals = function() 1)
+  expect_equal(1, get_column_duals(solution))
+
+  # NA by default
+  solution <- new_solution(model, 0, "optimal", 1)
+  expect_true(is.na(get_column_duals(solution)) && is.numeric(get_column_duals(solution)))
+})
+
+test_that("get_row_duals works", {
+  model <- MILPModel()
+  solution <- new_solution(model, 0, "optimal", 1, solution_row_duals = function() 1)
+  expect_equal(1, get_row_duals(solution))
+
+  # NA by default
+  solution <- new_solution(model, 0, "optimal", 1)
+  expect_true(is.na(get_row_duals(solution)) && is.numeric(get_row_duals(solution)))
+})
