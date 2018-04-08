@@ -8,7 +8,7 @@ test_that("add_constraint only accepts linear inequalities", {
 test_that("add_constraint_ supports standard eval.", {
   m <- MIPModel()
   m <- add_variable(m, x)
-  add_constraint_(m, ~x <= 10)
+  expect_silent(add_constraint_(m, ~x <= 10))
 })
 
 test_that("constraints should be saved with only + operators", {
@@ -88,9 +88,11 @@ test_that("bounded vars in add_constraints should take precedence", {
 })
 
 test_that("we can add constraints", {
-  m <- MIPModel()
-  m <- add_variable(m, x[i], i = 1:10, type = "binary")
-  m <- add_constraint(m, x[3] <= x[6])
+  expect_silent({
+    m <- MIPModel()
+    m <- add_variable(m, x[i], i = 1:10, type = "binary")
+    m <- add_constraint(m, x[3] <= x[6])
+  })
 })
 
 test_that("add_constraint only allows a fixed set of senses", {

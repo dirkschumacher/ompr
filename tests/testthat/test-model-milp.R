@@ -53,9 +53,11 @@ test_that("it works with magrittr pipes", {
 
 test_that("set_object passes external values to sum_expr", {
   max_bins <- 5
-  m <- MILPModel()
-  m <- add_variable(m, y[i], i = 1:max_bins, type = "binary")
-  m <- set_objective(m, sum_expr(y[i], i = 1:max_bins), "min")
+  expect_silent({
+    m <- MILPModel()
+    m <- add_variable(m, y[i], i = 1:max_bins, type = "binary")
+    m <- set_objective(m, sum_expr(y[i], i = 1:max_bins), "min")
+  })
 })
 
 test_that("we can model a tsp", {
@@ -65,21 +67,23 @@ test_that("we can model a tsp", {
     as.integer(distance_matrix[i, j])
   }
   sub_tours <- list(1, 2, 3, c(1, 2), c(1, 3), c(2, 3))
-  r <- MILPModel() %>%
-    add_variable(x[i, j], i = 1:cities, j = 1:cities, type = "binary") %>%
-    set_objective(sum_expr(distance(i, j) * x[i, j],
-                          i = 1:cities, j = 1:cities), sense = "min") %>%
-    add_constraint(x[i, i] == 0, i = 1:cities) %>%
-    add_constraint(x[i, j] == x[j, i], i = 1:cities, j = 1:cities) %>%
-    add_constraint(sum_expr(x[i, j], i = sub_tours[s], j = sub_tours[s]) <=
-                     length(sub_tours[s]) - 1, s = 1:length(sub_tours))
+  expect_silent({
+    r <- MILPModel() %>%
+      add_variable(x[i, j], i = 1:cities, j = 1:cities, type = "binary") %>%
+      set_objective(sum_expr(distance(i, j) * x[i, j],
+                            i = 1:cities, j = 1:cities), sense = "min") %>%
+      add_constraint(x[i, i] == 0, i = 1:cities) %>%
+      add_constraint(x[i, j] == x[j, i], i = 1:cities, j = 1:cities) %>%
+      add_constraint(sum_expr(x[i, j], i = sub_tours[s], j = sub_tours[s]) <=
+                       length(sub_tours[s]) - 1, s = 1:length(sub_tours))
+  })
 })
 
 test_that("bug 20160701: -x as a formula", {
-  add_variable(MILPModel(), x, type = "continuous", lb = 4) %>%
+  expect_silent(add_variable(MILPModel(), x, type = "continuous", lb = 4) %>%
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
-    set_objective(-x + y, sense = "max")
+    set_objective(-x + y, sense = "max"))
 })
 
 test_that("model has a nice default output", {
@@ -136,16 +140,16 @@ test_that("devision in objective fun", {
 test_that("small to mid sized models should work", {
   skip_on_cran()
   n <- 400
-  result <- MILPModel() %>%
+  expect_silent(result <- MILPModel() %>%
     add_variable(x[i], i = 1:n, type = "binary") %>%
     set_objective(sum_expr(x[i], i = 1:n), "max") %>%
-    add_constraint(sum_expr(x[i], i = 1:n) == 1)
+    add_constraint(sum_expr(x[i], i = 1:n) == 1))
 })
 
 test_that("bug 20160713 #41: quantifiers in constraints in sum_expr", {
-  MILPModel() %>%
+  expect_silent(MILPModel() %>%
     add_variable(x[i], i = 1:9) %>%
-    add_constraint(sum_expr(x[i], i = 1:3 + y) == 1, y = c(0, 3, 6))
+    add_constraint(sum_expr(x[i], i = 1:3 + y) == 1, y = c(0, 3, 6)))
 })
 
 test_that("small to mid sized model should work #2", {
@@ -155,9 +159,9 @@ test_that("small to mid sized model should work #2", {
   coef <- function(i, j) {
     rep.int(length(i), 42L)
   }
-  MILPModel() %>%
+  expect_silent(MILPModel() %>%
     add_variable(x[i, j], i = 1:n, j = 1:n) %>%
-    add_constraint(sum_expr(coef(i, j) * x[i, j], i = 1:n, j = 1:n) == 1)
+    add_constraint(sum_expr(coef(i, j) * x[i, j], i = 1:n, j = 1:n) == 1))
 })
 
 test_that("bug 20160729: two sum_expr on one side", {
@@ -178,7 +182,7 @@ test_that("solve_model warns about wrong arguments", {
 test_that("set_objective_ supports standard eval.", {
   m <- MILPModel()
   m <- add_variable_(m, ~x)
-  m <- set_objective_(m, ~x)
+  expect_silent(m <- set_objective_(m, ~x))
 })
 
 test_that("can expand a term N * (x - y)", {

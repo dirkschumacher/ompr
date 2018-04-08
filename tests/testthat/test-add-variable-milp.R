@@ -71,7 +71,7 @@ test_that("throw error if lower bound > upper bound", {
 
 test_that("add_variable_ supports standard eval.", {
   m <- MILPModel()
-  add_variable_(m, ~x)
+  expect_silent(add_variable_(m, ~x))
 })
 
 test_that("add_variable throws error when lb or ub is of length > 1", {
