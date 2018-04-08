@@ -521,7 +521,9 @@ setMethod("[", signature("LinearVariableCollection", i = "ANY", j = "ANY", drop 
     colnames(new_indexes) <- c("row", names(indexes)[!list_indexes], names(indexes)[list_indexes])
   }
   cols <- merge(new_indexes, index_mapping, by = names(indexes))
-  stopifnot(nrow(cols) == nrow(new_indexes))
+  if (nrow(cols) != nrow(new_indexes)) {
+    stop("You used the variable '", var_name, "' with at least one index that does not exists.", call. = FALSE)
+  }
   new_vars <- data.table::data.table(
     variable = var_name,
     row = cols[["row"]],
