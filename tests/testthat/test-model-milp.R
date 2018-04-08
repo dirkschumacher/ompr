@@ -223,3 +223,62 @@ test_that("bug 20161110 #106: Error when indices used in sum_expr(...)
                                                    i = 1:2, j = 1:2,
                                                    i != j) <= 10))
 })
+
+test_that("variable sum divided by number", {
+  model <- MILPModel() %>%
+    add_variable(x[i], i = 1:3) %>%
+    add_variable(y[i], i = 1:3) %>%
+    add_constraint((1 + x[i] + y[i]) / 5 <= 10, i = 1:3)
+  constr <- ompr::extract_constraints(model)
+  expected_matrix <- matrix(
+    c(0.2, 0, 0,
+      0, 0.2, 0,
+      0, 0, 0.2,
+      0.2, 0, 0,
+      0, 0.2, 0,
+      0, 0, 0.2), ncol = 6, nrow = 3
+  )
+  expect_equivalent(as.matrix(constr$matrix), expected_matrix)
+  expect_equal(constr$rhs, rep.int(10, 3) - 0.2)
+})
+
+test_that("variable sum + numeric", {
+  model <- MILPModel() %>%
+    add_variable(x) %>%
+    add_constraint(1 + (1 + x) <= 3)
+  constr <- ompr::extract_constraints(model)
+  expect_equal(constr$rhs, 1)
+})
+
+test_that("unary plus for variable sum", {
+  model <- MILPModel() %>%
+    add_variable(x) %>%
+    add_constraint(+(1 + x) <= 3)
+  constr <- ompr::extract_constraints(model)
+  expect_equal(constr$rhs, 2)
+})
+
+test_that("unary minus for variable sum", {
+  model <- MILPModel() %>%
+    add_variable(x) %>%
+    add_constraint(-(1 + x) <= 3)
+  constr <- ompr::extract_constraints(model)
+  expect_equal(constr$rhs, 4)
+})
+
+test_that("variabe sum - varaible sum", {
+  model <- MILPModel() %>%
+    add_variable(x) %>%
+    add_variable(y) %>%
+    add_constraint((10 + x) - (5 + y) <= 3)
+  constr <- ompr::extract_constraints(model)
+  expect_equal(constr$rhs, -2)
+})
+
+test_that("numeric - varaible sum", {
+  model <- MILPModel() %>%
+    add_variable(x) %>%
+    add_constraint(10 - (10 + x) <= 3)
+  constr <- ompr::extract_constraints(model)
+  expect_equal(constr$rhs, 3)
+})
