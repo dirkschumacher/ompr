@@ -230,7 +230,7 @@ describe("variable_bounds()", {
   })
 })
 
-test_that("bug 20170312: variable_keys has wrong orderning", {
+test_that("bug 20170312: variable_keys has wrong ordering", {
   model <- MILPModel() %>%
     add_variable(x[i, j], i = 1:2, j = 1:3, type = "integer",
                  lb = 0, ub = 5) %>%
