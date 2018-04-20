@@ -34,14 +34,15 @@ new_solution <- function(model,
 #'
 #' @param solution the solution object
 #' @param expr a variable expression. You can partially bind indexes.
+#' @param type optional, either "primal" or "dual". The default value is "primal".
+#' If "primal" it returns the primal solution, otherwise the column duals.
+#' Especially the dual values depend on the solver. If no duals are calculated,
+#' the function stops with an error message.
 #'
 #' @return a data.frame. One row for each variable instance
 #'         and a column for each index.
 #'         Unless it is a single variable, then it returns a single number.
 #'
-#' @usage
-#' get_solution(solution, expr)
-#' get_solution_(solution, expr)
 #'
 #' @examples
 #' \dontrun{
@@ -56,28 +57,44 @@ new_solution <- function(model,
 #' solution <- get_solution(result, x[i])
 #' solution2 <- get_solution(result, y[i, 1])
 #' solution3 <- get_solution(result, y[i, j])
+#' duals <- get_solution(result, x[i], type = "duals")
 #' }
 #'
 #' @export
-get_solution <- function(solution, expr) {
-  get_solution_(solution, lazyeval::lazy(expr))
+get_solution <- function(solution, expr, type = "primal") {
+  get_solution_(solution, lazyeval::lazy(expr), type)
 }
 
 #' @inheritParams get_solution
 #' @rdname get_solution
 #' @export
-get_solution_ <- function(solution, expr) {
+get_solution_ <- function(solution, expr, type) {
   UseMethod("get_solution_")
 }
 
 #' @export
-get_solution_.solution <- function(solution, expr) {
+get_solution_.solution <- function(solution, expr, type) {
+  type <- match.arg(type, c("primal", "dual"))
+  solution_vector <- if (type == "primal") {
+    solution$solution
+  } else {
+    solution$solution_column_duals()
+  }
+  if (is.null(solution_vector) || anyNA(solution_vector)) {
+    stop("The solution from the solver is invalid. It is NULL or contains NAs.",
+         " Maybe the solver does not export ", type, "s?", call. = FALSE)
+  }
+  extract_solution(solution$model, solution_vector, expr)
+}
+
+extract_solution <- function(model, solution_vector, expr) {
+  stopifnot(length(solution_vector) == length(names(solution_vector)))
   expr <- lazyeval::as.lazy(expr)
   ast <- expr$expr
   is_indexed_var <- is.call(ast)
   stopifnot(!is_indexed_var || ast[[1]] == "[" && length(ast) >= 3)
   var_name <- as.character(if (is_indexed_var) ast[[2]] else ast)
-  if (is.null(solution$model$variables[[var_name]])) {
+  if (is.null(model$variables[[var_name]])) {
     stop("Variable '", var_name, "' not found", call. = FALSE)
   }
   if (is_indexed_var) {
@@ -97,16 +114,16 @@ get_solution_.solution <- function(solution, expr) {
                                paste0(idx_pattern, collapse = ","),
                                "\\]")
     if (length(free_vars) == 0) {
-      return(solution$solution[grepl(x = names(solution$solution),
+      return(solution_vector[grepl(x = names(solution_vector),
                                      pattern = instance_pattern)])
     } else {
       # the solution is sorted lexigographically
-      solution_names <- names(solution$solution)
+      solution_names <- names(solution_vector)
       rexp_c <- regexec(instance_pattern, solution_names)
       var_index <- do.call(rbind, regmatches(solution_names, rexp_c))
       na_rows <- as.logical(apply(is.na(var_index), 1, all))
       var_index <- var_index[!na_rows, ]
-      var_values <- solution$solution[grepl(solution_names,
+      var_values <- solution_vector[grepl(solution_names,
                                             pattern = instance_pattern)]
       result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
       for (x in colnames(result_df)) {
@@ -116,17 +133,14 @@ get_solution_.solution <- function(solution, expr) {
       result_df$variable <- var_name
       colnames(result_df) <- c(free_vars, "value", "variable")
       result_df <- result_df[, c("variable", free_vars, "value")]
-      if (solution$status != "optimal") {
-        result_df <- result_df[FALSE, ]
-      }
       return(result_df)
     }
   } else {
-    if (!var_name %in% names(solution$solution)) {
+    if (!var_name %in% names(solution_vector)) {
       stop(paste0("Either variable is not part of the model or you",
                   " have to specify the indexes."), call. = FALSE)
     }
-    return(solution$solution[var_name])
+    return(solution_vector[var_name])
   }
 }
 

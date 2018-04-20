@@ -5,15 +5,19 @@
 \alias{get_solution_}
 \title{Get variable values from a solution}
 \usage{
-get_solution(solution, expr)
-get_solution_(solution, expr)
+get_solution(solution, expr, type = "primal")
 
-get_solution_(solution, expr)
+get_solution_(solution, expr, type)
 }
 \arguments{
 \item{solution}{the solution object}
 
 \item{expr}{a variable expression. You can partially bind indexes.}
+
+\item{type}{optional, either "primal" or "dual". The default value is "primal".
+If "primal" it returns the primal solution, otherwise the column duals.
+Especially the dual values depend on the solver. If no duals are calculated,
+the function stops with an error message.}
 }
 \value{
 a data.frame. One row for each variable instance
@@ -36,6 +40,7 @@ result <- MIPModel() \%>\%
 solution <- get_solution(result, x[i])
 solution2 <- get_solution(result, y[i, 1])
 solution3 <- get_solution(result, y[i, j])
+duals <- get_solution(result, x[i], type = "duals")
 }
 
 }
