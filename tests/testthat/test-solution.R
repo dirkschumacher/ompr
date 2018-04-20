@@ -79,9 +79,8 @@ test_that("export infeasible solutions to data.frame", {
                   solution = setNames(c(1, 1, 1), c("x[1]", "x[3]", "x[3]")))
   result <- get_solution(solution, x[i])
   expect_s3_class(result, "data.frame")
-  expect_equal(nrow(result), 0)
+  expect_equal(nrow(result), 3)
 })
-
 
 test_that("export solutions to single value if all indexes bound", {
   model <- MIPModel() %>%
@@ -200,4 +199,24 @@ test_that("get_row_duals works", {
   # NA by default
   solution <- new_solution(model, 0, "optimal", 1)
   expect_true(is.na(get_row_duals(solution)) && is.numeric(get_row_duals(solution)))
+})
+
+test_that("you can access column duals using get_solution", {
+  model <- MILPModel() %>%
+    add_variable(x[i], i = 1:3)
+  solution <- new_solution(model, 0, "optimal", 1, solution_column_duals = function() {
+    setNames(c(1, 1, 1),
+             c("x[1]", "x[2]", "x[3]"))
+  })
+  result <- get_solution(solution, x[i], type = "dual")
+  expect_s3_class(result, "data.frame")
+  expect_equivalent(as.numeric(result$i), c(1, 2, 3))
+  expect_equivalent(as.numeric(result$value), c(1, 1, 1))
+})
+
+test_that("get_solution fails if no column duals are there", {
+  model <- MILPModel() %>%
+    add_variable(x[i], i = 1:3)
+  solution <- new_solution(model, 0, "optimal", 1)
+  expect_error(get_solution(solution, x[i], type = "dual"), "duals")
 })
