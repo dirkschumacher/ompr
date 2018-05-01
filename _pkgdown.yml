@@ -1,20 +1,41 @@
 title: ompr
 
+development:
+  mode: auto
+
+navbar:
+  structure:
+    left:  [home, reference, articleindex, news]
+    right: [github, twitter]
+  components:
+    articles: ~
+    articleindex:
+      text: Articles
+      href: articles/index.html
+    twitter:
+      icon: fa-lg fa-twitter
+      href: http://twitter.com/dirk_sch
+
 reference:
   - title: Build a model
     contents:
     - MIPModel
+    - MILPModel
     - add_variable
     - set_objective
     - add_constraint
     - set_bounds
     - sum_expr
+    - colwise
+    - as_colwise
   - title: Solve a model
     contents:
     - solve_model
     - get_solution
     - objective_value
     - solver_status
+    - get_column_duals
+    - get_row_duals
   - title: Solver-developer functions
     contents:
     - new_solution
@@ -26,9 +47,10 @@ reference:
     - variable_types
 
 articles:
-  - title: "About the package"
+  - title: "MIPModel backend"
     contents:
-    - modelling
-  - title: "Example problems"
+      - modelling
+      - starts_with("problem")
+  - title: "MILPModel backend 🚀"
     contents:
-    - starts_with("problem")
+      - starts_with("milp-")

@@ -26,11 +26,18 @@ setClass("LinearVariableSum",
          representation(constant = "data.frame", variables = "LinearVariableCollection"),
          prototype(constant = data.table::data.table(row = integer(0L),
                                                      constant = numeric(0L))))
+
 is_colwise <- function(x) {
   isTRUE(attr(x, "LinearTransposedVector"))
 }
 
-#' Cowise
+#' Format variables colwise
+#'
+#' This function should be used if you to expand a variable
+#' across columns and not rows. When passing a vector of indexes
+#' to MILPModel variable, it creates a new row for each vector element.
+#' With colwise you can create columns instead. Please see the examples
+#' below.
 #'
 #' @param ... create a colwise vector
 #' @examples
@@ -57,7 +64,9 @@ colwise <- function(...) {
   if (length(elements) == 1L) {
     return(as_colwise(elements[[1L]]))
   }
-  all_l_1 <- all(vapply(elements, function(x) length(x) == 1L && is.numeric(x), logical(1L)))
+  all_l_1 <- all(vapply(elements, function(x) {
+    length(x) == 1L && is.numeric(x)
+  }), logical(1L))
   as_colwise(if (all_l_1) {
     as.numeric(elements)
   } else {
@@ -67,7 +76,9 @@ colwise <- function(...) {
 
 #' As_colwise
 #'
-#' @param x convert lists or vectors to colwise semantic
+#' Convert lists or vectors to colwise semantic.
+#'
+#' @param x a list of numeric vectors or a numeric vector
 #'
 #' @export
 as_colwise <- function(x) {

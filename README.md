@@ -74,7 +74,7 @@ These functions currently form the public API. More detailed docs can be found i
 * `set_bounds()` sets bounds of variables
 * `add_constraint()` add constraints
 * `solve_model()` solves a model with a given solver
-* `get_solution()` returns the solution of a solved model for a given variable or group of variables
+* `get_solution()` returns the column solution (primal or dual) of a solved model for a given variable or group of variables
 * `get_row_duals()` returns the row duals of a solution (only if it is an LP)
 * `get_column_duals()` returns the column duals of a solution (only if it is an LP)
 

@@ -1,10 +1,10 @@
 ---
-title: "Modelling techniques in OMPR (WIP)"
+title: "Modelling techniques in OMPR using MILPModel"
 author: "Dirk Schumacher"
-date: "`r Sys.Date()`"
+date: "2018-04-08"
 output: rmarkdown::github_document
 vignette: >
-  %\VignetteIndexEntry{Modelling techniques in OMPR}
+  %\VignetteIndexEntry{Modelling techniques in OMPR using MILPModel}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
