@@ -1,10 +1,10 @@
-# Proof of concept, lots of copy/paste
-
 #' Create a new MILP Model
 #'
+#' Create an an empty mixed-integer linear programming model that is
+#' about 1000 times faster than `MIPModel`.
 #' It will eventually replace the old `MIPModel` backend for linear models.
-#' Somewhat experimental and subject to API changes.
-#' Use with caution and please report any bugs you find.
+#'
+#' Please only use it if you can deal with potential API changes in the future.
 #'
 #' @export
 MILPModel <- function() structure(list(variables = list(),

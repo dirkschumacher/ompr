@@ -7,8 +7,8 @@
 as_colwise(x)
 }
 \arguments{
-\item{x}{convert lists or vectors to colwise semantic}
+\item{x}{a list of numeric vectors or a numeric vector}
 }
 \description{
-As_colwise
+Convert lists or vectors to colwise semantic.
 }

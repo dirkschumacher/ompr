@@ -2,7 +2,7 @@
 % Please edit documentation in R/linearopt-variables.R
 \name{colwise}
 \alias{colwise}
-\title{Cowise}
+\title{Format variables colwise}
 \usage{
 colwise(...)
 }
@@ -10,7 +10,11 @@ colwise(...)
 \item{...}{create a colwise vector}
 }
 \description{
-Cowise
+This function should be used if you to expand a variable
+across columns and not rows. When passing a vector of indexes
+to MILPModel variable, it creates a new row for each vector element.
+With colwise you can create columns instead. Please see the examples
+below.
 }
 \examples{
 \dontrun{

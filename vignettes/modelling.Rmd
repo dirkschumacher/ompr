@@ -1,7 +1,7 @@
 ---
 title: "Modelling techniques in OMPR"
 author: "Dirk Schumacher"
-date: "`r Sys.Date()`"
+date: "2017-04-17"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Modelling techniques in OMPR}
