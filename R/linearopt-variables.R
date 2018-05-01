@@ -66,7 +66,7 @@ colwise <- function(...) {
   }
   all_l_1 <- all(vapply(elements, function(x) {
     length(x) == 1L && is.numeric(x)
-  }), logical(1L))
+  }, logical(1L)))
   as_colwise(if (all_l_1) {
     as.numeric(elements)
   } else {
