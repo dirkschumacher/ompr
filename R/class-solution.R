@@ -4,7 +4,7 @@
 #'
 #' @param objective_value a numeric objective value
 #' @param model the optimization model that was solved
-#' @param status the status of the solution
+#' @param status list giving the status code and message form the solver. The status code is 0 on success (no error occurred) 1 otherwise.
 #' @param solution a named numeric vector containing the primal solution values
 #' @param solution_column_duals A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
 #' @param solution_row_duals A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
@@ -17,9 +17,7 @@ new_solution <- function(model,
                          solution_column_duals = function() NA_real_,
                          solution_row_duals = function() NA_real_) {
   stopifnot(is.numeric(objective_value))
-  stopifnot(status %in% c("infeasible",
-                         "unbounded", "optimal",
-                         "userlimit", "error"))
+  stopifnot(length(status) == 2)
   stopifnot(all(nchar(names(solution))))
   stopifnot(is.function(solution_column_duals), is.function(solution_row_duals))
   structure(list(model = model,
@@ -175,7 +173,7 @@ solver_status <- function(solution) UseMethod("solver_status")
 
 #' @export
 solver_status.solution <- function(solution) {
-  solution$status
+  solution$status$msg
 }
 
 #' Gets the column duals of a solution
