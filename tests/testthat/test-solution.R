@@ -6,7 +6,7 @@ test_that("export single var to numeric", {
    add_variable(y, ub = 1) %>%
    add_constraint(x + y <= 1) %>%
    set_objective(x + y)
- solution <- new_solution(status = "optimal",
+ solution <- new_solution(status = list("optimal", NULL),
                              model = model,
                              objective_value = 2,
                              solution = setNames(c(1, 1), c("x", "y")))
@@ -20,7 +20,7 @@ test_that("get_solution: fails if variable not present", {
     add_variable(y, ub = 1) %>%
     add_constraint(x + y <= 1) %>%
     set_objective(x + y)
-  solution <- new_solution(status = "optimal",
+  solution <- new_solution(status = list("optimal", NULL),
                            model = model,
                            objective_value = 2,
                            solution = setNames(c(1, 1), c("x", "y")))
@@ -31,7 +31,7 @@ test_that("export solutions to data.frame if var is indexed", {
  model <- MIPModel() %>%
    add_variable(x[i], i = 1:3, ub = 1) %>%
    set_objective(sum_expr(x[i], i = 1:3))
- solution <- new_solution(status = "optimal",
+ solution <- new_solution(status = list("optimal", NULL),
                              model = model,
                              objective_value = 3,
                              solution = setNames(c(1, 1, 1),
@@ -73,7 +73,7 @@ test_that("export infeasible solutions to data.frame", {
   model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
-  solution <- new_solution(status = "infeasible",
+  solution <- new_solution(status = list("infeasible", NULL),
                   model = model,
                   objective_value = 3,
                   solution = setNames(c(1, 1, 1), c("x[1]", "x[3]", "x[3]")))
@@ -87,7 +87,7 @@ test_that("export solutions to single value if all indexes bound", {
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
-  solution <- new_solution(status = "optimal",
+  solution <- new_solution(status = list("optimal", NULL),
                               model = model,
                               objective_value = 3,
                               solution = setNames(c(2, 2, 2, 1, 1, 1),
@@ -102,7 +102,7 @@ test_that("export solutions to df in a model with more than one variable", {
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
-  solution <- new_solution(status = "optimal",
+  solution <- new_solution(status = list("optimal", NULL),
                   model = model,
                   objective_value = 3,
                   solution = setNames(c(2, 2, 2, 1, 1, 1),
@@ -117,7 +117,7 @@ test_that("solution has a nice default output", {
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
-  solution <- new_solution(status = "optimal",
+  solution <- new_solution(status = list("optimal", NULL),
                   model = model,
                   objective_value = 3,
                   solution = setNames(c(2, 2, 2, 1, 1, 1),
@@ -132,7 +132,7 @@ test_that("solution indexes should not be factors", {
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
-  solution <- new_solution(status = "optimal",
+  solution <- new_solution(status = list("optimal", NULL),
                   model = model,
                   objective_value = 3,
                   solution = setNames(c(2, 2, 2, 1, 1, 1),
@@ -145,7 +145,7 @@ test_that("bug 20160908: solution indexes mixed up", {
   model <- MIPModel() %>%
     add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
     set_objective(sum_expr(x[10, i], i = 10:12))
-  solution <- new_solution(status = "optimal",
+  solution <- new_solution(status = list("optimal", NULL),
                   model = model,
                   objective_value = 3,
                   solution = setNames(c(2, 2, 2, 1, 1, 1),
@@ -159,7 +159,7 @@ test_that("objective_value gets the obj. value", {
   model <- MIPModel() %>%
     add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
     set_objective(sum_expr(x[10, i], i = 10:12))
-  solution <- new_solution(status = "optimal",
+  solution <- new_solution(status = list("optimal", NULL),
                    model = model,
                    objective_value = 3,
                    solution = setNames(c(2, 2, 2, 1, 1, 1),
@@ -172,7 +172,7 @@ test_that("solver_status gets the solver_status", {
   model <- MIPModel() %>%
     add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
     set_objective(sum_expr(x[10, i], i = 10:12))
-  solution <- new_solution(status = "optimal",
+  solution <- new_solution(status = list("optimal", NULL),
                    model = model,
                    objective_value = 3,
                    solution = setNames(c(2, 2, 2, 1, 1, 1),
@@ -183,28 +183,28 @@ test_that("solver_status gets the solver_status", {
 
 test_that("get_column_duals works", {
   model <- MILPModel()
-  solution <- new_solution(model, 0, "optimal", 1, solution_column_duals = function() 1)
+  solution <- new_solution(model, 0, list("optimal", NULL), 1, solution_column_duals = function() 1)
   expect_equal(1, get_column_duals(solution))
 
   # NA by default
-  solution <- new_solution(model, 0, "optimal", 1)
+  solution <- new_solution(model, 0, list("optimal", NULL), 1)
   expect_true(is.na(get_column_duals(solution)) && is.numeric(get_column_duals(solution)))
 })
 
 test_that("get_row_duals works", {
   model <- MILPModel()
-  solution <- new_solution(model, 0, "optimal", 1, solution_row_duals = function() 1)
+  solution <- new_solution(model, 0, list("optimal", NULL), 1, solution_row_duals = function() 1)
   expect_equal(1, get_row_duals(solution))
 
   # NA by default
-  solution <- new_solution(model, 0, "optimal", 1)
+  solution <- new_solution(model, 0, list("optimal", NULL), 1)
   expect_true(is.na(get_row_duals(solution)) && is.numeric(get_row_duals(solution)))
 })
 
 test_that("you can access column duals using get_solution", {
   model <- MILPModel() %>%
     add_variable(x[i], i = 1:3)
-  solution <- new_solution(model, 0, "optimal", 1, solution_column_duals = function() {
+  solution <- new_solution(model, 0, list("optimal", NULL), 1, solution_column_duals = function() {
     setNames(c(1, 1, 1),
              c("x[1]", "x[2]", "x[3]"))
   })
@@ -217,6 +217,6 @@ test_that("you can access column duals using get_solution", {
 test_that("get_solution fails if no column duals are there", {
   model <- MILPModel() %>%
     add_variable(x[i], i = 1:3)
-  solution <- new_solution(model, 0, "optimal", 1)
+  solution <- new_solution(model, 0, list("optimal", NULL), 1)
   expect_error(get_solution(solution, x[i], type = "dual"), "duals")
 })
