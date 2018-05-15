@@ -36,7 +36,7 @@ test_that("we can solve a model", {
   m <- add_variable(MILPModel(), x[i], i = 1:3, type = "binary")
   m <- add_constraint(m, sum_expr(x[i], i = 1:3) == 1)
   m <- set_objective(m, x[1])
-  solution <- new_solution(m, 0, "optimal", solution = c())
+  solution <- new_solution(m, 0, list("code" = "optimal", "msg" = NULL), solution = c())
   result <- solve_model(m, function(model) {
     expect_identical(model, m)
     solution

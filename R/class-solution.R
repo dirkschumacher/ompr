@@ -17,7 +17,7 @@ new_solution <- function(model,
                          solution_column_duals = function() NA_real_,
                          solution_row_duals = function() NA_real_) {
   stopifnot(is.numeric(objective_value))
-  stopifnot(length(status) == 2)
+  stopifnot(identical(names(status), c("code", "msg")))
   stopifnot(all(nchar(names(solution))))
   stopifnot(is.function(solution_column_duals), is.function(solution_row_duals))
   structure(list(model = model,
@@ -173,7 +173,7 @@ solver_status <- function(solution) UseMethod("solver_status")
 
 #' @export
 solver_status.solution <- function(solution) {
-  solution$status$msg
+  solution$status$code
 }
 
 #' Gets the column duals of a solution
