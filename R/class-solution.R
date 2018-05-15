@@ -18,6 +18,7 @@ new_solution <- function(model,
                          solution_row_duals = function() NA_real_) {
   stopifnot(is.numeric(objective_value))
   stopifnot(identical(names(status), c("code", "msg")))
+  stopifnot(status$code == 0L | status$code == 1L)
   stopifnot(all(nchar(names(solution))))
   stopifnot(is.function(solution_column_duals), is.function(solution_row_duals))
   structure(list(model = model,
