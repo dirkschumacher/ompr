@@ -58,8 +58,8 @@ result <- MIPModel() %>%
   set_objective(x + y, "max") %>%
   add_constraint(x + y <= 11.25) %>%
   solve_model(with_ROI(solver = "glpk")) 
-get_solution(result, x)
-get_solution(result, y)
+get_solution(result, "x")
+get_solution(result, "y")
 ```
 
 ## API
