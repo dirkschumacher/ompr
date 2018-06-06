@@ -104,12 +104,12 @@
 \end{equation*}
 \]</span></p>
 <p>This is the <code>ompr</code> equivalent:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">10</span>; W &lt;-<span class="st"> </span><span class="dv">2</span>
-v &lt;-<span class="st"> </span><span class="kw">runif</span>(n);w &lt;-<span class="st"> </span><span class="kw">runif</span>(n)
-model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">type =</span> <span class="st">"binary"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw"><a href="../reference/colwise.html">colwise</a></span>(v[i]) <span class="op">*</span><span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw"><a href="../reference/colwise.html">colwise</a></span>(w[i]) <span class="op">*</span><span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">&lt;=</span><span class="st"> </span>W)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">10</span>; W &lt;-<span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">v &lt;-<span class="st"> </span><span class="kw">runif</span>(n);w &lt;-<span class="st"> </span><span class="kw">runif</span>(n)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">type =</span> <span class="st">"binary"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw"><a href="../reference/colwise.html">colwise</a></span>(v[i]) <span class="op">*</span><span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw"><a href="../reference/colwise.html">colwise</a></span>(w[i]) <span class="op">*</span><span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">&lt;=</span><span class="st"> </span>W)</a></code></pre></div>
 <p>The overall idea is to use modern R idioms to construct models like the one above as readable as possible directly in R. <code>ompr</code> will do the heavy lifting and transforms everything into matrices/vectors and pass it to your favorite solver.</p>
 </div>
 <div id="vectorized-semantics" class="section level2">
@@ -122,10 +122,10 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPM
 <h2 class="hasAnchor">
 <a href="#pipes" class="anchor"></a>Pipes</h2>
 <p>Each function in <code>ompr</code> creates immutable copies of the models. In addition the function interface has been designed to work with <code>magrittr</code> pipes. You always start with an empty model and add components to it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(x) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(x) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 1 
@@ -138,10 +138,10 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPM
 <h2 class="hasAnchor">
 <a href="#variable-types" class="anchor"></a>Variable types</h2>
 <p>Variables can be of type <code>continuous</code>, <code>integer</code> or <code>binary</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x, <span class="dt">type =</span> <span class="st">"integer"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(y, <span class="dt">type =</span> <span class="st">"continuous"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(z, <span class="dt">type =</span> <span class="st">"binary"</span>)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x, <span class="dt">type =</span> <span class="st">"integer"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(y, <span class="dt">type =</span> <span class="st">"continuous"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(z, <span class="dt">type =</span> <span class="st">"binary"</span>)</a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 1 
@@ -154,9 +154,9 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPM
 <h2 class="hasAnchor">
 <a href="#variable-bounds" class="anchor"></a>Variable bounds</h2>
 <p>Variables can have lower and upper bounds.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x, <span class="dt">lb =</span> <span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(y, <span class="dt">lb =</span> <span class="dv">5</span>, <span class="dt">ub =</span> <span class="dv">10</span>)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x, <span class="dt">lb =</span> <span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(y, <span class="dt">lb =</span> <span class="dv">5</span>, <span class="dt">ub =</span> <span class="dv">10</span>)</a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 2 
@@ -169,10 +169,10 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPM
 <h2 class="hasAnchor">
 <a href="#indexed-variables" class="anchor"></a>Indexed variables</h2>
 <p>Often when you develop a complex model you work with indexed variables. This is an important concept <code>ompr</code> supports.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># creates 10 decision variables</span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(x[<span class="dv">5</span>]) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">5</span>] <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># creates 10 decision variables</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(x[<span class="dv">5</span>]) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">5</span>] <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>)</a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 10 
@@ -186,10 +186,10 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPM
 <a href="#summation-over-variables" class="anchor"></a>Summation over variables</h2>
 <p>If you have indexed variables then you often want to sum over a subset of variables.</p>
 <p>The following code creates a model with three decision variables <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, <span class="math inline">\(x_3\)</span>. An objective function <span class="math inline">\(\sum_i x_i\)</span> and one constraint <span class="math inline">\(\sum_i x_i \leq 10\)</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>)</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>)</a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 3 
@@ -202,23 +202,23 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPM
 <h2 class="hasAnchor">
 <a href="#quantifiers" class="anchor"></a>Quantifiers</h2>
 <p><code>add_variable</code>, <code>add_constraint</code>, <code>set_bounds</code>, <code>sum_expr</code> all support a common quantifier interface that also supports filter expression. A more complex example will show what that means.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="co"># Create x_{i, j} variables for all combinations of i and j where</span>
-<span class="st">  </span><span class="co"># i = 1:10 and j = 1:10.</span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">type =</span> <span class="st">"binary"</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># add a y_i variable for all i between 1 and 10 with i mod 2 = 0</span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(y[i], <span class="dt">type =</span> <span class="st">"binary"</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, i <span class="op">%%</span><span class="st"> </span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># we maximize all x_{i,j} where i = j + 1</span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, i <span class="op">==</span><span class="st"> </span>j <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># for each i between 1 and 10 with i mod 2 = 0</span>
-<span class="st">  </span><span class="co"># we add a constraint \sum_j x_{i,j}</span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, i <span class="op">%%</span><span class="st"> </span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># of course you can leave out filters or add more than 1</span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) </code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="st">  </span><span class="co"># Create x_{i, j} variables for all combinations of i and j where</span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="st">  </span><span class="co"># i = 1:10 and j = 1:10.</span></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">type =</span> <span class="st">"binary"</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="st">  </span></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="st">  </span><span class="co"># add a y_i variable for all i between 1 and 10 with i mod 2 = 0</span></a>
+<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(y[i], <span class="dt">type =</span> <span class="st">"binary"</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, i <span class="op">%%</span><span class="st"> </span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="st">  </span></a>
+<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="st">  </span><span class="co"># we maximize all x_{i,j} where i = j + 1</span></a>
+<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, i <span class="op">==</span><span class="st"> </span>j <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="st">  </span></a>
+<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="st">  </span><span class="co"># for each i between 1 and 10 with i mod 2 = 0</span></a>
+<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="st">  </span><span class="co"># we add a constraint \sum_j x_{i,j}</span></a>
+<a class="sourceLine" id="cb12-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, i <span class="op">%%</span><span class="st"> </span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-15" data-line-number="15"><span class="st">  </span></a>
+<a class="sourceLine" id="cb12-16" data-line-number="16"><span class="st">  </span><span class="co"># of course you can leave out filters or add more than 1</span></a>
+<a class="sourceLine" id="cb12-17" data-line-number="17"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) </a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 0 
@@ -231,14 +231,14 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPM
 <h2 class="hasAnchor">
 <a href="#special-bounds-on-a-subset-of-variables" class="anchor"></a>Special bounds on a subset of variables</h2>
 <p>Imagine you want to model a matching problem with a single binary decision variable <span class="math inline">\(x_{i,j}\)</span> that is <span class="math inline">\(1\)</span> iff object <span class="math inline">\(i\)</span> is matched to object <span class="math inline">\(j\)</span>. One constraint would be to allow matches only if <span class="math inline">\(i \neq j\)</span>. This can be modelled by a constraint or by selectively changing bounds on variables. The latter approach can be used by solvers to improve the solution process.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, 
-               <span class="dt">type =</span> <span class="st">"integer"</span>, <span class="dt">lb =</span> <span class="dv">0</span>, <span class="dt">ub =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[i, i] <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>
-<span class="st">   </span><span class="co"># this sets the ub to 0 without adding new constraints</span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_bounds.html">set_bounds</a></span>(x[i, i], <span class="dt">ub =</span> <span class="dv">0</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, </a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">               <span class="dt">type =</span> <span class="st">"integer"</span>, <span class="dt">lb =</span> <span class="dv">0</span>, <span class="dt">ub =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[i, i] <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="st">   </span><span class="co"># this sets the ub to 0 without adding new constraints</span></a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/set_bounds.html">set_bounds</a></span>(x[i, i], <span class="dt">ub =</span> <span class="dv">0</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 0 
@@ -251,13 +251,13 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPM
 <h2 class="hasAnchor">
 <a href="#external-model-parameters" class="anchor"></a>External model parameters</h2>
 <p>Of course you will need external parameters for your models. You can reuse any variable defined in your R environment within the MIP Model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># number of our variables</span>
-costs &lt;-<span class="st"> </span><span class="kw">rpois</span>(n, <span class="dt">lambda =</span> <span class="dv">3</span>) <span class="co"># a cost vector</span>
-max_elements &lt;-<span class="st"> </span><span class="dv">3</span>
-<span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">type =</span> <span class="st">"binary"</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw"><a href="../reference/colwise.html">colwise</a></span>(costs[i]) <span class="op">*</span><span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">&lt;=</span><span class="st"> </span>max_elements)</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># number of our variables</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">costs &lt;-<span class="st"> </span><span class="kw">rpois</span>(n, <span class="dt">lambda =</span> <span class="dv">3</span>) <span class="co"># a cost vector</span></a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">max_elements &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i], <span class="dt">type =</span> <span class="st">"binary"</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw"><a href="../reference/colwise.html">colwise</a></span>(costs[i]) <span class="op">*</span><span class="st"> </span>x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">&lt;=</span><span class="st"> </span>max_elements)</a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 0 
@@ -271,24 +271,24 @@ max_elements &lt;-<span class="st"> </span><span class="dv">3</span>
 <a href="#extract-model-solutions" class="anchor"></a>Extract model solutions</h2>
 <p>Once you have a model, you pass it to a solver and get back a solutions. The main interface to extract variable values from a solution is the function <code>get_solution</code>. It returns a data.frame for indexed variable and thus makes it easy to subsequently use the value.</p>
 <p>We use <code>ROI</code> and <code>GLPK</code> to solve it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI)</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">library</span>(ROI)</a></code></pre></div>
 <pre><code>## ROI.plugin.lpsolve: R Optimization Infrastructure</code></pre>
 <pre><code>## Registered solver plugins: nlminb, cbc, glpk, lpsolve.</code></pre>
 <pre><code>## Default solver: auto.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ROI.plugin.glpk)
-<span class="kw">library</span>(ompr.roi)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
-n &lt;-<span class="st"> </span><span class="dv">5</span>
-weights &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rpois</span>(n <span class="op">*</span><span class="st"> </span>n, <span class="dv">5</span>), <span class="dt">ncol =</span> n, <span class="dt">nrow =</span> n)
-<span class="co"># construct a function that is vectorized</span>
-w &lt;-<span class="st"> </span><span class="cf">function</span>(i, j) {
-  <span class="kw">vapply</span>(<span class="kw">seq_along</span>(i), <span class="cf">function</span>(k) weights[i[k], j[k]], <span class="kw">numeric</span>(1L))
-}
-result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">type =</span> <span class="st">"binary"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw"><a href="../reference/colwise.html">colwise</a></span>(<span class="kw">w</span>(i, j)) <span class="op">*</span><span class="st"> </span>x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/solve_model.html">solve_model</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ompr.roi/topics/with_ROI">with_ROI</a></span>(<span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">library</span>(ROI.plugin.glpk)</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2"><span class="kw">library</span>(ompr.roi)</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">weights &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rpois</span>(n <span class="op">*</span><span class="st"> </span>n, <span class="dv">5</span>), <span class="dt">ncol =</span> n, <span class="dt">nrow =</span> n)</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4"><span class="co"># construct a function that is vectorized</span></a>
+<a class="sourceLine" id="cb23-5" data-line-number="5">w &lt;-<span class="st"> </span><span class="cf">function</span>(i, j) {</a>
+<a class="sourceLine" id="cb23-6" data-line-number="6">  <span class="kw">vapply</span>(<span class="kw">seq_along</span>(i), <span class="cf">function</span>(k) weights[i[k], j[k]], <span class="kw">numeric</span>(1L))</a>
+<a class="sourceLine" id="cb23-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb23-8" data-line-number="8">result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">type =</span> <span class="st">"binary"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw"><a href="../reference/colwise.html">colwise</a></span>(<span class="kw">w</span>(i, j)) <span class="op">*</span><span class="st"> </span>x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-11" data-line-number="11"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="../reference/solve_model.html">solve_model</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ompr.roi/topics/with_ROI">with_ROI</a></span>(<span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
 <pre><code>## &lt;SOLVER MSG&gt;  ----
 ## GLPK Simplex Optimizer, v4.63
 ## 5 rows, 25 columns, 25 non-zeros
@@ -305,8 +305,8 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILP
 ## +    14: mip =   4.400000000e+01 &lt;=     tree is empty   0.0% (0; 1)
 ## INTEGER OPTIMAL SOLUTION FOUND
 ## &lt;!SOLVER MSG&gt; ----</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(result, x[i, j]) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(value <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(result, x[i, j]) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(value <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a></code></pre></div>
 <pre><code>##   variable i j value
 ## 1        x 4 1     1
 ## 2        x 2 2     1
@@ -314,7 +314,7 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILP
 ## 4        x 3 4     1
 ## 5        x 1 5     1</code></pre>
 <p>You can also fix certain indexes.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(result, x[<span class="dv">2</span>, j])</code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(result, x[<span class="dv">2</span>, j])</a></code></pre></div>
 <pre><code>##   variable j value
 ## 1        x 1     0
 ## 2        x 2     1
@@ -327,11 +327,11 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILP
 <a href="#vectorized-semantics-revisited" class="anchor"></a>Vectorized semantics revisited</h2>
 <p>Each variable accepts vectors. The following code snippets show the behaviour by example:</p>
 <p>Instead of passing index variables through quantifiers, you can also use vectors directly. Each element of a vector creates a new row for that variable. The two constraint groups below are equivalent.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span>10L
-<span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[i, j] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n, i <span class="op">==</span><span class="st"> </span>j) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">1</span><span class="op">:</span>n, <span class="dv">1</span><span class="op">:</span>n] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># this this equivalent</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">n &lt;-<span class="st"> </span>10L</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[i, j] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n, i <span class="op">==</span><span class="st"> </span>j) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">1</span><span class="op">:</span>n, <span class="dv">1</span><span class="op">:</span>n] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># this this equivalent</span></a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 100 
@@ -340,10 +340,10 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILP
 ## No objective function. 
 ## Constraints: 20</code></pre>
 <p>You can also add vectors columnwise using the function <code>colwise</code> or <code>as_colwise</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">1</span><span class="op">:</span>n, <span class="kw"><a href="../reference/colwise.html">colwise</a></span>(<span class="dv">1</span><span class="op">:</span>n)] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># this this equivalent</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb31-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[<span class="dv">1</span><span class="op">:</span>n, <span class="kw"><a href="../reference/colwise.html">colwise</a></span>(<span class="dv">1</span><span class="op">:</span>n)] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># this this equivalent</span></a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 100 
@@ -353,15 +353,15 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MILP
 ## Constraints: 20</code></pre>
 <p>Another example:</p>
 <p>Say you want to express the below matrix:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x[<span class="dv">1</span>, <span class="dv">1</span>]
-x[<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>x[<span class="dv">1</span>, <span class="dv">2</span>]
-x[<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>x[<span class="dv">1</span>, <span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>x[<span class="dv">1</span>, <span class="dv">3</span>]</code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">x[<span class="dv">1</span>, <span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">x[<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>x[<span class="dv">1</span>, <span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb33-3" data-line-number="3">x[<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>x[<span class="dv">1</span>, <span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>x[<span class="dv">1</span>, <span class="dv">3</span>]</a></code></pre></div>
 <p>With vectorized semantics you can do the following:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x[<span class="dv">1</span>, <span class="kw"><a href="../reference/colwise.html">colwise</a></span>(<span class="dv">1</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)]</code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">x[<span class="dv">1</span>, <span class="kw"><a href="../reference/colwise.html">colwise</a></span>(<span class="dv">1</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)]</a></code></pre></div>
 <p>Or with the support of the <code>ompr</code> function <code>sum_expr</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[<span class="dv">1</span>, j], <span class="dt">j =</span> <span class="kw"><a href="../reference/colwise.html">colwise</a></span>(<span class="dv">1</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[<span class="dv">1</span>, j], <span class="dt">j =</span> <span class="kw"><a href="../reference/colwise.html">colwise</a></span>(<span class="dv">1</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 10 
@@ -374,8 +374,8 @@ x[<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span
 <a href="#adding-varialbes---vectorized" class="anchor"></a>Adding varialbes - vectorized</h3>
 <p>Sometimes, you want to control both variable indexes and their bounds very specifically. You can either use filter expressions together with <code>set_bounds</code> or pass in the concrete variable indexes explicitly.</p>
 <p>The following code is equivalent:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) </code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) </a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 100 
@@ -383,9 +383,9 @@ x[<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span
 ##   Binary: 0 
 ## No objective function. 
 ## Constraints: 0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">grid &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)
-<span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[grid<span class="op">$</span>i, grid<span class="op">$</span>j]) </code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">grid &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb39-2" data-line-number="2"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[grid<span class="op">$</span>i, grid<span class="op">$</span>j]) </a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 100 
@@ -394,8 +394,8 @@ x[<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span
 ## No objective function. 
 ## Constraints: 0</code></pre>
 <p>In addition to the first block of code, you can also set bounds on the variables in the same way:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[grid<span class="op">$</span>i, grid<span class="op">$</span>j], <span class="dt">lb =</span> grid<span class="op">$</span>i <span class="op">*</span><span class="st"> </span><span class="dv">10</span>, <span class="dt">ub =</span> grid<span class="op">$</span>i <span class="op">*</span><span class="st"> </span><span class="dv">20</span>) </code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="kw"><a href="../reference/MILPModel.html">MILPModel</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[grid<span class="op">$</span>i, grid<span class="op">$</span>j], <span class="dt">lb =</span> grid<span class="op">$</span>i <span class="op">*</span><span class="st"> </span><span class="dv">10</span>, <span class="dt">ub =</span> grid<span class="op">$</span>i <span class="op">*</span><span class="st"> </span><span class="dv">20</span>) </a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 100 
