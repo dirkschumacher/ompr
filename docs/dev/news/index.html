@@ -114,6 +114,9 @@
 <h1 class="page-header">
 <a href="#ompr-0-7-0-9002" class="anchor"></a>ompr 0.7.0.9002<small> Unreleased </small>
 </h1>
+<div id="general-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#general-changes" class="anchor"></a>General changes</h2>
 <ul>
 <li>Removed <code>dplyr</code> dependency</li>
 <li>Added <code>MILPModel</code>, a new, vectorized backend for mixed integer linear programs that can handle very large models. It will eventually replace <code>MIPModel</code>.</li>
@@ -126,10 +129,17 @@
 <code>get_solution</code> has a third argument <code>type</code> with permitted values being “primal” and “dual” to return the respective column primal or dual values.</li>
 </ul>
 </div>
-    <div id="ompr-0-7-0" class="section level1">
-<h1 class="page-header">
-<a href="#ompr-0-7-0" class="anchor"></a>ompr 0.7.0<small> 2017-11-17 </small>
+<div id="bugfixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bugfixes" class="anchor"></a>Bugfixes</h2>
+<ul>
+<li>
+<p>You can now extract solutions of indexed variables that have length one (#<a href="https://github.com/dirkschumacher/ompr/issues/198">198</a>)</p>
+<h1 id="ompr-0.7.0" class="page-header">ompr 0.7.0<small> Unreleased </small>
 </h1>
+</li>
+</ul>
+</div>
 <div id="breaking-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
@@ -165,7 +175,6 @@
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
         <li><a href="#ompr-0-7-0-9002">0.7.0.9002</a></li>
-        <li><a href="#ompr-0-7-0">0.7.0</a></li>
         <li><a href="#ompr-0-6-0">0.6.0</a></li>
       </ul>
     </div>

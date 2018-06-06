@@ -117,67 +117,67 @@
 <a href="#the-model-in-r" class="anchor"></a>The model in R</h2>
 <p>The first thing we need is the data. In this article we will simply generate artificial data.</p>
 <p>We assume the <strong>customers</strong> are located in a grid with euclidian distances:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
-grid_size &lt;-<span class="st"> </span><span class="dv">1000</span>
-n &lt;-<span class="st"> </span><span class="dv">100</span>
-customer_locations &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
-  <span class="dt">id =</span> <span class="dv">1</span><span class="op">:</span>n,
-  <span class="dt">x =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n) <span class="op">*</span><span class="st"> </span>grid_size),
-  <span class="dt">y =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n) <span class="op">*</span><span class="st"> </span>grid_size)
-)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">grid_size &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">n &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">customer_locations &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">  <span class="dt">id =</span> <span class="dv">1</span><span class="op">:</span>n,</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">  <span class="dt">x =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n) <span class="op">*</span><span class="st"> </span>grid_size),</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">  <span class="dt">y =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n) <span class="op">*</span><span class="st"> </span>grid_size)</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">)</a></code></pre></div>
 <p>The <strong>warehouses</strong> are also randomly placed on the grid. The fixed cost for the warehouses are randomly generated as well with mean cost of 10,000.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m &lt;-<span class="st"> </span><span class="dv">20</span>
-warehouse_locations &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
-  <span class="dt">id =</span> <span class="dv">1</span><span class="op">:</span>m,
-  <span class="dt">x =</span> <span class="kw">round</span>(<span class="kw">runif</span>(m) <span class="op">*</span><span class="st"> </span>grid_size),
-  <span class="dt">y =</span> <span class="kw">round</span>(<span class="kw">runif</span>(m) <span class="op">*</span><span class="st"> </span>grid_size)
-)
-fixedcost &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">rnorm</span>(m, <span class="dt">mean =</span> grid_size <span class="op">*</span><span class="st"> </span><span class="dv">10</span>, <span class="dt">sd =</span> grid_size <span class="op">*</span><span class="st"> </span><span class="dv">5</span>))</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">m &lt;-<span class="st"> </span><span class="dv">20</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">warehouse_locations &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">  <span class="dt">id =</span> <span class="dv">1</span><span class="op">:</span>m,</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">  <span class="dt">x =</span> <span class="kw">round</span>(<span class="kw">runif</span>(m) <span class="op">*</span><span class="st"> </span>grid_size),</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">y =</span> <span class="kw">round</span>(<span class="kw">runif</span>(m) <span class="op">*</span><span class="st"> </span>grid_size)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">fixedcost &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">rnorm</span>(m, <span class="dt">mean =</span> grid_size <span class="op">*</span><span class="st"> </span><span class="dv">10</span>, <span class="dt">sd =</span> grid_size <span class="op">*</span><span class="st"> </span><span class="dv">5</span>))</a></code></pre></div>
 <p>The fixed costs to set up a warehouse are the following:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fixedcost</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">fixedcost</a></code></pre></div>
 <pre><code>##  [1]  9043  6090 20291 13753 19121 10400  6843  2434  6820 11132 15068
 ## [12] 11264  4140 13344  1749  8171  8419   259 14600  6886</code></pre>
 <p>Next step is to build a functions that takes a customer and a warehouse and returns the transport cost.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">transportcost &lt;-<span class="st"> </span><span class="cf">function</span>(i, j) {
-  customer &lt;-<span class="st"> </span>customer_locations[i, ]
-  warehouse &lt;-<span class="st"> </span>warehouse_locations[j, ]
-  <span class="kw">round</span>(<span class="kw">sqrt</span>((customer<span class="op">$</span>x <span class="op">-</span><span class="st"> </span>warehouse<span class="op">$</span>x)<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(customer<span class="op">$</span>y <span class="op">-</span><span class="st"> </span>warehouse<span class="op">$</span>y)<span class="op">^</span><span class="dv">2</span>))
-}
-<span class="kw">transportcost</span>(<span class="dv">1</span>, <span class="dv">3</span>)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">transportcost &lt;-<span class="st"> </span><span class="cf">function</span>(i, j) {</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">  customer &lt;-<span class="st"> </span>customer_locations[i, ]</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">  warehouse &lt;-<span class="st"> </span>warehouse_locations[j, ]</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">  <span class="kw">round</span>(<span class="kw">sqrt</span>((customer<span class="op">$</span>x <span class="op">-</span><span class="st"> </span>warehouse<span class="op">$</span>x)<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(customer<span class="op">$</span>y <span class="op">-</span><span class="st"> </span>warehouse<span class="op">$</span>y)<span class="op">^</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="kw">transportcost</span>(<span class="dv">1</span>, <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>## [1] 302</code></pre>
 <p>Now let’s plot everything. Black dots are customers and red dots are possible warehouse locations.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
-p &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(customer_locations, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(x, y)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>(<span class="dt">data =</span> warehouse_locations, <span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">shape =</span> <span class="dv">17</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/scale_continuous">scale_x_continuous</a></span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, grid_size)) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/scale_continuous">scale_y_continuous</a></span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, grid_size)) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(), 
-        <span class="dt">axis.ticks =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(), 
-        <span class="dt">axis.text =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(), <span class="dt">panel.grid =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>())
-p <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"Warehouse location problem"</span>, 
-          <span class="st">"Black dots are customers. Light red triangles show potential warehouse locations."</span>)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">p &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(customer_locations, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(x, y)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>(<span class="dt">data =</span> warehouse_locations, <span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">shape =</span> <span class="dv">17</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/scale_continuous">scale_x_continuous</a></span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, grid_size)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/scale_continuous">scale_y_continuous</a></span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, grid_size)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(), </a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">        <span class="dt">axis.ticks =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(), </a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">        <span class="dt">axis.text =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(), <span class="dt">panel.grid =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>())</a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">p <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"Warehouse location problem"</span>, </a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">          <span class="st">"Black dots are customers. Light red triangles show potential warehouse locations."</span>)</a></code></pre></div>
 <p><img src="milp-problem-warehouse-location_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>The model in <code>ompr</code> then looks like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr)
-<span class="kw">library</span>(magrittr)
-model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="co"># 1 iff i gets assigned to warehouse j</span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m, <span class="dt">type =</span> <span class="st">"binary"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># 1 iff warehouse j is built</span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(y[j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m, <span class="dt">type =</span> <span class="st">"binary"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># maximize the preferences</span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw">transportcost</span>(i, j) <span class="op">*</span><span class="st"> </span>x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m) <span class="op">+</span><span class="st"> </span>
-<span class="st">                  </span><span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(fixedcost[j] <span class="op">*</span><span class="st"> </span>y[j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m), <span class="st">"min"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># every customer needs to be assigned to a warehouse</span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># if a customer is assigned to a warehouse, then this warehouse must be built</span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[i,j] <span class="op">&lt;=</span><span class="st"> </span>y[j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m)
-model</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">library</span>(ompr)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">library</span>(magrittr)</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MIPModel.html">MIPModel</a></span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="st">  </span><span class="co"># 1 iff i gets assigned to warehouse j</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m, <span class="dt">type =</span> <span class="st">"binary"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="st">  </span><span class="co"># 1 iff warehouse j is built</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/add_variable.html">add_variable</a></span>(y[j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m, <span class="dt">type =</span> <span class="st">"binary"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="st">  </span></a>
+<a class="sourceLine" id="cb8-10" data-line-number="10"><span class="st">  </span><span class="co"># maximize the preferences</span></a>
+<a class="sourceLine" id="cb8-11" data-line-number="11"><span class="st">  </span><span class="kw"><a href="../reference/set_objective.html">set_objective</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(<span class="kw">transportcost</span>(i, j) <span class="op">*</span><span class="st"> </span>x[i, j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-12" data-line-number="12"><span class="st">                  </span><span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(fixedcost[j] <span class="op">*</span><span class="st"> </span>y[j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m), <span class="st">"min"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-13" data-line-number="13"><span class="st">  </span></a>
+<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="st">  </span><span class="co"># every customer needs to be assigned to a warehouse</span></a>
+<a class="sourceLine" id="cb8-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(<span class="kw"><a href="../reference/sum_expr.html">sum_expr</a></span>(x[i, j], <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-16" data-line-number="16"><span class="st">  </span></a>
+<a class="sourceLine" id="cb8-17" data-line-number="17"><span class="st">  </span><span class="co"># if a customer is assigned to a warehouse, then this warehouse must be built</span></a>
+<a class="sourceLine" id="cb8-18" data-line-number="18"><span class="st">  </span><span class="kw"><a href="../reference/add_constraint.html">add_constraint</a></span>(x[i,j] <span class="op">&lt;=</span><span class="st"> </span>y[j], <span class="dt">i =</span> <span class="dv">1</span><span class="op">:</span>n, <span class="dt">j =</span> <span class="dv">1</span><span class="op">:</span>m)</a>
+<a class="sourceLine" id="cb8-19" data-line-number="19">model</a></code></pre></div>
 <pre><code>## Mixed integer linear optimization problem
 ## Variables:
 ##   Continuous: 0 
@@ -190,9 +190,9 @@ model</code></pre></div>
 <h2 class="hasAnchor">
 <a href="#solve-the-model" class="anchor"></a>Solve the model</h2>
 <p>We will use <code>glpk</code> to solve the above model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ompr.roi)
-<span class="kw">library</span>(ROI.plugin.glpk)
-result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/solve_model.html">solve_model</a></span>(model, <span class="kw"><a href="http://www.rdocumentation.org/packages/ompr.roi/topics/with_ROI">with_ROI</a></span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">library</span>(ompr.roi)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">library</span>(ROI.plugin.glpk)</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/solve_model.html">solve_model</a></span>(model, <span class="kw"><a href="http://www.rdocumentation.org/packages/ompr.roi/topics/with_ROI">with_ROI</a></span>(<span class="dt">solver =</span> <span class="st">"glpk"</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
 <pre><code>## &lt;SOLVER MSG&gt;  ----
 ## GLPK Simplex Optimizer, v4.63
 ## 2100 rows, 2020 columns, 6000 non-zeros
@@ -212,32 +212,32 @@ result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/solv
 ## INTEGER OPTIMAL SOLUTION FOUND
 ## &lt;!SOLVER MSG&gt; ----</code></pre>
 <p>We solved the problem with an objective value of 33222.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(dplyr))
-matching &lt;-<span class="st"> </span>result <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(x[i,j]) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(value <span class="op">&gt;</span><span class="st"> </span>.<span class="dv">9</span>) <span class="op">%&gt;%</span><span class="st">  </span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(i, j)</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(dplyr))</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">matching &lt;-<span class="st"> </span>result <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/get_solution.html">get_solution</a></span>(x[i,j]) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(value <span class="op">&gt;</span><span class="st"> </span><span class="fl">.9</span>) <span class="op">%&gt;%</span><span class="st">  </span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(i, j)</a></code></pre></div>
 <p>The last step is to add the assignments to the previous plot we generated.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_assignment &lt;-<span class="st"> </span>matching <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/join.html">inner_join</a></span>(customer_locations, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">"i"</span> =<span class="st"> "id"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/join.html">inner_join</a></span>(warehouse_locations, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">"j"</span> =<span class="st"> "id"</span>))
-customer_count &lt;-<span class="st"> </span>matching <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(j) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span>(<span class="dt">n =</span> <span class="kw"><a href="http://dplyr.tidyverse.org/reference/n.html">n</a></span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">id =</span> j)
-plot_warehouses &lt;-<span class="st"> </span>warehouse_locations <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">costs =</span> fixedcost) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/join.html">inner_join</a></span>(customer_count, <span class="dt">by =</span> <span class="st">"id"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(id <span class="op">%in%</span><span class="st"> </span><span class="kw">unique</span>(matching<span class="op">$</span>j))
-p <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_segment">geom_segment</a></span>(<span class="dt">data =</span> plot_assignment, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> x.y, <span class="dt">y =</span> y.y, <span class="dt">xend =</span> x.x, <span class="dt">yend =</span> y.x)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>(<span class="dt">data  =</span> plot_warehouses, <span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">size =</span> <span class="dv">3</span>, <span class="dt">shape =</span> <span class="dv">17</span>) <span class="op">+</span>
-<span class="st">  </span>ggrepel<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggrepel/topics/geom_text_repel">geom_label_repel</a></span>(<span class="dt">data  =</span> plot_warehouses, 
-                            <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">label =</span> <span class="kw">paste0</span>(<span class="st">"fixed costs:"</span>, costs, <span class="st">"; customers: "</span>, n)), 
-                            <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">nudge_y =</span> <span class="dv">20</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="kw">paste0</span>(<span class="st">"Cost optimal warehouse locations and customer assignment"</span>),
-          <span class="st">"Big red triangles show warehouses that will be built, light red are unused warehouse locations. </span>
-<span class="st">Dots represent customers served by the respective warehouses."</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">plot_assignment &lt;-<span class="st"> </span>matching <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/join.html">inner_join</a></span>(customer_locations, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">"i"</span> =<span class="st"> "id"</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/join.html">inner_join</a></span>(warehouse_locations, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">"j"</span> =<span class="st"> "id"</span>))</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">customer_count &lt;-<span class="st"> </span>matching <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(j) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span>(<span class="dt">n =</span> <span class="kw"><a href="http://dplyr.tidyverse.org/reference/n.html">n</a></span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">id =</span> j)</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">plot_warehouses &lt;-<span class="st"> </span>warehouse_locations <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">costs =</span> fixedcost) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/join.html">inner_join</a></span>(customer_count, <span class="dt">by =</span> <span class="st">"id"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(id <span class="op">%in%</span><span class="st"> </span><span class="kw">unique</span>(matching<span class="op">$</span>j))</a>
+<a class="sourceLine" id="cb13-9" data-line-number="9">p <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_segment">geom_segment</a></span>(<span class="dt">data =</span> plot_assignment, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> x.y, <span class="dt">y =</span> y.y, <span class="dt">xend =</span> x.x, <span class="dt">yend =</span> y.x)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-11" data-line-number="11"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>(<span class="dt">data  =</span> plot_warehouses, <span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">size =</span> <span class="dv">3</span>, <span class="dt">shape =</span> <span class="dv">17</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12"><span class="st">  </span>ggrepel<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggrepel/topics/geom_text_repel">geom_label_repel</a></span>(<span class="dt">data  =</span> plot_warehouses, </a>
+<a class="sourceLine" id="cb13-13" data-line-number="13">                            <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">label =</span> <span class="kw">paste0</span>(<span class="st">"fixed costs:"</span>, costs, <span class="st">"; customers: "</span>, n)), </a>
+<a class="sourceLine" id="cb13-14" data-line-number="14">                            <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">nudge_y =</span> <span class="dv">20</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="kw">paste0</span>(<span class="st">"Cost optimal warehouse locations and customer assignment"</span>),</a>
+<a class="sourceLine" id="cb13-16" data-line-number="16">          <span class="st">"Big red triangles show warehouses that will be built, light red are unused warehouse locations. </span></a>
+<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="st">Dots represent customers served by the respective warehouses."</span>)</a></code></pre></div>
 <p><img src="milp-problem-warehouse-location_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 <p>The fixed costs for setting up the 4 warehouses is:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(fixedcost[<span class="kw">unique</span>(matching<span class="op">$</span>j)])</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw">sum</span>(fixedcost[<span class="kw">unique</span>(matching<span class="op">$</span>j)])</a></code></pre></div>
 <pre><code>## [1] 11285</code></pre>
 </div>
 <div id="feedback" class="section level2">
