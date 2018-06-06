@@ -1,5 +1,7 @@
 # ompr 0.7.0.9002
 
+## General changes
+
 * Removed `dplyr` dependency
 * Added `MILPModel`, a new, vectorized backend for mixed integer linear programs that can handle very large models. It will eventually replace `MIPModel`.
 * Added two functions (`get_column_duals`, `get_row_duals`) to extract the dual (column and row) values from an LP.
@@ -7,6 +9,9 @@
 * `get_solution` now always return a solution, even if the solution status is not optimal.
 * `get_solution` has a third argument `type` with permitted values being "primal" and "dual" to return the respective column primal or dual values.
 
+## Bugfixes
+
+* You can now extract solutions of indexed variables that have length one (#[198](https://github.com/dirkschumacher/ompr/issues/198))
 # ompr 0.7.0
 
 ## Breaking changes
