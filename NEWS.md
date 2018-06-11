@@ -1,4 +1,4 @@
-# ompr 0.7.0.9002
+# ompr 0.8.0
 
 ## General changes
 
@@ -12,6 +12,7 @@
 ## Bugfixes
 
 * You can now extract solutions of indexed variables that have length one (#[198](https://github.com/dirkschumacher/ompr/issues/198))
+
 # ompr 0.7.0
 
 ## Breaking changes

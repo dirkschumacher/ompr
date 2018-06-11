@@ -12,7 +12,7 @@ setClass("LinearVariableCollection",
                                                       col = integer(0L),
                                                       coef = numeric(0L))))
 
-#' An S4 class that represents a singel variable
+#' An S4 class that represents a single variable
 #'
 #' @slot variable a linear variable collection with just one index '1'
 setClass("LinearVariable",
@@ -92,7 +92,7 @@ as_colwise <- function(x) {
 
 #' Multiply
 #'
-#' It will mutiply the numeric vector with both the constant and the variable in
+#' It will multiply the numeric vector with both the constant and the variable in
 #' 'LinearVariableSum'
 #'
 #' @param e1 an object of type 'LinearVariableSum'
@@ -110,7 +110,7 @@ setMethod("*", signature(e1 = "LinearVariableSum", e2 = "numeric"), function(e1,
 
 #' Multiply
 #'
-#' It will mutiply the numeric vector with both the constant and the variable in
+#' It will multiply the numeric vector with both the constant and the variable in
 #' 'LinearVariableSum'
 #'
 #' @param e2 an object of type 'LinearVariableSum'
