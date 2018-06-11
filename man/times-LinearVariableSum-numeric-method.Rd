@@ -13,6 +13,6 @@
 \item{e2}{a numeric vector}
 }
 \description{
-It will mutiply the numeric vector with both the constant and the variable in
+It will multiply the numeric vector with both the constant and the variable in
 'LinearVariableSum'
 }

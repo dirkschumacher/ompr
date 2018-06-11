@@ -3,9 +3,9 @@
 \docType{class}
 \name{LinearVariable-class}
 \alias{LinearVariable-class}
-\title{An S4 class that represents a singel variable}
+\title{An S4 class that represents a single variable}
 \description{
-An S4 class that represents a singel variable
+An S4 class that represents a single variable
 }
 \section{Slots}{
 
