@@ -283,8 +283,8 @@ test_that("numeric - varaible sum", {
   expect_equal(constr$rhs, 3)
 })
 
-test_that("nice error message if sum_expr selected non existent variable", {
-  expect_error(
+test_that("nice warning message if sum_expr selected non existent variable", {
+  expect_warning(
     MILPModel() %>%
       add_variable(x[i], i = 1:3, i != 2) %>%
       set_objective(sum_expr(x[i], i = 1:3, i != 1)),
