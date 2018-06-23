@@ -538,7 +538,8 @@ setMethod("[", signature("LinearVariableCollection", i = "ANY", j = "ANY", drop 
   }
   cols <- merge(new_indexes, index_mapping, by = join_cols)
   if (nrow(cols) != nrow(new_indexes)) {
-    warning("You used the variable '", var_name, "' with ",nrow(new_indexes)," indexes but only ",nrow(cols)," indexes will be used", call. = FALSE)
+    warning("You used the variable '", var_name, "' with ", nrow(new_indexes), 
+            " indexes but only ", nrow(cols), " indexes will be used", call. = FALSE)
   }
   new_vars <- data.table::data.table(
     variable = var_name,
