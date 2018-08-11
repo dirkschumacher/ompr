@@ -39,6 +39,8 @@ is_colwise <- function(x) {
 #' With colwise you can create columns instead. Please see the examples
 #' below.
 #'
+#' `colwise` is probably the concept that is likely to change in the future.
+#'
 #' @param ... create a colwise vector
 #' @examples
 #' \dontrun{
@@ -52,11 +54,20 @@ is_colwise <- function(x) {
 #'   # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
 #'   colwise(1, 2, 3) * x[1, colwise(1, 2, 3)]
 #'
+#'   # or you have multiple rows and columns and different coefficients
+#'   # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
+#'   # 4 * x[2, 1] + 5 * x[2, 2] + 6 * x[1, 3]
+#'   colwise(1:6) * x[1:2, colwise(1:3)]
+#'   # in the example above, the colwise vector multiplied with the variable
+#'   # has an element per row and column
+#'   # in general, it can be a multiple of number of columns
+#'
 #'   # you can also combine the two
 #'   # x[1, 1]
 #'   # x[2, 1] + x[2, 2]
 #'   # x[3, 1] + x[3, 2] + x[3, 2]
 #'   x[1:3, colwise(1, 1:2, 1:3)]
+#'
 #' }
 #' @export
 colwise <- function(...) {
@@ -416,7 +427,11 @@ setMethod("-", signature(e1 = "LinearVariableCollection", e2 = "LinearVariableCo
 setMethod("*", signature(e1 = "LinearVariableCollection", e2 = "numeric"), function(e1, e2) {
   if (is_colwise(e2)) {
     val <- e2
-    e1@variables[["coef"]] <- e1@variables[, list(coef = coef * val), by = c("variable", "row")][["coef"]]
+    attr(val, "LinearTransposedVector") <- NULL
+    # val needs to be a multiple of the number coefficients per variable
+    # it will be recycled using standard R rules
+    new_variables <- e1@variables[, list(coef = coef * val), by = "variable"]
+    e1@variables[["coef"]] <- new_variables[["coef"]]
     e1
   } else {
     row_indexes <- if (length(e2) == 1L) unique(e1@variables[["row"]]) else seq_along(e2)

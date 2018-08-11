@@ -301,3 +301,36 @@ test_that("bug 20180408: scalar variable and multiple constraints need to be han
   expected_matrix <- matrix(rep.int(1, 5), ncol = 1)
   expect_equivalent(as.matrix(constr$matrix), expected_matrix)
 })
+
+test_that("colwise can be used for all coefficients", {
+  model <- MILPModel() %>%
+    add_variable(x[i, j], i = 1:3, j = 1:2) %>%
+    add_variable(z[i, j], i = 1:3, j = 1:2) %>%
+    add_variable(y[i, j, k], i = 1:3, j = 1:2, k = 1:2) %>%
+    add_constraint(sum_expr(colwise(1:6) * x[i, j], j = 1:2) == 0, i = 1:3) %>%
+    add_constraint(sum_expr(colwise(1:6) * x[i, j], j = 1:2, i = 1:3) == 0) %>%
+    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, k = 1:2) == 0, i = 1:3) %>%
+    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, k = 1:2, i = 1:3) == 0) %>%
+    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2) == 0, i = 1:3, k = 1:2) %>%
+    add_constraint(sum_expr(colwise(1:6) * (x[i, j] +  z[i, j]), j = 1:2) == 0, i = 1:3) %>%
+    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, i = 1:3) == 0, k = 1:2)
+
+  extract_coef <- function(i) {
+    model$constraints[[i]]$lhs@variables[["coef"]]
+  }
+
+  expect_equal(extract_coef(1), 1:6)
+  expect_equal(extract_coef(2), 1:6)
+  expect_equal(extract_coef(3), 1:12)
+  expect_equal(extract_coef(4), 1:12)
+  expect_equal(extract_coef(5), 1:12)
+  expect_equal(extract_coef(6), c(1:6, 1:6))
+  expect_equal(extract_coef(7), 1:12)
+})
+
+test_that("colwise example from docs works", {
+  model <- MILPModel() %>%
+    add_variable(x[i, j], i = 1:2, j = 1:3) %>%
+    add_constraint(colwise(1:6) * x[1:2, colwise(1:3)] == 0)
+  expect_equal(model$constraints[[1]]$lhs@variables[["coef"]], 1:6)
+})

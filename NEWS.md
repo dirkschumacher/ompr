@@ -1,5 +1,8 @@
 # ompr 0.8.0.9000
 
+* You can now assign coefficients to all column/row combinations using `colwise`
+in the experimental `MILPModel` backend.
+
 # ompr 0.8.0
 
 ## General changes

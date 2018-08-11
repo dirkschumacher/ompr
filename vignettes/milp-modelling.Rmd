@@ -1,7 +1,7 @@
 ---
 title: "Modelling techniques in OMPR using MILPModel"
 author: "Dirk Schumacher"
-date: "2018-04-08"
+date: "2018-08-11"
 output: rmarkdown::github_document
 vignette: >
   %\VignetteIndexEntry{Modelling techniques in OMPR using MILPModel}
@@ -10,6 +10,8 @@ vignette: >
 ---
 
 This vignettes discribes the modelling techniques available in `ompr` to make your life easier when developing a mixed integer programming model. 
+
+It uses the `MILPModel` backend which is still experimental!
 
 ## A MILP Model
 
@@ -242,8 +244,73 @@ MILPModel() %>%
   add_constraint(sum_expr(x[1, j], j = colwise(1, 1:2, 1:3)) == 1)
 ```
 
+### Coefficients and `colwise`
 
-### Adding varialbes - vectorized
+`colwise` is probably the concept that is likely to change in the future. 
+
+However it is currently in particular necessary to set coefficients correctly within
+`sum_expr`. This section shows a couple of examples on how to use it.
+
+Below is a model that demonstrates the use of `colwise`
+to set coefficients within `sum_expr`.
+```{r}
+model <- MILPModel() %>% 
+  add_variable(x[i, j], i = 1:2, j = 1:3) %>% 
+  
+  # this creates
+  # x[1, 1] + x[1, 2] + x[1, 3]
+  # x[2, 1] + x[2, 2] + x[2, 3]
+  add_constraint(sum_expr(x[i, j], j = 1:3) == 1, i = 1:2) %>%
+  
+  # this creates
+  # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
+  # 1 * x[2, 1] + 2 * x[2, 2] + 3 * x[2, 3]
+  add_constraint(colwise(1:3) * sum_expr(x[i, j], j = 1:3) == 1, i = 1:2) %>% 
+  
+  # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
+  # 4 * x[2, 1] + 5 * x[2, 2] + 6 * x[2, 3]
+  add_constraint(sum_expr(colwise(1:6) * x[i, j], j = 1:3) == 1, i = 1:2) %>% 
+  
+  # 1 * x[1, 1] + 1 * x[1, 2] + 1 * x[1, 3]
+  # 2 * x[2, 1] + 2 * x[2, 2] + 2 * x[2, 3]
+  add_constraint(sum_expr(1:3 * x[i, j], j = 1:3) == 1, i = 1:2)
+  # the standard semantic is that numeric vectors have one coefficient
+  # for the entire row. Thus the first row gets multiplied by 1
+  # the second row by 2. And since there are only two rows, the third component
+  # gets ignored
+```
+
+Often, you have a function taking the variable indexes and returning the 
+variable coefficients. As long as the function returns a `colwise` vector,
+everything works as above. The only difficulty is to figure out the length 
+of the return value.
+
+Say you have constraint that looks like this:
+```{r, eval = FALSE}
+add_constraint(model, sum_expr(sum_fun(i, j) * x[i, j], j = 1:3) == 1, i = 1:2)
+```
+
+`sum_fun` should return a numeric vector wrapped in `colwise` with the length of 
+_any_ row index (e.g. `i`) times the length of _any_ column index (e.g. `j`). 
+In the above case `3 * 2 = 6`. 
+
+A template function could look like this:
+```{r}
+sum_fun <- function(i, j) {
+  n_rows <- length(i)
+  n_col <- length(j)
+  colwise(vapply(seq_len(n_rows * n_col), function(x) {
+    x # 1, 2, 3, 4, 5, 6
+    # where 1, 2, 3 are for cols in the first row
+    # 4, 5, 6 are the cols in the second row and so on
+  }, numeric(1L)))
+}
+```
+
+Note that when using multiple indexes, all combinations are of those indexes are bound
+to indexes.
+
+### Adding variables - vectorized
 
 Sometimes, you want to control both variable indexes and their bounds very specifically. You can either use filter expressions together with `set_bounds` or pass in the concrete variable indexes explicitly.
 

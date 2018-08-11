@@ -1,18 +1,25 @@
-#' Create a new MILP Model
+#' Experimental: Create a new MILP Model
 #'
 #' Create an an empty mixed-integer linear programming model that is
 #' about 1000 times faster than `MIPModel`.
 #' It will eventually replace the old `MIPModel` backend for linear models.
 #'
 #' Please only use it if you can deal with potential API changes in the future.
+#' When you use `MILPModel` make sure to always model your problem with
+#' `MIPModel` as well, just to make sure you get the same results.
+#'
+#' It is also always a good idea to test your model with very small input sizes
+#' and examine the coefficients and rows of the constraint matrix.
 #'
 #' @export
-MILPModel <- function() structure(list(variables = list(),
-                                       var_index_mapping_list = list(),
-                                       var_index_mapping = function(x) NULL,
-                                       objective = NULL,
-                                       constraints = list()),
-                                 class = "milp_model")
+MILPModel <- function() {
+  structure(list(variables = list(),
+                 var_index_mapping_list = list(),
+                 var_index_mapping = function(x) NULL,
+                 objective = NULL,
+                 constraints = list()),
+            class = "milp_model")
+}
 
 new_milp_variable <- function(name, arity, type, lb, ub, index_mapping_dt,
                               index_mapping) {
