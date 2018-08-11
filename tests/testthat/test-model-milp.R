@@ -292,7 +292,8 @@ test_that("nice error message if sum_expr selected non existent variable", {
   )
 })
 
-test_that("bug 20180408: scalar variable and multiple constraints need to be handled differently", {
+test_that("bug 20180408: scalar variable and multiple constraints need to be
+           handled differently", {
   model <- MILPModel() %>%
     add_variable(y) %>%
     set_objective(10 * y, sense = "min") %>%
@@ -309,11 +310,16 @@ test_that("colwise can be used for all coefficients", {
     add_variable(y[i, j, k], i = 1:3, j = 1:2, k = 1:2) %>%
     add_constraint(sum_expr(colwise(1:6) * x[i, j], j = 1:2) == 0, i = 1:3) %>%
     add_constraint(sum_expr(colwise(1:6) * x[i, j], j = 1:2, i = 1:3) == 0) %>%
-    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, k = 1:2) == 0, i = 1:3) %>%
-    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, k = 1:2, i = 1:3) == 0) %>%
-    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2) == 0, i = 1:3, k = 1:2) %>%
-    add_constraint(sum_expr(colwise(1:6) * (x[i, j] +  z[i, j]), j = 1:2) == 0, i = 1:3) %>%
-    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, i = 1:3) == 0, k = 1:2)
+    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, k = 1:2) == 0,
+                   i = 1:3) %>%
+    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2,
+                            k = 1:2, i = 1:3) == 0) %>%
+    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2) == 0,
+                   i = 1:3, k = 1:2) %>%
+    add_constraint(sum_expr(colwise(1:6) * (x[i, j] +  z[i, j]), j = 1:2) == 0,
+                   i = 1:3) %>%
+    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, i = 1:3) == 0,
+                   k = 1:2)
 
   extract_coef <- function(i) {
     model$constraints[[i]]$lhs@variables[["coef"]]
