@@ -1,5 +1,7 @@
 # ompr 0.8.0.9000
 
+* You can now assign coefficients to all column/row combinations using `colwise`
+in the experimental `MILPModel` backend.
 * Non-existent indexes in `sum_expr` now produce a warning instead of an error. The missing indexes will be ignored ([#202](https://github.com/dirkschumacher/ompr/issues/202)).
 
 # ompr 0.8.0

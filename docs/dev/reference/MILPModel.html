@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a new MILP Model — MILPModel • ompr</title>
+<title>Experimental: Create a new MILP Model — MILPModel • ompr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -21,13 +21,16 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
-
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-<meta property="og:title" content="Create a new MILP Model — MILPModel" />
+
+
+
+<meta property="og:title" content="Experimental: Create a new MILP Model — MILPModel" />
 
 <meta property="og:description" content="Create an an empty mixed-integer linear programming model that is
 about 1000 times faster than `MIPModel`.
@@ -36,7 +39,6 @@ It will eventually replace the old `MIPModel` backend for linear models." />
 
 <meta name="robots" content="noindex">
 
-
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -44,8 +46,6 @@ It will eventually replace the old `MIPModel` backend for linear models." />
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
-
-
 
 
   </head>
@@ -63,7 +63,7 @@ It will eventually replace the old `MIPModel` backend for linear models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ompr</a>
-        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.7.0.9003</span>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.8.0.9000</span>
       </span>
     </div>
 
@@ -111,7 +111,7 @@ It will eventually replace the old `MIPModel` backend for linear models." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a new MILP Model</h1>
+    <h1>Experimental: Create a new MILP Model</h1>
     <small class="dont-index">Source: <a href='https://github.com/dirkschumacher/ompr/blob/master/R/milp.R'><code>R/milp.R</code></a></small>
     <div class="hidden name"><code>MILPModel.Rd</code></div>
     </div>
@@ -128,7 +128,11 @@ It will eventually replace the old `MIPModel` backend for linear models.</p>
         
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Please only use it if you can deal with potential API changes in the future.</p>
+    <p>Please only use it if you can deal with potential API changes in the future.
+When you use `MILPModel` make sure to always model your problem with
+`MIPModel` as well, just to make sure you get the same results.</p>
+<p>It is also always a good idea to test your model with very small input sizes
+and examine the coefficients and rows of the constraint matrix.</p>
     
 
   </div>
