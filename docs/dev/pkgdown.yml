@@ -1,6 +1,6 @@
 pandoc: '2.2'
-pkgdown: 0.1.0.9000
-pkgdown_sha: cfc0f1dbfd535cfad839cc90cd1c41d3c9db26a7
+pkgdown: 1.1.0
+pkgdown_sha: ~
 articles:
   milp-modelling: milp-modelling.html
   milp-problem-tsp: milp-problem-tsp.html
