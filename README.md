@@ -156,4 +156,5 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## Related Projects
 
+* [CVXR](https://cvxr.rbind.io/) - an excellent package for "object-oriented modeling language for convex optimization". LP/MIP is a special case.
 * [ROML](https://r-forge.r-project.org/projects/roml/) follows a similiar approach, but it seems the package is still under initial development.
