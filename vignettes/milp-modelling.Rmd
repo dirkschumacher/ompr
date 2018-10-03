@@ -218,7 +218,7 @@ You can also add vectors columnwise using the function `colwise` or `as_colwise`
 MILPModel() %>% 
   add_variable(x[i, j], i = 1:n, j = 1:n) %>% 
   add_constraint(sum_expr(x[i, j], i = 1:n) == 1, j = 1:n) %>% 
-  add_constraint(x[1:n, colwise(1:n)] == 1) # this this equivalent
+  add_constraint(x[colwise(1:n), 1:n] == 1) # this this equivalent
 
 ```
 
