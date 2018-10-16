@@ -10,26 +10,21 @@ init:
 install:
   ps: Bootstrap
 
-environment:
-  global:
-    USE_RTOOLS: true
-    RTOOLS_VERSION: 34
+cache:
+  - C:\RLibrary
 
+# Adapt as necessary starting from here
+
+environment:
   matrix:
   - R_VERSION: stable
 
   - R_VERSION: oldrel
-    RTOOLS_VERSION: 33
 
   - R_VERSION: devel
-    PKGTYPE: source
-
-
-# Adapt as necessary starting from here
 
 build_script:
   - travis-tool.sh install_deps
-  - travis-tool.sh install_r stringi
 
 test_script:
   - travis-tool.sh run_tests
@@ -56,3 +51,4 @@ artifacts:
 
   - path: '\*_*.zip'
     name: Bits
+
