@@ -229,3 +229,20 @@ test_that("bug 20180606: extract indexed variable fails if n = 1", {
   expect_true(is.data.frame(res_df))
   expect_equal(res_df$value, 1)
 })
+
+ test_that("issue 244: get_solution match the right variable: get_solution(solution, y[i]) shouldn't match xy[i]", {
+  model <- MIPModel() %>%
+    add_variable(xy[i], i = 1:3, ub = 1) %>%
+    add_variable(y[i], i = 1:3, ub = 1) %>%
+    set_objective(sum_expr(xy[i], i = 1:3))
+  solution <- new_solution(status = "optimal",
+                  model = model,
+                  objective_value = 3,
+                  solution = setNames(c(2, 2, 2, 1, 1, 1),
+                                      c("y[1]", "y[3]", "y[3]",
+                                        "xy[1]", "xy[3]", "xy[3]")))
+  result <- get_solution(solution, y[i])
+  expect_equivalent(result$value, c(2, 2, 2))
+})
+ 
+ 
