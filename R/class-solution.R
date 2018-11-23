@@ -109,7 +109,8 @@ extract_solution <- function(model, solution_vector, expr) {
                          as.character(as.numeric(ast[[i]])))
       }
     }
-    instance_pattern <- paste0(var_name,
+    instance_pattern <- paste0("^",
+                               var_name,
                                "\\[",
                                paste0(idx_pattern, collapse = ","),
                                "\\]")
