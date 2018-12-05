@@ -18,6 +18,7 @@ in the experimental `MILPModel` backend.
 ## Bugfixes
 
 * You can now extract solutions of indexed variables that have length one (#[198](https://github.com/dirkschumacher/ompr/issues/198))
+* Fixed a bug were get_solution could return mixed up values when variables had partially similar names (ex: "s" and "bus")
 
 # ompr 0.7.0
 
