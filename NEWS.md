@@ -4,6 +4,11 @@
 in the experimental `MILPModel` backend.
 * Non-existent indexes in `sum_expr` now produce a warning instead of an error. The missing indexes will be ignored ([#202](https://github.com/dirkschumacher/ompr/issues/202)).
 
+## Bugfixes
+
+* Fixed a bug were `get_solution` could return mixed up values when variables had partially similar names (eg: `s[i]` and `bus[i]`) by @hugolarzabal ([#244](https://github.com/dirkschumacher/ompr/issues/244)).
+
+
 # ompr 0.8.0
 
 ## General changes
@@ -18,7 +23,6 @@ in the experimental `MILPModel` backend.
 ## Bugfixes
 
 * You can now extract solutions of indexed variables that have length one (#[198](https://github.com/dirkschumacher/ompr/issues/198))
-* Fixed a bug were get_solution could return mixed up values when variables had partially similar names (ex: "s" and "bus")
 
 # ompr 0.7.0
 
