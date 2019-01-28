@@ -27,7 +27,7 @@ void check_for_unknown_vars_impl(List model, SEXP x) {
           throw std::invalid_argument("");
         }
       } catch (...) {
-        stop(error_msg);
+        ::Rf_error(error_msg.c_str());
       }
     }
     if (is_call) {
@@ -61,7 +61,7 @@ void check_for_unknown_vars_impl(List model, SEXP x) {
               }
             }
           } catch (...) {
-            stop(error_msg);
+            ::Rf_error(error_msg.c_str());
           }
           continue;
         }
