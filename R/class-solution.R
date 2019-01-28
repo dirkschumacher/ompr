@@ -113,7 +113,8 @@ extract_solution <- function(model, solution_vector, expr) {
                                var_name,
                                "\\[",
                                paste0(idx_pattern, collapse = ","),
-                               "\\]")
+                               "\\]", 
+                               "$")
     if (length(free_vars) == 0) {
       return(solution_vector[grepl(x = names(solution_vector),
                                      pattern = instance_pattern)])
