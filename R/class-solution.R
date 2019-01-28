@@ -109,10 +109,12 @@ extract_solution <- function(model, solution_vector, expr) {
                          as.character(as.numeric(ast[[i]])))
       }
     }
-    instance_pattern <- paste0(var_name,
+    instance_pattern <- paste0("^",
+                               var_name,
                                "\\[",
                                paste0(idx_pattern, collapse = ","),
-                               "\\]")
+                               "\\]", 
+                               "$")
     if (length(free_vars) == 0) {
       return(solution_vector[grepl(x = names(solution_vector),
                                      pattern = instance_pattern)])
