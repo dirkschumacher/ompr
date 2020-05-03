@@ -8,10 +8,12 @@ new_objective_function <- function(expression,
                                    original_expression,
                                    sense) {
   stopifnot(length(sense) == 1 &&
-              sense %in% c("min", "max"))
-  structure(list(expression = expression,
-                 original_expression = original_expression,
-                 sense = sense), class = "model_objective")
+    sense %in% c("min", "max"))
+  structure(list(
+    expression = expression,
+    original_expression = original_expression,
+    sense = sense
+  ), class = "model_objective")
 }
 
 
@@ -29,25 +31,31 @@ new_objective_function <- function(expression,
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
-#'  add_variable(x) %>% # creates 1 variable named x
-#'  add_variable(y[i], i = 1:10, i %% 2 == 0,
-#'                type = "binary") # creates 4 variables
-#'
+#'   add_variable(x) %>% # creates 1 variable named x
+#'   add_variable(y[i],
+#'     i = 1:10, i %% 2 == 0,
+#'     type = "binary"
+#'   ) # creates 4 variables
 #' @export
 add_variable <- function(.model, .variable, ..., type = "continuous",
                          lb = -Inf, ub = Inf) {
-  add_variable_(.model = .model,
-                .variable = lazyeval::as.lazy(substitute(.variable),
-                                             parent.frame()),
-                type = type,
-                lb = lb, ub = ub, .dots = lazyeval::lazy_dots(...))
+  add_variable_(
+    .model = .model,
+    .variable = lazyeval::as.lazy(
+      substitute(.variable),
+      parent.frame()
+    ),
+    type = type,
+    lb = lb, ub = ub, .dots = lazyeval::lazy_dots(...)
+  )
 }
 
 # helper function to check variable bounds
 check_bounds <- function(lb, ub) {
   if (any(ub < lb)) {
     stop("The upper bound must not be smaller than the lower bound.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (any(!is.numeric(lb) | !is.numeric(ub))) {
     stop("lb and ub must be a number.", call. = FALSE)
@@ -69,12 +77,15 @@ add_variable_.optimization_model <- function(.model, .variable, ...,
                                              lb = -Inf, ub = Inf, .dots) {
   if (length(lb) != 1 || length(ub) != 1) {
     stop("lb and ub must be of length 1. I.e. just a single number.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   check_bounds(lb, ub)
   if (length(type) != 1 || !type %in% c("continuous", "binary", "integer")) {
-    stop(paste0("The type of a variable needs to be either",
-                " continuous, binary or integer."), call. = FALSE)
+    stop(paste0(
+      "The type of a variable needs to be either",
+      " continuous, binary or integer."
+    ), call. = FALSE)
   }
   if (type == "binary") {
     if (is.infinite(lb)) {
@@ -84,13 +95,17 @@ add_variable_.optimization_model <- function(.model, .variable, ...,
       ub <- 1
     }
     if (!lb %in% c(0, 1)) {
-      warning(paste0("lower bound of binary variable can ",
-              "either be 0 or 1. Setting it to 0"), call. = FALSE)
+      warning(paste0(
+        "lower bound of binary variable can ",
+        "either be 0 or 1. Setting it to 0"
+      ), call. = FALSE)
       lb <- 0
     }
     if (!ub %in% c(0, 1)) {
-      warning(paste0("upper bound of binary variable can ",
-                     "either be 0 or 1. Setting it to 1"), call. = FALSE)
+      warning(paste0(
+        "upper bound of binary variable can ",
+        "either be 0 or 1. Setting it to 1"
+      ), call. = FALSE)
       ub <- 1
     }
   }
@@ -99,10 +114,11 @@ add_variable_.optimization_model <- function(.model, .variable, ...,
   expr <- variable$expr
   if (lazyeval::is_name(expr)) {
     var_name <- as.character(expr)
-    var <- new_variable(arity = 0L,
-               type = type, instances = "",
-               lb = lb, ub = ub
-               )
+    var <- new_variable(
+      arity = 0L,
+      type = type, instances = "",
+      lb = lb, ub = ub
+    )
     model$variables[[var_name]] <- var
   } else if (lazyeval::is_call(expr) && expr[[1]] == "[") {
 
@@ -115,42 +131,56 @@ add_variable_.optimization_model <- function(.model, .variable, ...,
     }
 
     classified_quantifiers <- classify_quantifiers(lazy_dots)
-    bound_subscripts <- lapply(classified_quantifiers$quantifiers,
-                               lazyeval::lazy_eval)
-    bound_expr <- bind_expression(var_name, expr, variable$env,
-                                 bound_subscripts)
+    bound_subscripts <- lapply(
+      classified_quantifiers$quantifiers,
+      lazyeval::lazy_eval
+    )
+    bound_expr <- bind_expression(
+      var_name, expr, variable$env,
+      bound_subscripts
+    )
     arity <- as.integer(length(bound_expr) - 2)
 
     # then check if all free variables are present in "..."
-    subscripts <- lapply(3:length(bound_expr),
-                         function(x) as.character(bound_expr[x]))
+    subscripts <- lapply(
+      3:length(bound_expr),
+      function(x) as.character(bound_expr[x])
+    )
     bound_subscripts <- bound_subscripts[
-      names(bound_subscripts) %in% subscripts]
+      names(bound_subscripts) %in% subscripts
+    ]
     replacement_idxs <- subscripts %in% names(bound_subscripts)
     subscripts[replacement_idxs] <- bound_subscripts
 
     # now generate all variables
-    candidates <- build_quantifier_candidates(subscripts,
-                                              names(bound_subscripts),
-                                              classified_quantifiers$filters)
-    zero_vars_msg <- paste0("The number of different indexes for variable ",
-                        var_name, " is 0.")
+    candidates <- build_quantifier_candidates(
+      subscripts,
+      names(bound_subscripts),
+      classified_quantifiers$filters
+    )
+    zero_vars_msg <- paste0(
+      "The number of different indexes for variable ",
+      var_name, " is 0."
+    )
     validate_quantifier_candidates(candidates, zero_vars_msg)
     n_vars <- nrow(candidates)
     instances <- apply(candidates, 1, function(row) {
       paste0(as.integer(row), collapse = "_")
     })
     var <- new_variable(
-               arity = arity,
-               type = type,
-               instances = instances,
-               lb = rep.int(lb, n_vars),
-               ub = rep.int(ub, n_vars))
+      arity = arity,
+      type = type,
+      instances = instances,
+      lb = rep.int(lb, n_vars),
+      ub = rep.int(ub, n_vars)
+    )
     model$variables[[var_name]] <- var
   } else {
-    stop(paste0("The variable definition does not seem to be right.",
-                " Take a look at the example models on the website on how",
-                " to formulate variables"), call. = FALSE)
+    stop(paste0(
+      "The variable definition does not seem to be right.",
+      " Take a look at the example models on the website on how",
+      " to formulate variables"
+    ), call. = FALSE)
   }
   model
 }
@@ -170,15 +200,15 @@ add_variable_.optimization_model <- function(.model, .variable, ...,
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
-#'  add_variable(x[i], i = 1:5) %>%
-#'  add_constraint(x[i] >= 1, i = 1:5) %>% # creates 5 constraints
-#'  set_bounds(x[i], lb = 3, i = 1:3)
-#'
+#'   add_variable(x[i], i = 1:5) %>%
+#'   add_constraint(x[i] >= 1, i = 1:5) %>% # creates 5 constraints
+#'   set_bounds(x[i], lb = 3, i = 1:3)
 #' @export
 set_bounds <- function(.model, .variable, ..., lb = NULL, ub = NULL) {
   set_bounds_(.model, lazyeval::as.lazy(substitute(.variable), parent.frame()),
-              lb = lb, ub = ub,
-              .dots = lazyeval::lazy_dots(...))
+    lb = lb, ub = ub,
+    .dots = lazyeval::lazy_dots(...)
+  )
 }
 
 #' @inheritParams set_bounds
@@ -192,7 +222,7 @@ set_bounds_ <- function(.model, .variable, ...,
 
 #' @export
 set_bounds_.optimization_model <- function(.model, .variable, ...,
-                                   lb = NULL, ub = NULL, .dots) {
+                                           lb = NULL, ub = NULL, .dots) {
   if (is.numeric(lb) && is.numeric(ub)) {
     check_bounds(lb, ub)
   }
@@ -200,8 +230,8 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
   model <- .model
   is_single_variable <- lazyeval::is_name(variable$expr)
   is_indexed_variable <- lazyeval::is_call(variable$expr) &&
-                          variable$expr[[1]] == "[" &&
-                          length(variable$expr) >= 3
+    variable$expr[[1]] == "[" &&
+    length(variable$expr) >= 3
   model_variable_names <- names(model$variables)
   replace_lb <- !is.null(lb) && is.numeric(lb)
   replace_ub <- !is.null(ub) && is.numeric(ub)
@@ -234,13 +264,19 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
       lazy_dots <- c(lazyeval::as.lazy_dots(.dots), lazy_dots)
     }
     classified_quantifiers <- classify_quantifiers(lazy_dots)
-    bound_subscripts <- lapply(classified_quantifiers$quantifiers,
-                             lazyeval::lazy_eval)
-    quantifier_combinations <- build_quantifier_candidates(bound_subscripts,
-                                            names(bound_subscripts),
-                                            classified_quantifiers$filters)
-    zero_vars_msg <- paste0("The number of different indexes for set_bounds ",
-                      "for variable ", var_name, " is 0.")
+    bound_subscripts <- lapply(
+      classified_quantifiers$quantifiers,
+      lazyeval::lazy_eval
+    )
+    quantifier_combinations <- build_quantifier_candidates(
+      bound_subscripts,
+      names(bound_subscripts),
+      classified_quantifiers$filters
+    )
+    zero_vars_msg <- paste0(
+      "The number of different indexes for set_bounds ",
+      "for variable ", var_name, " is 0."
+    )
     if (quantified_indexes) {
       validate_quantifier_candidates(quantifier_combinations, zero_vars_msg)
     }
@@ -255,7 +291,8 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
         i_name <- as.character(x)
         if (!i_name %in% colnames(quantifier_combinations)) {
           stop(paste0("Index ", i_name, " not bound by quantifier"),
-               call. = FALSE)
+            call. = FALSE
+          )
         }
         quantifier_combinations[[i_name]]
       }
@@ -292,16 +329,19 @@ set_bounds_.optimization_model <- function(.model, .variable, ...,
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
-#'  add_variable(x, lb = 2) %>%
-#'  add_variable(y, lb = 40) %>%
-#'  set_objective(x + y, sense = "min")
-#'
+#'   add_variable(x, lb = 2) %>%
+#'   add_variable(y, lb = 40) %>%
+#'   set_objective(x + y, sense = "min")
 #' @export
 set_objective <- function(model, expression,
-                                     sense = c("max", "min")) {
-  set_objective_(model, expression = lazyeval::as.lazy(substitute(expression),
-                                                       parent.frame()),
-                 sense = sense)
+                          sense = c("max", "min")) {
+  set_objective_(model,
+    expression = lazyeval::as.lazy(
+      substitute(expression),
+      parent.frame()
+    ),
+    sense = sense
+  )
 }
 
 #' @inheritParams set_objective
@@ -314,7 +354,7 @@ set_objective_ <- function(model, expression,
 
 #' @export
 set_objective_.optimization_model <- function(model, expression,
-                                      sense = c("max", "min")) {
+                                              sense = c("max", "min")) {
   stopifnot(length(expression) != 1)
   expression <- lazyeval::as.lazy(expression)
   sense <- match.arg(sense)
@@ -322,14 +362,18 @@ set_objective_.optimization_model <- function(model, expression,
   ast <- normalize_expression(model, obj_ast, expression$env)
   var_names <- names(model$variables)
   if (is_non_linear(var_names, ast)) {
-    stop(paste0("The objective is probably non-linear. ",
-                "Currently, only linear functions are supported."),
-         call. = FALSE)
+    stop(paste0(
+      "The objective is probably non-linear. ",
+      "Currently, only linear functions are supported."
+    ),
+    call. = FALSE
+    )
   }
   obj <- new_objective_function(
-             expression = as.expression(ast),
-             original_expression = as.expression(obj_ast),
-             sense = sense)
+    expression = as.expression(ast),
+    original_expression = as.expression(obj_ast),
+    sense = sense
+  )
   model$objective <- obj
   model
 }
@@ -360,16 +404,18 @@ print.optimization_model <- function(x, ...) {
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
-#'  add_variable(x[i], i = 1:5) %>%
-#'  add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
-#'
+#'   add_variable(x[i], i = 1:5) %>%
+#'   add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
 #' @export
 add_constraint <- function(.model, .constraint_expr, ...,
-                                      .show_progress_bar = TRUE) {
-  add_constraint_(.model, lazyeval::as.lazy(substitute(.constraint_expr),
-                                                     parent.frame()),
-                  .dots = lazyeval::lazy_dots(...),
-                  .show_progress_bar = .show_progress_bar)
+                           .show_progress_bar = TRUE) {
+  add_constraint_(.model, lazyeval::as.lazy(
+    substitute(.constraint_expr),
+    parent.frame()
+  ),
+  .dots = lazyeval::lazy_dots(...),
+  .show_progress_bar = .show_progress_bar
+  )
 }
 
 #' @inheritParams add_constraint
@@ -386,21 +432,23 @@ add_constraint_ <- function(.model,
 
 #' @export
 add_constraint_.optimization_model <- function(.model,
-                                      .constraint_expr,
-                                      ...,
-                                      .dots,
-                                      .show_progress_bar = TRUE) {
+                                               .constraint_expr,
+                                               ...,
+                                               .dots,
+                                               .show_progress_bar = TRUE) {
   constraint_expr <- lazyeval::as.lazy(.constraint_expr)
   model <- .model
   constraint_ast <- constraint_expr$expr
   if (length(constraint_ast) != 3) {
     stop("constraint not well formed. Must be a linear (in)equality.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   sense <- as.character(constraint_ast[[1]])
   if (!sense %in% c(">=", "<=", "==")) {
     stop("Does not recognize constraint expr. Missing the constraint relation",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   lhs_ast <- constraint_ast[[2]]
   rhs_ast <- constraint_ast[[3]]
@@ -410,40 +458,52 @@ add_constraint_.optimization_model <- function(.model,
     lazy_dots <- c(lazyeval::as.lazy_dots(.dots), lazy_dots)
   }
   classified_quantifiers <- classify_quantifiers(lazy_dots)
-  bound_subscripts <- lapply(classified_quantifiers$quantifiers,
-                             lazyeval::lazy_eval)
+  bound_subscripts <- lapply(
+    classified_quantifiers$quantifiers,
+    lazyeval::lazy_eval
+  )
   add_constraint_internal <- function(envir = parent_env) {
     lhs_ast <- normalize_expression(model, lhs_ast, envir)
     rhs_ast <- normalize_expression(model, rhs_ast, envir)
     var_names <- names(model$variables)
     if (is_non_linear(var_names, lhs_ast)) {
-      stop(paste0("The left-hand-side is probably non-linear. ",
-                  "Currently, only linear constraints are ",
-                  "supported."), call. = FALSE)
+      stop(paste0(
+        "The left-hand-side is probably non-linear. ",
+        "Currently, only linear constraints are ",
+        "supported."
+      ), call. = FALSE)
     }
     if (is_non_linear(var_names, rhs_ast)) {
-      stop(paste0("The right-hand-side is probably non-linear. ",
-                  "Currently, only linear constraints are ",
-                  "supported."), call. = FALSE)
+      stop(paste0(
+        "The right-hand-side is probably non-linear. ",
+        "Currently, only linear constraints are ",
+        "supported."
+      ), call. = FALSE)
     }
-    new_constraint(lhs = as.expression(lhs_ast),
-                      rhs = as.expression(rhs_ast),
-                      sense = sense)
+    new_constraint(
+      lhs = as.expression(lhs_ast),
+      rhs = as.expression(rhs_ast),
+      sense = sense
+    )
   }
   constraints <- model$constraints
   if (is.list(bound_subscripts) && length(bound_subscripts) > 0) {
     filter_fn <- function(x) is.numeric(x) & length(x) > 0
     bound_subscripts <- Filter(filter_fn, bound_subscripts)
-    var_combinations <- build_quantifier_candidates(bound_subscripts,
-                                              names(bound_subscripts),
-                                              classified_quantifiers$filters)
+    var_combinations <- build_quantifier_candidates(
+      bound_subscripts,
+      names(bound_subscripts),
+      classified_quantifiers$filters
+    )
     zero_vars_msg <- "The number of different indexes is 0 for this constraint"
     validate_quantifier_candidates(var_combinations, zero_vars_msg)
 
     # let's init a progress bar
     progress_format <- "  adding constraints [:bar] :percent eta :eta"
-    p <- progress::progress_bar$new(total = nrow(var_combinations),
-                                    format = progress_format)
+    p <- progress::progress_bar$new(
+      total = nrow(var_combinations),
+      format = progress_format
+    )
     p$tick(0)
     new_constraints <- apply(var_combinations, 1, function(row) {
       calling_env <- as.environment(as.list(row))
@@ -475,16 +535,23 @@ solve_model <- function(model, solver) UseMethod("solve_model")
 #' @export
 solve_model.optimization_model <- function(model, solver) {
   if (!is.function(solver)) {
-    stop(paste0("Solver is not a function Model -> Solution.\n",
-                "Take a look at the examples on the website on how to call",
-                " solve_model."))
+    stop(paste0(
+      "Solver is not a function Model -> Solution.\n",
+      "Take a look at the examples on the website on how to call",
+      " solve_model."
+    ))
   }
   solver(model)
 }
 
 #' Create a new MIP Model
 #' @export
-MIPModel <- function() structure(list(variables = list(),
-                                      objective = NULL,
-                                      constraints = list()),
-                                 class = "optimization_model")
+MIPModel <- function() {
+  structure(list(
+    variables = list(),
+    objective = NULL,
+    constraints = list()
+  ),
+  class = "optimization_model"
+  )
+}

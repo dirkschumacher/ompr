@@ -17,8 +17,11 @@ new_variable <- function(arity, type, instances, lb, ub,
   stopifnot(length(type) == 1)
   stopifnot(arity >= 0)
   stopifnot(type %in% c("binary", "continuous", "integer"))
-  structure(list(arity = arity,
-             type = type, instances = instances,
-             lb = lb, ub = ub),
-            class = "model_variable")
+  structure(list(
+    arity = arity,
+    type = type, instances = instances,
+    lb = lb, ub = ub
+  ),
+  class = "model_variable"
+  )
 }

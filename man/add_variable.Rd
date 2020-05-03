@@ -5,11 +5,17 @@
 \alias{add_variable_}
 \title{Add a variable to the model}
 \usage{
-add_variable(.model, .variable, ..., type = "continuous", lb = -Inf,
-  ub = Inf)
+add_variable(.model, .variable, ..., type = "continuous", lb = -Inf, ub = Inf)
 
-add_variable_(.model, .variable, ..., type = "continuous", lb = -Inf,
-  ub = Inf, .dots)
+add_variable_(
+  .model,
+  .variable,
+  ...,
+  type = "continuous",
+  lb = -Inf,
+  ub = Inf,
+  .dots
+)
 }
 \arguments{
 \item{.model}{the model}

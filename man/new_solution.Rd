@@ -4,9 +4,14 @@
 \alias{new_solution}
 \title{Create a new solution}
 \usage{
-new_solution(model, objective_value, status, solution,
+new_solution(
+  model,
+  objective_value,
+  status,
+  solution,
   solution_column_duals = function() NA_real_,
-  solution_row_duals = function() NA_real_)
+  solution_row_duals = function() NA_real_
+)
 }
 \arguments{
 \item{model}{the optimization model that was solved}

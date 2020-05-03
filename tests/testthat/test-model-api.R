@@ -52,8 +52,10 @@ describe("objective_function()", {
   it("returns a sparse vector", {
     n <- 2
     model <- MIPModel() %>%
-      add_variable(x[i, j], i = 1:n, j = 1:n,
-                   type = "integer", lb = 0, ub = 1) %>%
+      add_variable(x[i, j],
+        i = 1:n, j = 1:n,
+        type = "integer", lb = 0, ub = 1
+      ) %>%
       set_bounds(x[i, j], i = 1:n, j = 1:n, lb = 0, ub = 0) %>%
       set_objective(sum_expr(x[i, j], i = 1:n, j = 1:n)) %>%
       add_constraint(sum_expr(x[i, j], i = 1:n, j = 1:n) <= 10)
@@ -111,8 +113,10 @@ describe("extract_constraints()", {
       add_variable(y[i], i = 1:3) %>%
       add_constraint(x[i] + y[i] <= 1, i = 1:3)
     result <- extract_constraints(model)
-    exp_matrix <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1,
-                           1, 0, 0, 0, 1, 0, 0, 0, 1), ncol = 6, nrow = 3)
+    exp_matrix <- matrix(c(
+      1, 0, 0, 0, 1, 0, 0, 0, 1,
+      1, 0, 0, 0, 1, 0, 0, 0, 1
+    ), ncol = 6, nrow = 3)
     expect_equivalent(exp_matrix, as.matrix(result$matrix))
   })
   it("returns the constraint right hand side", {
@@ -221,8 +225,10 @@ describe("variable_bounds()", {
 
 test_that("bug 20170312: variable_keys has wrong orderning", {
   model <- MIPModel() %>%
-    add_variable(x[i, j], i = 1:2, j = 1:3, type = "integer",
-                 lb = 0, ub = 5) %>%
+    add_variable(x[i, j],
+      i = 1:2, j = 1:3, type = "integer",
+      lb = 0, ub = 5
+    ) %>%
     set_bounds(x[i, i], i = 1:2, lb = 1, ub = 1)
   result <- variable_bounds(model)
   keys <- variable_keys(model)

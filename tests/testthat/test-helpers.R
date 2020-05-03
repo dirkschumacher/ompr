@@ -35,8 +35,10 @@ test_that("extract_coefficients can extract coefficients", {
 test_that("check_expression handles special cases", {
   expect_silent(check_expression(add_variable(MIPModel(), x), substitute(x)))
   expect_error(check_expression(add_variable(MIPModel(), x), substitute(y)))
-  expect_error(check_expression(add_variable(MIPModel(), x[i], i = 1),
-                                substitute(x)))
+  expect_error(check_expression(
+    add_variable(MIPModel(), x[i], i = 1),
+    substitute(x)
+  ))
 })
 
 test_that("extract_coefficients can extract coefficients #2", {
@@ -47,7 +49,7 @@ test_that("extract_coefficients can extract coefficients #2", {
 })
 
 test_that("extract_coefficients fails if unkown operator is used", {
-  ast <- substitute(5 ^ x)
+  ast <- substitute(5^x)
   expect_error(extract_coefficients_internal(ast))
 })
 
@@ -62,7 +64,7 @@ test_that("bug 20161107 #103: bug in extract coefficient (1)", {
   a <- 12
   m <- MIPModel() %>%
     add_variable(x) %>%
-    set_objective(- (a * x))
+    set_objective(-(a * x))
   result <- extract_coefficients_internal(m$objective$expression[[1]])
   expect_equal(-12, result$coefficients[["x"]]$coef)
   expect_equal(0, result$constant)

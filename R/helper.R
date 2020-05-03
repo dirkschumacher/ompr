@@ -63,7 +63,7 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
     if (!is.call(ast)) {
       # let's try to evaluate the whole sub-tree
       if (lazyeval::is_name(ast) &&
-          !as.character(ast) %in% exclude_vars) {
+        !as.character(ast) %in% exclude_vars) {
         new_ast_eval <- try_eval_exp(ast, envir)
         if (is.numeric(new_ast_eval)) {
           inplace_update_ast(path, new_ast_eval)
@@ -100,9 +100,11 @@ try_eval_exp_rec <- function(base_ast, envir = baseenv()) {
         # we need to revisit the same node after the updates
         push(list(ast = ast, path = path, stop_traversal = TRUE))
         for (i in 2:length(ast)) {
-          new_element <- list(ast = ast[[i]],
-                              path = c(path, i),
-                              exclude_vars = exclude_vars)
+          new_element <- list(
+            ast = ast[[i]],
+            path = c(path, i),
+            exclude_vars = exclude_vars
+          )
           push(new_element)
         }
       } else {
@@ -175,11 +177,13 @@ bind_variables <- function(model, ast, calling_env) {
       exists(x, calling_env)
     }, names(model$variables))
     problematic_vars <- names(model$variables)[problematic_vars]
-    warning(paste0("There are variables in your environment that interfere",
-                   " with your defined model variables: ",
-                   paste0(problematic_vars, collapse = ","),
-                   ". This can lead",
-                   " to unexpected behaviour."), call. = FALSE)
+    warning(paste0(
+      "There are variables in your environment that interfere",
+      " with your defined model variables: ",
+      paste0(problematic_vars, collapse = ","),
+      ". This can lead",
+      " to unexpected behaviour."
+    ), call. = FALSE)
   }
   try_eval_exp_rec(ast, calling_env)
 }
@@ -230,8 +234,10 @@ standardize_ast <- function(ast) {
         push_idx(local_ast[[2]], path, multiplier = multiplier)
       } else if (operator == "[") {
         if (need_multiplication && multiplier != 1) {
-          new_ast <- substitute(x * y,
-                                list(x = multiplier, y = local_ast))
+          new_ast <- substitute(
+            x * y,
+            list(x = multiplier, y = local_ast)
+          )
           inplace_update_ast(path, new_ast)
         }
       } else if (operator %in% c("+", "-") && ast_length == 2) {
@@ -247,14 +253,22 @@ standardize_ast <- function(ast) {
         # if we have to multiply then we need to do something
         if (need_multiplication) {
           if (operator == "+") {
-            new_ast <- substitute(x * y + x * z,
-                                  list(x = multiplier, y = local_ast[[2]],
-                                       z = local_ast[[3]]))
+            new_ast <- substitute(
+              x * y + x * z,
+              list(
+                x = multiplier, y = local_ast[[2]],
+                z = local_ast[[3]]
+              )
+            )
           } else if (operator == "-") {
-            new_ast <- substitute(x1 * y + x2 * z,
-                                  list(x1 = multiplier, x2 = -1 * multiplier,
-                                       y = local_ast[[2]],
-                                       z = local_ast[[3]]))
+            new_ast <- substitute(
+              x1 * y + x2 * z,
+              list(
+                x1 = multiplier, x2 = -1 * multiplier,
+                y = local_ast[[2]],
+                z = local_ast[[3]]
+              )
+            )
           }
 
           # also try to evaluate the two branches, maybe we can simplify sth.
@@ -265,8 +279,10 @@ standardize_ast <- function(ast) {
           inplace_update_ast(c(path), new_ast)
           push_idx(new_ast, path)
         } else if (operator == "-") {
-          new_ast <- substitute(x + -1 * y, list(x = local_ast[[2]],
-                                                 y = local_ast[[3]]))
+          new_ast <- substitute(x + -1 * y, list(
+            x = local_ast[[2]],
+            y = local_ast[[3]]
+          ))
           inplace_update_ast(c(path), new_ast)
           push_idx(new_ast, path)
         } else {
@@ -285,11 +301,15 @@ standardize_ast <- function(ast) {
         } else if (!is_multiplication) {
           # if it is a devision, let's make it a multiplication
           if (left_is_num && !right_is_num) {
-            replacement <- list(x = mult_num / local_ast[[2]],
-                                y = local_ast[[3]])
+            replacement <- list(
+              x = mult_num / local_ast[[2]],
+              y = local_ast[[3]]
+            )
           } else if (!left_is_num && right_is_num) {
-            replacement <- list(x = local_ast[[2]],
-                                y =  mult_num / local_ast[[3]])
+            replacement <- list(
+              x = local_ast[[2]],
+              y = mult_num / local_ast[[3]]
+            )
           }
           new_ast <- substitute(y * x, replacement)
           inplace_update_ast(c(path), new_ast)
@@ -313,8 +333,10 @@ standardize_ast <- function(ast) {
       }
     } else if (lazyeval::is_name(local_ast)) {
       if (need_multiplication && multiplier != 1) {
-        new_ast <- substitute(x * y,
-                              list(x = multiplier, y = local_ast))
+        new_ast <- substitute(
+          x * y,
+          list(x = multiplier, y = local_ast)
+        )
         inplace_update_ast(path, new_ast)
       }
     }
@@ -351,10 +373,14 @@ extract_coefficients_internal <- function(ast) {
     if (is.call(local_ast)) {
       operator <- local_ast[[1]]
       if (as.character(operator) == "+") {
-        push(list(ast = try_eval_exp(local_ast[[2]]),
-                  path = c(path, 2)))
-        push(list(ast = try_eval_exp(local_ast[[3]]),
-                  path = c(path, 3)))
+        push(list(
+          ast = try_eval_exp(local_ast[[2]]),
+          path = c(path, 2)
+        ))
+        push(list(
+          ast = try_eval_exp(local_ast[[3]]),
+          path = c(path, 3)
+        ))
       } else if (as.character(operator) == "*") {
         local_ast[[2]] <- try_eval_exp(local_ast[[2]])
         local_ast[[3]] <- try_eval_exp(local_ast[[3]])
@@ -369,27 +395,38 @@ extract_coefficients_internal <- function(ast) {
 
         coef <- try_eval_exp(local_ast[[numeric_idx]])
         if (!is.numeric(coef)) coef <- 0
-        coefficent <- list(ast = local_ast[[expr_idx]],
-                           coef = coef)
+        coefficent <- list(
+          ast = local_ast[[expr_idx]],
+          coef = coef
+        )
         result <<- c(result, list(list(
           constant = 0,
           coefficients = list(coefficent)
         )))
       } else if (as.character(operator) == "[") {
-        result <<- c(result, list(list(constant = 0,
-             coefficients = list(list(ast = local_ast, coef = 1)))))
+        result <<- c(result, list(list(
+          constant = 0,
+          coefficients = list(list(ast = local_ast, coef = 1))
+        )))
       } else {
         stop(paste0("Unexpected operator '", operator, "' found."),
-             call. = FALSE)
+          call. = FALSE
+        )
       }
     } else {
       if (is.numeric(local_ast)) {
-        result <<- c(result,
-                     list(list(constant = as.numeric(local_ast),
-                          coefficients = list())))
+        result <<- c(
+          result,
+          list(list(
+            constant = as.numeric(local_ast),
+            coefficients = list()
+          ))
+        )
       } else {
-        result <<- c(result, list(list(constant = 0,
-             coefficients = list(list(ast = local_ast, coef = 1)))))
+        result <<- c(result, list(list(
+          constant = 0,
+          coefficients = list(list(ast = local_ast, coef = 1))
+        )))
       }
     }
   }
@@ -409,11 +446,12 @@ extract_coefficients_internal <- function(ast) {
       acc[[key]] <- old_list
     }
     acc
-  }, unlist(lapply(result, function (x) x$coefficients),
-            recursive = FALSE), init = list())
+  }, unlist(lapply(result, function(x) x$coefficients),
+    recursive = FALSE
+  ), init = list())
 
   # sum over all constants
-  return_tuple$constant <- Reduce("+", lapply(result, function (x) x$constant))
+  return_tuple$constant <- Reduce("+", lapply(result, function(x) x$constant))
 
   return_tuple
 }
@@ -437,18 +475,21 @@ extract_coefficients_internal <- function(ast) {
 #' sum_expr(x[i], i = 1:10)
 #' # create a sum from x_2 to x_10 with even indexes
 #' sum_expr(x[i], i = 1:10, i %% 2 == 0)
-#'
 #' @export
 sum_expr <- function(expr, ...) {
   ast <- substitute(expr)
   stopifnot(lazyeval::is_call(ast))
   lazy_dots <- lazyeval::lazy_dots(...)
   classified_quantifiers <- classify_quantifiers(lazy_dots)
-  bound_subscripts <- lapply(classified_quantifiers$quantifiers,
-                             lazyeval::lazy_eval)
-  subscript_combinations <- build_quantifier_candidates(bound_subscripts,
-                                              names(bound_subscripts),
-                                              classified_quantifiers$filters)
+  bound_subscripts <- lapply(
+    classified_quantifiers$quantifiers,
+    lazyeval::lazy_eval
+  )
+  subscript_combinations <- build_quantifier_candidates(
+    bound_subscripts,
+    names(bound_subscripts),
+    classified_quantifiers$filters
+  )
   if (nrow(subscript_combinations) == 0) {
     return(substitute(0))
   }
@@ -511,10 +552,12 @@ print_model <- function(x) {
   # obj function
   objective <- x$objective
   if (!is.null(objective) &&
-      length(objective$sense) == 1) {
-    cat("Model sense:",
-        if (objective$sense == "max") "maximize" else "minimize",
-        "\n")
+    length(objective$sense) == 1) {
+    cat(
+      "Model sense:",
+      if (objective$sense == "max") "maximize" else "minimize",
+      "\n"
+    )
   } else {
     cat("No objective function. \n")
   }

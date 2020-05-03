@@ -17,21 +17,26 @@ variable_keys.optimization_model <- function(model) {
   if (length(model$variables) == 0) {
     return(character(0))
   }
-  unlist(lapply(sort(names(model$variables)),
+  unlist(lapply(
+    sort(names(model$variables)),
     function(x) {
       var <- model$variables[[x]]
       if (var$arity > 0) {
         vapply(var$instances, function(var_code) {
           splitted_els <- strsplit(var_code, "_", fixed = TRUE)[[1]]
-          paste0(x, "[",
-                 paste0(splitted_els[seq_len(length(splitted_els))],
-                        collapse = ","),
-                 "]")
+          paste0(
+            x, "[",
+            paste0(splitted_els[seq_len(length(splitted_els))],
+              collapse = ","
+            ),
+            "]"
+          )
         }, character(1))
       } else {
         x
       }
-    }), use.names = FALSE)
+    }
+  ), use.names = FALSE)
 }
 
 # helper function that creates a function
@@ -47,9 +52,12 @@ build_coefficent_vector_fun <- function(model_var_keys) {
       var_ast <- var_coef$ast
       if (is.call(var_ast) && length(var_ast) > 1) {
         var_name <- as.character(var_ast[[2]])
-        search_key <- paste0(var_name, "[",
-                             paste0(as.character(var_ast[3:length(var_ast)]),
-                                    collapse = ","), "]")
+        search_key <- paste0(
+          var_name, "[",
+          paste0(as.character(var_ast[3:length(var_ast)]),
+            collapse = ","
+          ), "]"
+        )
       } else {
         var_name <- as.character(var_ast)
         search_key <- var_name
@@ -90,16 +98,19 @@ objective_function.optimization_model <- function(model) {
   build_coefficent_vector <- build_coefficent_vector_fun(variable_keys(model))
   if (has_objective) {
     coefficients <- extract_coefficients_internal(
-      model$objective$expression[[1]])
+      model$objective$expression[[1]]
+    )
     obj_constant <- coefficients$constant
     if (!is.numeric(obj_constant)) obj_constant <- 0
     coefficients <- coefficients$coefficients
     names(coefficients) <- NULL
     obj_vector <- build_coefficent_vector(coefficients)
     ordered_i <- order(obj_vector@j)
-    obj_vector <- Matrix::sparseVector(x = obj_vector@x[ordered_i],
-                                       i = obj_vector@j[ordered_i] + 1,
-                                       length = ncol(obj_vector))
+    obj_vector <- Matrix::sparseVector(
+      x = obj_vector@x[ordered_i],
+      i = obj_vector@j[ordered_i] + 1,
+      length = ncol(obj_vector)
+    )
     list(solution = obj_vector, constant = obj_constant)
   } else {
     n_vars <- sum(unlist(nvars(model)))
@@ -187,8 +198,10 @@ nvars.optimization_model <- function(model) {
   Reduce(f = function(acc, el) {
     acc[[names(el)]] <- acc[[names(el)]] + as.numeric(el)
     acc
-  }, mapped_vars, init = list(continuous = 0, integer = 0,
-                              binary = 0))
+  }, mapped_vars, init = list(
+    continuous = 0, integer = 0,
+    binary = 0
+  ))
 }
 
 #' Variable types of a model

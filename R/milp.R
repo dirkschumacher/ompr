@@ -13,12 +13,15 @@
 #'
 #' @export
 MILPModel <- function() {
-  structure(list(variables = list(),
-                 var_index_mapping_list = list(),
-                 var_index_mapping = function(x) NULL,
-                 objective = NULL,
-                 constraints = list()),
-            class = "milp_model")
+  structure(list(
+    variables = list(),
+    var_index_mapping_list = list(),
+    var_index_mapping = function(x) NULL,
+    objective = NULL,
+    constraints = list()
+  ),
+  class = "milp_model"
+  )
 }
 
 new_milp_variable <- function(name, arity, type, lb, ub, index_mapping_dt,
@@ -56,8 +59,10 @@ add_variable_.milp_model <- function(.model, .variable, ...,
                                      type = "continuous",
                                      lb = -Inf, ub = Inf, .dots) {
   if (length(type) != 1 || !type %in% c("continuous", "binary", "integer")) {
-    stop(paste0("The type of a variable needs to be either",
-                " continuous, binary or integer."), call. = FALSE)
+    stop(paste0(
+      "The type of a variable needs to be either",
+      " continuous, binary or integer."
+    ), call. = FALSE)
   }
   check_bounds(lb, ub)
 
@@ -75,13 +80,17 @@ add_variable_.milp_model <- function(.model, .variable, ...,
     lb_out_of_bounds <- is.na(lb) | lb < 0L | lb > 1L
     ub_out_of_bounds <- is.na(ub) | ub < 0L | ub > 1L
     if (any(lb_out_of_bounds)) {
-      warning(paste0("lower bound of binary variable can ",
-                     "either be 0 or 1. Setting it to 0"), call. = FALSE)
+      warning(paste0(
+        "lower bound of binary variable can ",
+        "either be 0 or 1. Setting it to 0"
+      ), call. = FALSE)
       lb[lb_out_of_bounds] <- 0L
     }
     if (any(ub_out_of_bounds)) {
-      warning(paste0("upper bound of binary variable can ",
-                     "either be 0 or 1. Setting it to 1"), call. = FALSE)
+      warning(paste0(
+        "upper bound of binary variable can ",
+        "either be 0 or 1. Setting it to 1"
+      ), call. = FALSE)
       ub[ub_out_of_bounds] <- 1L
     }
   }
@@ -92,16 +101,19 @@ add_variable_.milp_model <- function(.model, .variable, ...,
   if (lazyeval::is_name(expr)) {
     assert_var_bounds_length_1(lb, ub)
     var_name <- as.character(expr)
-    model$var_index_mapping_list[[var_name]] <- data.table::data.table(variable = var_name,
-                                                                   V1 = 1L, col = 1L)
+    model$var_index_mapping_list[[var_name]] <- data.table::data.table(
+      variable = var_name,
+      V1 = 1L, col = 1L
+    )
     model$var_index_mapping <- function(x) model$var_index_mapping_list[[x]]
     var <- new_milp_variable(var_name,
-                             arity = 0L,
-                             type = type,
-                             lb = lb,
-                             ub = ub,
-                             index_mapping_dt = model$var_index_mapping(var_name),
-                             index_mapping = model$var_index_mapping)
+      arity = 0L,
+      type = type,
+      lb = lb,
+      ub = ub,
+      index_mapping_dt = model$var_index_mapping(var_name),
+      index_mapping = model$var_index_mapping
+    )
     model$variables[[var_name]] <- var
   } else if (lazyeval::is_call(expr) && expr[[1]] == "[") {
 
@@ -114,10 +126,14 @@ add_variable_.milp_model <- function(.model, .variable, ...,
     }
 
     classified_quantifiers <- classify_quantifiers(lazy_dots)
-    bound_subscripts <- lapply(classified_quantifiers$quantifiers,
-                               lazyeval::lazy_eval)
-    bound_expr <- bind_expression(var_name, expr, variable$env,
-                                  bound_subscripts)
+    bound_subscripts <- lapply(
+      classified_quantifiers$quantifiers,
+      lazyeval::lazy_eval
+    )
+    bound_expr <- bind_expression(
+      var_name, expr, variable$env,
+      bound_subscripts
+    )
     arity <- length(bound_expr) - 2L
 
     # two options, either we have bounded indexes
@@ -136,32 +152,42 @@ add_variable_.milp_model <- function(.model, .variable, ...,
       assert_var_bounds_length_1(lb, ub)
 
       # then check if all free variables are present in "..."
-      subscripts <- lapply(3:length(bound_expr),
-                           function(x) as.character(bound_expr[x]))
+      subscripts <- lapply(
+        3:length(bound_expr),
+        function(x) as.character(bound_expr[x])
+      )
       bound_subscripts <- bound_subscripts[
-        names(bound_subscripts) %in% subscripts]
+        names(bound_subscripts) %in% subscripts
+      ]
       replacement_idxs <- subscripts %in% names(bound_subscripts)
       subscripts[replacement_idxs] <- bound_subscripts
       subscripts <- suppressWarnings(lapply(subscripts, as.integer))
 
       # now generate all variables
-      candidates <- build_quantifier_candidates(subscripts,
-                                                names(bound_subscripts),
-                                                classified_quantifiers$filters)
+      candidates <- build_quantifier_candidates(
+        subscripts,
+        names(bound_subscripts),
+        classified_quantifiers$filters
+      )
       n_vars <- nrow(candidates)
-      zero_vars_msg <- paste0("The number of different indexes for variable ",
-                              var_name, " is 0.")
+      zero_vars_msg <- paste0(
+        "The number of different indexes for variable ",
+        var_name, " is 0."
+      )
       any_col_non_numeric <- any(vapply(seq_len(ncol(candidates)), function(j) {
         !is.numeric(candidates[[j]]) || anyNA(candidates[[j]])
       }, logical(1L)))
 
       if (n_vars == 0L) {
         stop("The number of different indexes for variable ",
-             var_name, " is 0.", call. = FALSE)
+          var_name, " is 0.",
+          call. = FALSE
+        )
       }
       if (any_col_non_numeric) {
         stop("At least one index of ", var_name, " is not an integer vector or not bound.",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
       colnames(candidates) <- paste0("V", seq_len(ncol(candidates)))
     }
@@ -176,17 +202,20 @@ add_variable_.milp_model <- function(.model, .variable, ...,
     if (length(lb) == 1L) lb <- rep.int(lb, n_vars)
     if (length(ub) == 1L) ub <- rep.int(ub, n_vars)
     var <- new_milp_variable(var_name,
-                             arity = arity,
-                             type = type,
-                             lb = lb,
-                             ub = ub,
-                             index_mapping_dt = model$var_index_mapping(var_name),
-                             index_mapping = model$var_index_mapping)
+      arity = arity,
+      type = type,
+      lb = lb,
+      ub = ub,
+      index_mapping_dt = model$var_index_mapping(var_name),
+      index_mapping = model$var_index_mapping
+    )
     model$variables[[var_name]] <- var
   } else {
-    stop(paste0("The variable definition does not seem to be right.",
-                " Take a look at the example models on the website on how",
-                " to formulate variables"), call. = FALSE)
+    stop(paste0(
+      "The variable definition does not seem to be right.",
+      " Take a look at the example models on the website on how",
+      " to formulate variables"
+    ), call. = FALSE)
   }
   model
 }
@@ -194,16 +223,20 @@ add_variable_.milp_model <- function(.model, .variable, ...,
 assert_var_bounds_length_1 <- function(lb, ub) {
   if (length(lb) != 1L || length(ub) != 1L) {
     stop("lb and ub must be of length 1. I.e. just a single number.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 }
 
 new_milp_constraint <- function(lhs, sense, rhs) {
   stopifnot(sense %in% c("<=", "==", ">="))
-  structure(list(lhs = lhs,
-                 sense = sense,
-                 rhs = rhs),
-            class = "milp_model_constraint")
+  structure(list(
+    lhs = lhs,
+    sense = sense,
+    rhs = rhs
+  ),
+  class = "milp_model_constraint"
+  )
 }
 
 create_model_env <- function(model) {
@@ -220,19 +253,22 @@ add_constraint_.milp_model <- function(.model,
                                        .show_progress_bar = TRUE) {
   if (any(.show_progress_bar != TRUE)) {
     warning("A progress bar is deprecated for MILPModel, please do not explicitly use it",
-            call. = FALSE)
+      call. = FALSE
+    )
   }
   constraint_expr <- lazyeval::as.lazy(.constraint_expr)
   model <- .model
   constraint_ast <- constraint_expr$expr
   if (length(constraint_ast) != 3) {
     stop("constraint not well formed. Must be a linear (in)equality.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   sense <- as.character(constraint_ast[[1]])
   if (!sense %in% c(">=", "<=", "==")) {
     stop("Does not recognize constraint expr. Missing the constraint relation",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   lhs_ast <- constraint_ast[[2]]
   rhs_ast <- constraint_ast[[3]]
@@ -242,8 +278,10 @@ add_constraint_.milp_model <- function(.model,
     lazy_dots <- c(lazyeval::as.lazy_dots(.dots), lazy_dots)
   }
   classified_quantifiers <- classify_quantifiers(lazy_dots)
-  bound_subscripts <- lapply(classified_quantifiers$quantifiers,
-                             lazyeval::lazy_eval)
+  bound_subscripts <- lapply(
+    classified_quantifiers$quantifiers,
+    lazyeval::lazy_eval
+  )
 
   var_envir <- create_model_env(model)
   eval_constraint <- function(lhs_ast, rhs_ast, sense, data = NULL, envir = parent_env) {
@@ -256,11 +294,13 @@ add_constraint_.milp_model <- function(.model,
   if (is.list(bound_subscripts) && length(bound_subscripts) > 0) {
     filter_fn <- function(x) is.numeric(x) & length(x) > 0
     bound_subscripts <- Filter(filter_fn, bound_subscripts)
-    var_combinations <- build_quantifier_candidates(bound_subscripts,
-                                                    names(bound_subscripts),
-                                                    classified_quantifiers$filters)
+    var_combinations <- build_quantifier_candidates(
+      bound_subscripts,
+      names(bound_subscripts),
+      classified_quantifiers$filters
+    )
     if (nrow(var_combinations) == 0L) {
-      stop("The number of different indexes is 0 for this constraint", call.= FALSE)
+      stop("The number of different indexes is 0 for this constraint", call. = FALSE)
     }
     constraint <- eval_constraint(lhs_ast, rhs_ast, sense, data = var_combinations)
   } else {
@@ -275,11 +315,15 @@ sum_expr_milp <- function(expr, ...) {
   ast <- rlang::enquo(expr)
   lazy_dots <- lazyeval::lazy_dots(...)
   classified_quantifiers <- classify_quantifiers(lazy_dots)
-  bound_subscripts <- lapply(classified_quantifiers$quantifiers,
-                             lazyeval::lazy_eval)
-  subscript_combinations <- build_quantifier_candidates(bound_subscripts,
-                                                        names(bound_subscripts),
-                                                        classified_quantifiers$filters)
+  bound_subscripts <- lapply(
+    classified_quantifiers$quantifiers,
+    lazyeval::lazy_eval
+  )
+  subscript_combinations <- build_quantifier_candidates(
+    bound_subscripts,
+    names(bound_subscripts),
+    classified_quantifiers$filters
+  )
   if (nrow(subscript_combinations) == 0L) {
     return(0)
   }
@@ -291,19 +335,20 @@ sum_expr_milp <- function(expr, ...) {
 
 
 new_milp_objective_function <- function(objective,
-                                   original_expression,
-                                   sense) {
+                                        original_expression,
+                                        sense) {
   stopifnot(length(sense) == 1 &&
-              sense %in% c("min", "max"))
-  structure(list(objective = objective,
-                 original_expression = original_expression,
-                 sense = sense), class = "milp_model_objective")
+    sense %in% c("min", "max"))
+  structure(list(
+    objective = objective,
+    original_expression = original_expression,
+    sense = sense
+  ), class = "milp_model_objective")
 }
 
 #' @export
 set_objective_.milp_model <- function(model, expression,
-                                              sense = c("max", "min")) {
-
+                                      sense = c("max", "min")) {
   var_envir <- create_model_env(model)
   expression <- lazyeval::as.lazy(expression)
   parent.env(var_envir) <- expression$env
@@ -314,7 +359,8 @@ set_objective_.milp_model <- function(model, expression,
   obj <- new_milp_objective_function(
     objective = rlang::eval_tidy(expression),
     original_expression = rlang::get_expr(expression),
-    sense = sense)
+    sense = sense
+  )
   model$objective <- obj
   model
 }
@@ -322,9 +368,11 @@ set_objective_.milp_model <- function(model, expression,
 #' @export
 solve_model.milp_model <- function(model, solver) {
   if (!is.function(solver)) {
-    stop(paste0("Solver is not a function Model -> Solution.\n",
-                "Take a look at the examples on the website on how to call",
-                " solve_model."))
+    stop(paste0(
+      "Solver is not a function Model -> Solution.\n",
+      "Take a look at the examples on the website on how to call",
+      " solve_model."
+    ))
   }
   solver(model)
 }
@@ -341,8 +389,10 @@ nvars.milp_model <- function(model) {
   Reduce(f = function(acc, el) {
     acc[[names(el)]] <- acc[[names(el)]] + as.numeric(el)
     acc
-  }, mapped_vars, init = list(continuous = 0, integer = 0,
-                              binary = 0))
+  }, mapped_vars, init = list(
+    continuous = 0, integer = 0,
+    binary = 0
+  ))
 }
 
 variable_ordering <- function(model) {
@@ -371,17 +421,19 @@ variable_keys.milp_model <- function(model) {
   if (length(model$variables) == 0) {
     return(character(0))
   }
-  unlist(lapply(sort(names(model$variables)),
-                function(x) {
-                  var <- model$variables[[x]]
-                  if (var$arity > 0) {
-                    apply(var$index_mapping[, paste0("V", seq_len(var$arity)), with = FALSE], 1, function(row) {
-                      paste0(x, "[", paste0(row, collapse = ","), "]")
-                    })
-                  } else {
-                    x
-                  }
-                }), use.names = FALSE)
+  unlist(lapply(
+    sort(names(model$variables)),
+    function(x) {
+      var <- model$variables[[x]]
+      if (var$arity > 0) {
+        apply(var$index_mapping[, paste0("V", seq_len(var$arity)), with = FALSE], 1, function(row) {
+          paste0(x, "[", paste0(row, collapse = ","), "]")
+        })
+      } else {
+        x
+      }
+    }
+  ), use.names = FALSE)
 }
 
 #' @export
@@ -411,9 +463,11 @@ objective_function.milp_model <- function(model) {
       stop("Not implemented", call. = FALSE)
     }
     coefs <- merge(ordering, dt, by = c("variable", "col"))
-    obj_vector <- Matrix::sparseVector(x = coefs[["coef"]],
-                         i = coefs[["order"]],
-                         length = n_vars)
+    obj_vector <- Matrix::sparseVector(
+      x = coefs[["coef"]],
+      i = coefs[["order"]],
+      length = n_vars
+    )
     list(solution = obj_vector, constant = obj_constant)
   } else {
     obj <- Matrix::sparseVector(integer(), integer(), n_vars)
@@ -423,7 +477,6 @@ objective_function.milp_model <- function(model) {
 
 #' @export
 extract_constraints.milp_model <- function(model) {
-
   if (length(model$constraints) == 0L) {
     return(list(matrix = NULL, sense = character(0L), rhs = numeric(0L)))
   }
@@ -434,8 +487,10 @@ extract_constraints.milp_model <- function(model) {
     # TODO: write generic method
     if (inherits(lhs, "LinearVariableCollection")) {
       var_collection <- lhs@variables
-      rhs_constraint_dt <- data.table::data.table(row = unique(var_collection$row),
-                                                        constant = 0)
+      rhs_constraint_dt <- data.table::data.table(
+        row = unique(var_collection$row),
+        constant = 0
+      )
     } else if (inherits(lhs, "LinearVariableSum")) {
       var_collection <- lhs@variables@variables
       rhs_constraint_dt <- lhs@constant
@@ -447,10 +502,12 @@ extract_constraints.milp_model <- function(model) {
     coefs <- merge(ordering, var_collection, by = c("variable", "col"))
     n_rows <- length(unique(coefs[["row"]]))
     non_zero <- coefs[["coef"]] != 0
-    mat <- Matrix::sparseMatrix(i = coefs[["row"]][non_zero],
-                                j = coefs[["order"]][non_zero],
-                                x = coefs[["coef"]][non_zero],
-                                dims = c(n_rows, nrow(ordering)))
+    mat <- Matrix::sparseMatrix(
+      i = coefs[["row"]][non_zero],
+      j = coefs[["order"]][non_zero],
+      x = coefs[["coef"]][non_zero],
+      dims = c(n_rows, nrow(ordering))
+    )
     rhs_constraint_constant <- rep.int(0, n_rows)
     rhs_constraint_constant[rhs_constraint_dt[["row"]]] <- rhs_constraint_dt[["constant"]]
     constraint_dir <- rep.int(constraint$sense, n_rows)
@@ -501,7 +558,7 @@ print.milp_model <- function(x, ...) {
 
 #' @export
 set_bounds_.milp_model <- function(.model, .variable, ...,
-                                           lb = NULL, ub = NULL, .dots) {
+                                   lb = NULL, ub = NULL, .dots) {
   if (is.numeric(lb) && is.numeric(ub)) {
     check_bounds(lb, ub)
   }
@@ -543,14 +600,20 @@ set_bounds_.milp_model <- function(.model, .variable, ...,
       lazy_dots <- c(lazyeval::as.lazy_dots(.dots), lazy_dots)
     }
     classified_quantifiers <- classify_quantifiers(lazy_dots)
-    bound_subscripts <- lapply(classified_quantifiers$quantifiers,
-                               lazyeval::lazy_eval)
-    quantifier_combinations <- build_quantifier_candidates(bound_subscripts,
-                                                           names(bound_subscripts),
-                                                           classified_quantifiers$filters)
+    bound_subscripts <- lapply(
+      classified_quantifiers$quantifiers,
+      lazyeval::lazy_eval
+    )
+    quantifier_combinations <- build_quantifier_candidates(
+      bound_subscripts,
+      names(bound_subscripts),
+      classified_quantifiers$filters
+    )
     if (quantified_indexes && nrow(quantifier_combinations) == 0L) {
       stop("The number of different indexes for set_bounds ",
-           "for variable ", var_name, " is 0.", call. = FALSE)
+        "for variable ", var_name, " is 0.",
+        call. = FALSE
+      )
     }
 
     var_mapping <- model$var_index_mapping_list[[var_name]]
@@ -558,7 +621,8 @@ set_bounds_.milp_model <- function(.model, .variable, ...,
     parent.env(var_envir) <- variable$env
     expr <- rlang::as_quosure(variable$expr, var_envir)
     var_collection <- rlang::eval_tidy(expr,
-                                       data = quantifier_combinations)
+      data = quantifier_combinations
+    )
     if (!inherits(var_collection, "LinearVariableCollection")) {
       stop("You can only set bounds one variable at a time.", call. = FALSE)
     }

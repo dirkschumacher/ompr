@@ -66,11 +66,12 @@ test_that("we can model a tsp", {
     r <- MIPModel() %>%
       add_variable(x[i, j], i = 1:cities, j = 1:cities, type = "binary") %>%
       set_objective(sum_expr(distance_matrix[i, j] * x[i, j],
-                            i = 1:cities, j = 1:cities), sense = "min") %>%
+        i = 1:cities, j = 1:cities
+      ), sense = "min") %>%
       add_constraint(x[i, i] == 0, i = 1:cities) %>%
       add_constraint(x[i, j] == x[j, i], i = 1:cities, j = 1:cities) %>%
       add_constraint(sum_expr(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]) <=
-                       length(sub_tours[s]) - 1, s = 1:length(sub_tours))
+        length(sub_tours[s]) - 1, s = 1:length(sub_tours))
   )
 })
 
@@ -144,7 +145,7 @@ test_that("bug 20160713 #41: quantifiers in constraints in sum_expr", {
 test_that("small to mid sized model should work #2", {
   skip_on_cran()
   n <- 40
-  coef <- matrix(1:(n ^ 2), ncol = 2)
+  coef <- matrix(1:(n^2), ncol = 2)
   expect_silent(MIPModel() %>%
     add_variable(x[i, j], i = 1:n, j = 1:n) %>%
     add_constraint(sum_expr(coef[i, j] * x[i, j], i = 1:n, j = 1:n) == 1))
@@ -154,8 +155,10 @@ test_that("bug 20160729: two sum_expr on one side", {
   m <- MIPModel() %>%
     add_variable(x[j], j = 1:4) %>%
     add_constraint(sum_expr(x[j], j = 1:2) - sum_expr(x[j], j = 3:4) == 0)
-  expect_equal(deparse(m$constraints[[1]]$lhs[[1]]),
-               "x[1L] + x[2L] + (-1 * x[3L] + -1 * x[4L])")
+  expect_equal(
+    deparse(m$constraints[[1]]$lhs[[1]]),
+    "x[1L] + x[2L] + (-1 * x[3L] + -1 * x[4L])"
+  )
 })
 
 test_that("bug 20160729_2: external var binding", {
@@ -164,7 +167,8 @@ test_that("bug 20160729_2: external var binding", {
     add_variable(x[j], j = 1:2)
   expect_warning(add_constraint(m, sum_expr(x[j], j = 1:2) == 0))
   expect_warning(add_constraint(m, sum_expr(x[j], j = 1:2) == 0),
-                 regexp = "x")
+    regexp = "x"
+  )
 })
 
 test_that("solve_model warns about wrong arguments", {
@@ -181,47 +185,64 @@ test_that("set_objective_ supports standard eval.", {
 test_that("can expand a term N * (x - y)", {
   m <- add_variable(MIPModel(), x[i], i = 1:2)
   m <- set_objective_(m, ~ -5 * (x[1] - x[2]))
-  expect_equal("-5 * x[1] + 5 * x[2]",
-               deparse(m$objective$expression[[1]]))
+  expect_equal(
+    "-5 * x[1] + 5 * x[2]",
+    deparse(m$objective$expression[[1]])
+  )
 })
 
 test_that("evaluates terms", {
   m <- add_variable(MIPModel(), x[i], i = 1:2)
   m <- set_objective_(m, ~ 5 * 5)
-  expect_equal("25",
-               deparse(m$objective$expression[[1]]))
+  expect_equal(
+    "25",
+    deparse(m$objective$expression[[1]])
+  )
 })
 
 test_that("SE handles sum_expr well", {
   m <- MIPModel() %>%
-    add_variable_(~x[j], j = 1:4) %>%
-    add_constraint_(~sum_expr(x[j], j = 1:2, j == 1) -
-                      sum_expr(x[j], j = 3:4) == 0)
-  expect_equal(deparse(m$constraints[[1]]$lhs[[1]]),
-               "x[1L] + (-1 * x[3L] + -1 * x[4L])")
+    add_variable_(~ x[j], j = 1:4) %>%
+    add_constraint_(~ sum_expr(x[j], j = 1:2, j == 1) -
+      sum_expr(x[j], j = 3:4) == 0)
+  expect_equal(
+    deparse(m$constraints[[1]]$lhs[[1]]),
+    "x[1L] + (-1 * x[3L] + -1 * x[4L])"
+  )
 })
 
 test_that("bug 20161108 #105: c can be assigned as var name", {
   expect_warning(add_variable(MIPModel(), c, lb = 1, ub = 2) %>%
     set_objective(c) %>%
     add_constraint(c <= 5) %>%
-    set_bounds(c, lb = 1.5), regexp = "interfere",  all = TRUE)
+    set_bounds(c, lb = 1.5), regexp = "interfere", all = TRUE)
 })
 
 test_that("bug 20161110 #106: Error when indices used in sum_expr(...)
            condition already have values in workspace", {
-   i <- 2
-   j <- 2
-   model <- MIPModel()
-   model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
-   expect_silent(result <- set_objective(model,
-                                         sum_expr(x[i, j], i = 1:2,
-                                                  j = 1:2, i != j)))
-   expect_silent(result <- add_constraint(model,
-                                         sum_expr(x[i, j], i = 1:2,
-                                                  j = 1:2, i != j) <= 10))
-   expect_silent(result <- add_constraint(model,
-                                          sum_expr(1 + x[i, j] + x[i, j],
-                                                   i = 1:2, j = 1:2,
-                                                   i != j) <= 10))
+  i <- 2
+  j <- 2
+  model <- MIPModel()
+  model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
+  expect_silent(result <- set_objective(
+    model,
+    sum_expr(x[i, j],
+      i = 1:2,
+      j = 1:2, i != j
+    )
+  ))
+  expect_silent(result <- add_constraint(
+    model,
+    sum_expr(x[i, j],
+      i = 1:2,
+      j = 1:2, i != j
+    ) <= 10
+  ))
+  expect_silent(result <- add_constraint(
+    model,
+    sum_expr(1 + x[i, j] + x[i, j],
+      i = 1:2, j = 1:2,
+      i != j
+    ) <= 10
+  ))
 })

@@ -27,9 +27,11 @@ test_that("variables can be added", {
 })
 
 test_that("variables bounds get replicated for var. groups", {
-  m <- add_variable(MIPModel(), x[i], i = 1:3,
-                    lb = 0, ub = 1,
-                    type = "binary")
+  m <- add_variable(MIPModel(), x[i],
+    i = 1:3,
+    lb = 0, ub = 1,
+    type = "binary"
+  )
   expect_false(is.null(m$variables[["x"]]))
   expect_equal(m$variables[["x"]]$lb, c(0, 0, 0))
   expect_equal(m$variables[["x"]]$ub, c(1, 1, 1))
@@ -106,11 +108,14 @@ test_that("add_variable warns if binary var's bound is not 0/1", {
 
 test_that("variable quantifiers can have filter expressions", {
   result <- add_variable(MIPModel(), x[i, j],
-                         i = 1:5,
-                         j = 1:5,
-                         i == j + 1)
-  expect_equal(c("2_1", "3_2", "4_3", "5_4"),
-               result$variables[["x"]]$instances)
+    i = 1:5,
+    j = 1:5,
+    i == j + 1
+  )
+  expect_equal(
+    c("2_1", "3_2", "4_3", "5_4"),
+    result$variables[["x"]]$instances
+  )
 })
 
 test_that("add_variable fails if filter expressions filter out everything", {
@@ -118,12 +123,15 @@ test_that("add_variable fails if filter expressions filter out everything", {
 })
 
 test_that("filter epxressions work with SE 2", {
-  result <- add_variable_(MIPModel(), ~x[i, j],
-                          i = 1:5,
-                          j = 1:5,
-                          .dots = ~i == j + 1)
-  expect_equal(c("2_1", "3_2", "4_3", "5_4"),
-               result$variables[["x"]]$instances)
+  result <- add_variable_(MIPModel(), ~ x[i, j],
+    i = 1:5,
+    j = 1:5,
+    .dots = ~ i == j + 1
+  )
+  expect_equal(
+    c("2_1", "3_2", "4_3", "5_4"),
+    result$variables[["x"]]$instances
+  )
 })
 
 

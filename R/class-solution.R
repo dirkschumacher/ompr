@@ -17,17 +17,21 @@ new_solution <- function(model,
                          solution_column_duals = function() NA_real_,
                          solution_row_duals = function() NA_real_) {
   stopifnot(is.numeric(objective_value))
-  stopifnot(status %in% c("infeasible",
-                         "unbounded", "optimal",
-                         "userlimit", "error"))
+  stopifnot(status %in% c(
+    "infeasible",
+    "unbounded", "optimal",
+    "userlimit", "error"
+  ))
   stopifnot(all(nchar(names(solution))))
   stopifnot(is.function(solution_column_duals), is.function(solution_row_duals))
-  structure(list(model = model,
-                 objective_value = objective_value,
-                 status = status,
-                 solution = solution,
-                 solution_column_duals = solution_column_duals,
-                 solution_row_duals = solution_row_duals), class = "solution")
+  structure(list(
+    model = model,
+    objective_value = objective_value,
+    status = status,
+    solution = solution,
+    solution_column_duals = solution_column_duals,
+    solution_row_duals = solution_row_duals
+  ), class = "solution")
 }
 
 #' Get variable values from a solution
@@ -48,12 +52,12 @@ new_solution <- function(model,
 #' \dontrun{
 #' library(magrittr)
 #' result <- MIPModel() %>%
-#'      add_variable(x[i], i = 1:5) %>%
-#'      add_variable(y[i, j], i = 1:5, j = 1:5) %>%
-#'      add_constraint(x[i] >= 1, i = 1:5) %>%
-#'      set_bounds(x[i], lb = 3, i = 1:3) %>%
-#'      set_objective(0) %>%
-#'      solve_model(with_ROI("glpk"))
+#'   add_variable(x[i], i = 1:5) %>%
+#'   add_variable(y[i, j], i = 1:5, j = 1:5) %>%
+#'   add_constraint(x[i] >= 1, i = 1:5) %>%
+#'   set_bounds(x[i], lb = 3, i = 1:3) %>%
+#'   set_objective(0) %>%
+#'   solve_model(with_ROI("glpk"))
 #' solution <- get_solution(result, x[i])
 #' solution2 <- get_solution(result, y[i, 1])
 #' solution3 <- get_solution(result, y[i, j])
@@ -82,7 +86,9 @@ get_solution_.solution <- function(solution, expr, type) {
   }
   if (is.null(solution_vector) || anyNA(solution_vector)) {
     stop("The solution from the solver is invalid. It is NULL or contains NAs.",
-         " Maybe the solver does not export ", type, "s?", call. = FALSE)
+      " Maybe the solver does not export ", type, "s?",
+      call. = FALSE
+    )
   }
   extract_solution(solution$model, solution_vector, expr)
 }
@@ -105,19 +111,25 @@ extract_solution <- function(model, solution_vector, expr) {
         free_vars <- c(free_vars, as.character(ast[[i]]))
         idx_pattern <- c(idx_pattern, "(\\d+)")
       } else {
-        idx_pattern <- c(idx_pattern,
-                         as.character(as.numeric(ast[[i]])))
+        idx_pattern <- c(
+          idx_pattern,
+          as.character(as.numeric(ast[[i]]))
+        )
       }
     }
-    instance_pattern <- paste0("^",
-                               var_name,
-                               "\\[",
-                               paste0(idx_pattern, collapse = ","),
-                               "\\]", 
-                               "$")
+    instance_pattern <- paste0(
+      "^",
+      var_name,
+      "\\[",
+      paste0(idx_pattern, collapse = ","),
+      "\\]",
+      "$"
+    )
     if (length(free_vars) == 0) {
-      return(solution_vector[grepl(x = names(solution_vector),
-                                     pattern = instance_pattern)])
+      return(solution_vector[grepl(
+        x = names(solution_vector),
+        pattern = instance_pattern
+      )])
     } else {
       # the solution is sorted lexigographically
       solution_names <- names(solution_vector)
@@ -126,7 +138,8 @@ extract_solution <- function(model, solution_vector, expr) {
       na_rows <- as.logical(apply(is.na(var_index), 1, all))
       var_index <- var_index[!na_rows, , drop = FALSE]
       var_values <- solution_vector[grepl(solution_names,
-                                            pattern = instance_pattern)]
+        pattern = instance_pattern
+      )]
       result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
       for (x in colnames(result_df)) {
         result_df[[x]] <- as.integer(as.character(result_df[[x]]))
@@ -139,8 +152,10 @@ extract_solution <- function(model, solution_vector, expr) {
     }
   } else {
     if (!var_name %in% names(solution_vector)) {
-      stop(paste0("Either variable is not part of the model or you",
-                  " have to specify the indexes."), call. = FALSE)
+      stop(paste0(
+        "Either variable is not part of the model or you",
+        " have to specify the indexes."
+      ), call. = FALSE)
     }
     return(solution_vector[var_name])
   }
@@ -149,10 +164,10 @@ extract_solution <- function(model, solution_vector, expr) {
 #' @inheritParams print
 #' @export
 print.solution <- function(x, ...) {
-            cat("Status:", solver_status(x))
-            cat("\n")
-            cat("Objective value:", objective_value(x))
-          }
+  cat("Status:", solver_status(x))
+  cat("\n")
+  cat("Objective value:", objective_value(x))
+}
 
 #' Extract the numerical objective value from a solution
 #'
@@ -205,9 +220,11 @@ get_column_duals <- function(solution) UseMethod("get_column_duals")
 #' @export
 get_column_duals.solution <- function(solution) {
   solution_column_duals <- solution$solution_column_duals()
-  stopifnot(is.numeric(solution_column_duals),
-            (length(solution_column_duals) == 1L && is.na(solution_column_duals)) ||
-              (length(solution_column_duals) == length(solution$solution)))
+  stopifnot(
+    is.numeric(solution_column_duals),
+    (length(solution_column_duals) == 1L && is.na(solution_column_duals)) ||
+      (length(solution_column_duals) == length(solution$solution))
+  )
   solution_column_duals
 }
 
@@ -235,7 +252,9 @@ get_row_duals <- function(solution) UseMethod("get_row_duals")
 #' @export
 get_row_duals.solution <- function(solution) {
   solution_row_duals <- solution$solution_row_duals()
-  stopifnot(is.numeric(solution_row_duals),
-            (!is.na(solution_row_duals) || length(solution_row_duals) == 1L))
+  stopifnot(
+    is.numeric(solution_row_duals),
+    (!is.na(solution_row_duals) || length(solution_row_duals) == 1L)
+  )
   solution_row_duals
 }
