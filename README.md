@@ -6,7 +6,7 @@
 [![CRAN Status](https://www.r-pkg.org/badges/version/ompr)](https://cran.r-project.org/package=ompr)
   <!-- badges: end -->
 
-OMPR (Optimization Modelling Package) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
+OMPR (Optimization Modeling Package) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
 
 Here are some problems you could solve with this package:
   * What is the cost minimal way to visit a set of clients and return home afterwards?
