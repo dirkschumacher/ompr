@@ -170,7 +170,10 @@ bind_expression <- function(var_name, exp, envir, bound_subscripts) {
 #' @noRd
 bind_variables <- function(model, ast, calling_env) {
   stopifnot(is.environment(calling_env))
-  if (exists(names(model$variables), calling_env)) {
+  any_names_in_env <- any(vapply(names(model$variables), function(x) {
+    exists(x, calling_env)
+  }, logical(1)), na.rm = TRUE)
+  if (any_names_in_env) {
     problematic_vars <- mapply(function(x) {
       exists(x, calling_env)
     }, names(model$variables))

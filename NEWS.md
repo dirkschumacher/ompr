@@ -7,7 +7,8 @@ in the experimental `MILPModel` backend.
 ## Bugfixes
 
 * Fixed a bug were `get_solution` could return mixed up values when variables had partially similar names (eg: `s[i]` and `bus[i]`) by @hugolarzabal ([#244](https://github.com/dirkschumacher/ompr/issues/244)).
-
+* Fixed a bug on r-devel where an if-condition had an input with length != 1.
+* Fixed some minor issues with newer data.table versions
 
 # ompr 0.8.0
 

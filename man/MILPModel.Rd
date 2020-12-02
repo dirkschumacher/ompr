@@ -9,7 +9,6 @@ MILPModel()
 \description{
 Create an an empty mixed-integer linear programming model that is
 about 1000 times faster than `MIPModel`.
-It will eventually replace the old `MIPModel` backend for linear models.
 }
 \details{
 Please only use it if you can deal with potential API changes in the future.
