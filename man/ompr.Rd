@@ -3,7 +3,6 @@
 \docType{package}
 \name{ompr}
 \alias{ompr}
-\alias{ompr-package}
 \title{A package to Model (Mixed) Integer Programs}
 \description{
 A package to model (mixed) integer programs.

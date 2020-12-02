@@ -7,8 +7,13 @@
 \usage{
 add_constraint(.model, .constraint_expr, ..., .show_progress_bar = TRUE)
 
-add_constraint_(.model, .constraint_expr, ..., .dots,
-  .show_progress_bar = TRUE)
+add_constraint_(
+  .model,
+  .constraint_expr,
+  ...,
+  .dots,
+  .show_progress_bar = TRUE
+)
 }
 \arguments{
 \item{.model}{the model}
