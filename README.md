@@ -2,7 +2,6 @@
 
 <!-- badges: start -->
 [![R build status](https://github.com/dirkschumacher/ompr/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/ompr/actions)
-[![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/GPL-3.0/)
 [![CRAN Status](https://www.r-pkg.org/badges/version/ompr)](https://cran.r-project.org/package=ompr)
   <!-- badges: end -->
 
