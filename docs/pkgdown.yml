@@ -1,5 +1,5 @@
-pandoc: '2.2'
-pkgdown: 1.1.0
+pandoc: 2.7.3
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   milp-modelling: milp-modelling.html
@@ -7,9 +7,9 @@ articles:
   milp-problem-warehouse-location: milp-problem-warehouse-location.html
   modelling: modelling.html
   problem-course-assignment: problem-course-assignment.html
-  problem-graph-coloring: problem-graph-coloring.html
   problem-mtsp: problem-mtsp.html
   problem-sudoku: problem-sudoku.html
   problem-tsp: problem-tsp.html
   problem-warehouse-location: problem-warehouse-location.html
+last_built: 2020-12-03T16:36Z
 

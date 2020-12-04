@@ -1,7 +1,7 @@
 ## Test environments
-* local OS X install, R 3.5.0
-* ubuntu 12.04 (on travis-ci/rhub), R release, oldrel, devel
-* Windows Server 2012 R2 x64 (on appveyor/win-builder), R release, oldrel, devel
+* local OS X install, R 4.0.3
+* ubuntu (on github actions/rhub), R release, oldrel, devel
+* Windows (on github actions/win-builder), R release, devel
 
 ## R CMD check results
 
@@ -9,4 +9,4 @@
 
 ## Reverse dependencies
 
-* `ompr.roi` will break. It will be updated by me after `ompr` is on CRAN.
+* This will most likely also fix issues with ompr.roi

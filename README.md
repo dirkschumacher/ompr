@@ -2,7 +2,6 @@
 
 <!-- badges: start -->
 [![R build status](https://github.com/dirkschumacher/ompr/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/ompr/actions)
-[![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/GPL-3.0/)
 [![CRAN Status](https://www.r-pkg.org/badges/version/ompr)](https://cran.r-project.org/package=ompr)
   <!-- badges: end -->
 
@@ -68,7 +67,7 @@ These functions currently form the public API. More detailed docs can be found i
 
 ### DSL
 * `MIPModel()` create an empty mixed integer linear model (the old way)
-* `MILPModel()` create an empty mixed integer linear model (the new way; experimental, especially suitable for large models)
+* `MILPModel()` create an empty mixed integer linear model (an alternative way; experimental, especially suitable for large models)
 * `add_variable()` adds variables to a model
 * `set_objective()` sets the objective function of a model
 * `set_bounds()` sets bounds of variables
@@ -83,7 +82,7 @@ These functions currently form the public API. More detailed docs can be found i
 There are currently two backends. A backend is the function that initializes an empty model. 
 
 * `MIPModel()` is the standard MILP Model
-* `MILPModel()` is a new backend specifically optimized for linear models and is about 1000 times faster than `MIPModel()`. It has slightly different semantics, as it is vectorized. Currently experimental, but it will replace the `MIPModel` eventually.
+* `MILPModel()` is another backend specifically optimized for linear models and is about 1000 times faster than `MIPModel()`. It has slightly different semantics, as it is vectorized. Currently experimental.
 
 ### Solver
 
