@@ -57,7 +57,7 @@ new_solution <- function(model,
 #' solution <- get_solution(result, x[i])
 #' solution2 <- get_solution(result, y[i, 1])
 #' solution3 <- get_solution(result, y[i, j])
-#' duals <- get_solution(result, x[i], type = "duals")
+#' duals <- get_solution(result, x[i], type = "dual")
 #' }
 #'
 #' @export
@@ -113,7 +113,7 @@ extract_solution <- function(model, solution_vector, expr) {
                                var_name,
                                "\\[",
                                paste0(idx_pattern, collapse = ","),
-                               "\\]", 
+                               "\\]",
                                "$")
     if (length(free_vars) == 0) {
       return(solution_vector[grepl(x = names(solution_vector),
