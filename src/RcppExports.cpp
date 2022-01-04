@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // check_for_unknown_vars_impl
 void check_for_unknown_vars_impl(List model, SEXP x);
 RcppExport SEXP _ompr_check_for_unknown_vars_impl(SEXP modelSEXP, SEXP xSEXP) {

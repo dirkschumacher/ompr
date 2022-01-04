@@ -12,7 +12,7 @@ Description: Model mixed integer linear programs in an algebraic way directly in
              documentation and examples.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
 URL: https://github.com/dirkschumacher/ompr
 BugReports: https://github.com/dirkschumacher/ompr/issues
@@ -30,3 +30,16 @@ Suggests:
   testthat
 ByteCompile: Yes
 LinkingTo: Rcpp
+Collate:
+    'RcppExports.R'
+    'abstract-model-impl.R'
+    'class-constraint.R'
+    'class-model.R'
+    'helper.R'
+    'milp-linearopt-variables.R'
+    'model-api.R'
+    'milp.R'
+    'ompr-package.R'
+    'optimization-model-impl.R'
+    'solution-api.R'
+    'solution-impl.R'
