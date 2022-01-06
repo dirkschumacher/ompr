@@ -119,6 +119,10 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
   } else {
     as.character(variable)
   }
+  variable_index_names <- if (is_indexed_var) {
+    stopifnot(length(variable) >= 3)
+    as.character(variable[3:length(variable)])
+  }
 
   if (variable_base_name %in% names(model$variables)) {
     stop(
@@ -130,9 +134,14 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
   current_column_count <- model$column_count
   # TODO: batch grow vectors, e.g. lower/upper bounds
   if (is_indexed_var) {
-    non_empty_names <- names(dots)
-    non_empty_names <- non_empty_names[non_empty_names != ""]
-    vars <- gen_list(c(!!!syms(non_empty_names)), !!!dots, .env = parent.frame())
+    stopifnot(
+      !is.null(variable_index_names),
+      all(variable_index_names != "")
+    )
+    vars <- gen_list(
+      c(!!!syms(variable_index_names)), !!!dots,
+      .env = parent.frame()
+    )
     el_names <- lapply(vars, hash_var_indexes)
     vars <- lapply(vars, function(x) {
       current_column_count <<- current_column_count + 1

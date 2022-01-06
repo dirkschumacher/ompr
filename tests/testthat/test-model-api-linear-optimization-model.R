@@ -254,3 +254,18 @@ test_that("bug github#327: Using index 'e' fails in sum_expr", {
       set_objective(sum_expr(x[e], e = 1:3))
   })
 })
+
+test_that("bug github#266: reverting the index names fails", {
+  expect_silent({
+    m <- MIPModel() %>%
+      add_variable(x[i, j], j = 1:3, i = 1:2) %>%
+      add_constraint(x[i, j] == 1, i = 1:2, j = 1:3)
+  })
+  expect_setequal(
+    variable_keys(m),
+    c(
+      "x[1,1]", "x[1,2]", "x[1,3]",
+      "x[2,1]", "x[2,2]", "x[2,3]"
+    )
+  )
+})
