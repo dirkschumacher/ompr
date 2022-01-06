@@ -246,3 +246,11 @@ test_that("bug github#265: expression builder bug with coefficients after var", 
     add_constraint(x <= 1)
   expect_equal(as.numeric(objective_function(m)$solution), 1)
 })
+
+test_that("bug github#327: Using index 'e' fails in sum_expr", {
+  expect_silent({
+    MIPModel() %>%
+      add_variable(x[e], e = 1:3) %>%
+      set_objective(sum_expr(x[e], e = 1:3))
+  })
+})
