@@ -16,7 +16,7 @@ MIPModel <- function() {
 
 #' @rdname linear-functions
 setClass("OmprLinearVariableCollection",
-         slots = c(variables = "list"))
+         slots = c(map = "ANY"))
 
 #' @importFrom rlang abort
 #' @rdname linear-functions
@@ -36,17 +36,17 @@ setMethod(
       ...
     )
     var_name <- hash_var_indexes(indexes)
-    var <- x@variables[[var_name]]
+    var <- x@map$get(var_name)
     if (is.null(var)) {
       abort("Variable not found for indexes")
     }
-    new_linear_term(var, 1)
+    var
   }
 )
 
 #' @rdname linear-functions
 setMethod("length", signature("OmprLinearVariableCollection"), function(x) {
-  length(x@variables)
+  x@map$size()
 })
 
 #' @include linear-optimization-model-linear-functions.R
@@ -67,6 +67,7 @@ print.linear_optimization_model <- function(x, ...) {
 #' @importFrom rlang syms
 #' @importFrom rlang get_expr
 #' @importFrom listcomp gen_list
+#' @importFrom fastmap fastmap
 add_variable.linear_optimization_model <- function(.model, .variable, ...,
                                                    type = "continuous",
                                                    lb = -Inf, ub = Inf) {
@@ -148,9 +149,12 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
       model$variable_bounds_lower[[current_column_count]] <<- lb
       model$variable_bounds_upper[[current_column_count]] <<- ub
       var <- new("OmprLinearVariable", column_idx = current_column_count)
+      new_linear_term(var, 1)
     })
     vars <- setNames(vars, el_names)
-    new_variable <- new("OmprLinearVariableCollection", variables = vars)
+    map <- fastmap()
+    map$mset(.list = vars)
+    new_variable <- new("OmprLinearVariableCollection", map = map)
   } else {
     current_column_count <- current_column_count + 1
     model$variable_bounds_lower[[current_column_count]] <- lb
@@ -399,7 +403,7 @@ variable_types.linear_optimization_model <- function(model) {
     column_indexes <- if (inherits(variable, "LinearTerm")) {
       variable@variable@column_idx
     } else {
-      vapply(variable@variables, function(x) x@column_idx, numeric(1))
+      vapply(variable@map$as_list(), function(x) x@variable@column_idx, numeric(1))
     }
     data.frame(column_idx = column_indexes, type = type)
   })
@@ -425,9 +429,11 @@ variable_keys.linear_optimization_model <- function(model) {
     column_indexes <- if (inherits(variable, "LinearTerm")) {
       setNames(variable@variable@column_idx, var_name)
     } else {
-      var_names <- paste0(var_name, "[", names(variable@variables), "]")
+      var_names <- paste0(var_name, "[", variable@map$keys(), "]")
       setNames(
-        vapply(variable@variables, function(x) x@column_idx, numeric(1)),
+        vapply(variable@map$as_list(),
+               function(x) x@variable@column_idx,
+               numeric(1)),
         var_names
       )
     }
