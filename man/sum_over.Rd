@@ -2,9 +2,12 @@
 % Please edit documentation in R/linear-optimization-model-impl.R
 \name{sum_over}
 \alias{sum_over}
+\alias{sum_expr}
 \title{Sum over indexes}
 \usage{
 sum_over(.expr, ...)
+
+sum_expr(.expr, ...)
 }
 \arguments{
 \item{.expr}{an expression that can be expanded to a sum}

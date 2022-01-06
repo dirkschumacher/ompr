@@ -4,12 +4,12 @@
 \alias{sum_expr}
 \title{Construct a sum expression}
 \usage{
-sum_expr(expr, ...)
+sum_expr(.expr, ...)
 }
 \arguments{
-\item{expr}{an expression that can be expanded to a sum}
-
 \item{...}{bind variables in expr using dots. See examples.}
+
+\item{expr}{an expression that can be expanded to a sum}
 }
 \value{
 the expanded sum as an AST
@@ -18,13 +18,6 @@ the expanded sum as an AST
 This functions helps to create dynamic sum expression
 based on external variables. Should only be used within
 other 'ompr' functions.
-}
-\examples{
-# create a sum from x_1 to x_10
-sum_expr(x[i], i = 1:10)
-# create a sum from x_2 to x_10 with even indexes
-sum_expr(x[i], i = 1:10, i \%\% 2 == 0)
-
 }
 \seealso{
 \code{\link{add_constraint}}

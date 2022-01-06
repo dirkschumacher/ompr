@@ -1,6 +1,6 @@
 #' Create a new MIP Model
 #' @export
-MIPModel2 <- function() {
+MIPModel <- function() {
   structure(list(
     variables = list(), # a named list of variables. Either a variable or a collection of variables,
     variable_types = list(),
@@ -110,6 +110,9 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
   model <- .model
 
   # first we need to extract the variable
+  if (is.call(variable) && variable[[1]] != "[") {
+    abort("The variable need to be in the form of <var>[<indexes>]")
+  }
   is_indexed_var <- is.call(variable) && variable[[1]] == "["
   variable_base_name <- if (is_indexed_var) {
     as.character(variable[[2]])
@@ -127,7 +130,9 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
   current_column_count <- model$column_count
   # TODO: batch grow vectors, e.g. lower/upper bounds
   if (is_indexed_var) {
-    vars <- gen_list(c(!!!syms(names(dots))), !!!dots, .env = parent.frame())
+    non_empty_names <- names(dots)
+    non_empty_names <- non_empty_names[non_empty_names != ""]
+    vars <- gen_list(c(!!!syms(non_empty_names)), !!!dots, .env = parent.frame())
     el_names <- lapply(vars, hash_var_indexes)
     vars <- lapply(vars, function(x) {
       current_column_count <<- current_column_count + 1
@@ -152,6 +157,16 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
 }
 
 #' @export
+add_variable_.linear_optimization_model <- function(.model, .variable, ...,
+                                                    type = "continuous",
+                                                    lb = -Inf, ub = Inf, .dots) {
+  var <- to_quosure(as.lazy(.variable))
+  dots <- capture_lazy_dots(.dots, ...)
+  add_variable(.model, .variable = !!var, !!!dots,
+               type = type, lb = lb, ub = ub)
+}
+
+#' @export
 #' @importFrom rlang caller_env
 set_objective.linear_optimization_model <- function(model,
                                                     expression,
@@ -167,6 +182,19 @@ set_objective.linear_optimization_model <- function(model,
     sense = sense
   )
   model
+}
+
+#' @export
+#' @importFrom lazyeval as.lazy
+set_objective_.linear_optimization_model <- function(model,
+                                                     expression,
+                                                     sense = "max") {
+  expression <- to_quosure(as.lazy(expression))
+  set_objective(
+    model = model,
+    expression = !!expression,
+    sense = sense
+  )
 }
 
 `%||%` <- function(lhs, rhs) invisible(if (!lhs) rhs)
@@ -197,6 +225,16 @@ set_bounds.linear_optimization_model <- function(.model, .variable, ...,
     }
   }
   .model
+}
+
+#' @export
+set_bounds_.linear_optimization_model <- function(.model, .variable, ...,
+                                                   lb = NULL, ub = NULL,
+                                                  .dots)  {
+  var <- to_quosure(as.lazy(.variable))
+  dots <- capture_lazy_dots(.dots, ...)
+  set_bounds(.model, .variable = !!var, !!!dots,
+               lb = lb, ub = ub)
 }
 
 #' @importFrom rlang get_expr
@@ -254,6 +292,10 @@ sum_over <- function(.expr, ...) {
 }
 
 #' @export
+#' @rdname sum_over
+sum_expr <- sum_over
+
+#' @export
 #' @importFrom rlang enquos
 #' @importFrom rlang get_expr
 #' @importFrom rlang enquo
@@ -277,6 +319,40 @@ add_constraint.linear_optimization_model <- function(.model, .constraint_expr,
   }
   .model$constraints <- c(.model$constraints, constraints) # O(n)
   .model
+}
+
+#' @importFrom rlang new_quosure
+#' @importFrom lazyeval as.lazy_dots
+#' @importFrom lazyeval lazy_dots
+capture_lazy_dots <- function(.dots, ...) {
+  lazy_dots <- lazy_dots(...)
+  if (!missing(.dots)) {
+    lazy_dots <- c(lazy_dots, as.lazy_dots(.dots))
+  }
+  lapply(lazy_dots, function(x) {
+    new_quosure(x$expr, x$env)
+  })
+}
+
+to_quosure <- function(expr) {
+  new_quosure(expr$expr, expr$env)
+}
+
+#' @export
+#' @importFrom lazyeval as.lazy
+#' @importFrom rlang new_quosure
+add_constraint_.linear_optimization_model <- function(.model,
+                                                      .constraint_expr,
+                                                      ...,
+                                                      .dots,
+                                                      .show_progress_bar = TRUE) {
+  constraint_expr <- to_quosure(as.lazy(.constraint_expr))
+  dots <- capture_lazy_dots(.dots, ...)
+  add_constraint(
+    .model = .model,
+    .constraint_expr = !!constraint_expr,
+    !!!dots
+  )
 }
 
 hash_var_indexes <- function(indexes) {

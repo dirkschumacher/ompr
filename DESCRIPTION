@@ -24,7 +24,6 @@ Imports:
   listcomp (>= 0.3.0.9000),
   methods,
   data.table,
-  Rcpp (>= 0.12.12),
   Matrix
 Suggests:
   magrittr,
@@ -32,12 +31,8 @@ Suggests:
 Remotes:
   dirkschumacher/listcomp
 ByteCompile: Yes
-LinkingTo: Rcpp
 Collate:
-    'RcppExports.R'
     'abstract-model-impl.R'
-    'class-constraint.R'
-    'class-model.R'
     'helper.R'
     'linear-optimization-model-linear-functions.R'
     'linear-optimization-model-impl.R'
@@ -46,6 +41,5 @@ Collate:
     'milp-impl.R'
     'milp-linearopt-variables.R'
     'ompr-package.R'
-    'optimization-model-impl.R'
     'solution-api.R'
     'solution-impl.R'

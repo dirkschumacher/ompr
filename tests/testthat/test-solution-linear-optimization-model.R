@@ -1,7 +1,7 @@
-context("MIPModel2: solution")
+context("MIP: solution")
 
 test_that("export single var to numeric", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x, ub = 1) %>%
     add_variable(y, ub = 1) %>%
     add_constraint(x + y <= 1) %>%
@@ -17,7 +17,7 @@ test_that("export single var to numeric", {
 })
 
 test_that("export solutions to data.frame if var is indexed", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
   solution <- new_solution(
@@ -33,7 +33,7 @@ test_that("export solutions to data.frame if var is indexed", {
 })
 
 test_that("export solutions to data.frame with index", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
   solution <- new_solution(
@@ -48,7 +48,7 @@ test_that("export solutions to data.frame with index", {
 })
 
 test_that("export solutions to data.frame with two indexes", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i, j], i = 1:2, j = 1:2, ub = 1)
   solution_vars <- setNames(
     c(1, 1, 1, 1),
@@ -69,7 +69,7 @@ test_that("export solutions to data.frame with two indexes", {
 })
 
 test_that("export infeasible solutions to data.frame", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
   solution <- new_solution(
@@ -85,7 +85,7 @@ test_that("export infeasible solutions to data.frame", {
 
 
 test_that("export solutions to single value if all indexes bound", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
@@ -106,7 +106,7 @@ test_that("export solutions to single value if all indexes bound", {
 })
 
 test_that("export solutions to df in a model with more than one variable", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
@@ -127,7 +127,7 @@ test_that("export solutions to df in a model with more than one variable", {
 })
 
 test_that("solution has a nice default output", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
@@ -148,7 +148,7 @@ test_that("solution has a nice default output", {
 })
 
 test_that("solution indexes should not be factors", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
     add_variable(y[i], i = 1:3, ub = 1) %>%
     set_objective(sum_expr(x[i], i = 1:3))
@@ -168,7 +168,7 @@ test_that("solution indexes should not be factors", {
 })
 
 test_that("bug 20160908: solution indexes mixed up", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
     set_objective(sum_expr(x[10, i], i = 10:12))
   solution <- new_solution(
@@ -188,7 +188,7 @@ test_that("bug 20160908: solution indexes mixed up", {
 })
 
 test_that("objective_value gets the obj. value", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
     set_objective(sum_expr(x[10, i], i = 10:12))
   solution <- new_solution(
@@ -207,7 +207,7 @@ test_that("objective_value gets the obj. value", {
 })
 
 test_that("solver_status gets the solver_status", {
-  model <- MIPModel2() %>%
+  model <- MIPModel() %>%
     add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
     set_objective(sum_expr(x[10, i], i = 10:12))
   solution <- new_solution(
