@@ -1,9 +1,8 @@
 # Mixed integer linear programming in R
-
 <!-- badges: start -->
 [![R build status](https://github.com/dirkschumacher/ompr/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/ompr/actions)
 [![CRAN Status](https://www.r-pkg.org/badges/version/ompr)](https://cran.r-project.org/package=ompr)
-  <!-- badges: end -->
+<!-- badges: end -->
 
 OMPR (Optimization Modeling Package) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
 
