@@ -237,3 +237,12 @@ test_that("bug 20170312: variable_keys has wrong orderning", {
   expect_equal(c(1, 0, 0, 0, 1, 0), result$lower)
   expect_equal(c(1, 5, 5, 5, 1, 5), result$upper)
 })
+
+test_that("bug github#265: expression builder bug with coefficients after var", {
+  a <- b <- 1
+  m <- MIPModel() %>%
+    add_variable(x) %>%
+    set_objective(x * a * b) %>%
+    add_constraint(x <= 1)
+  expect_equal(as.numeric(objective_function(m)$solution), 1)
+})
