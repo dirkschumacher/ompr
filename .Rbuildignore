@@ -9,7 +9,6 @@
 ^_pkgdown.yml
 ^src/\.clang-format
 ^cran-comments\.md$
-^README\.md$
 ^README\.Rmd$
 ^LICENSE
 ^\.gitignore$
