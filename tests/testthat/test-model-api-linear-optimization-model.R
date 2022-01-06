@@ -52,8 +52,10 @@ describe("objective_function()", {
   it("returns a sparse vector", {
     n <- 2
     model <- MIPModel() %>%
-      add_variable(x[i, j], i = 1:n, j = 1:n,
-                   type = "integer", lb = 0, ub = 1) %>%
+      add_variable(x[i, j],
+        i = 1:n, j = 1:n,
+        type = "integer", lb = 0, ub = 1
+      ) %>%
       set_bounds(x[i, j], i = 1:n, j = 1:n, lb = 0, ub = 0) %>%
       set_objective(sum_expr(x[i, j], i = 1:n, j = 1:n)) %>%
       add_constraint(sum_expr(x[i, j], i = 1:n, j = 1:n) <= 10)
@@ -74,21 +76,21 @@ describe("variable_keys()", {
     model <- MIPModel() %>%
       add_variable(x[i, j], i = 1:2, j = 1:2)
     result <- variable_keys(model)
-    expect_equal(c("x[1,1]", "x[2,1]", "x[1,2]", "x[2,2]"), result)
+    expect_setequal(c("x[1,1]", "x[2,1]", "x[1,2]", "x[2,2]"), result)
   })
   it("works with vars without an index", {
     model <- MIPModel() %>%
       add_variable(x[i, j], i = 1, j = 1) %>%
       add_variable(a)
     result <- variable_keys(model)
-    expect_equal(c("a", "x[1,1]"), result)
+    expect_setequal(c("a", "x[1,1]"), result)
   })
   it("sorts keys alphabetically", {
     model <- MIPModel() %>%
       add_variable(x[i], i = 1:3) %>%
       add_variable(y[i], i = 1:3)
     result <- variable_keys(model)
-    expect_equal(sort(result), result)
+    expect_setequal(sort(result), result)
   })
   it("returns an empty character vector if model has no vars", {
     expect_equal(character(0), variable_keys(MIPModel()))
@@ -111,8 +113,10 @@ describe("extract_constraints()", {
       add_variable(y[i], i = 1:3) %>%
       add_constraint(x[i] + y[i] <= 1, i = 1:3)
     result <- extract_constraints(model)
-    exp_matrix <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1,
-                           1, 0, 0, 0, 1, 0, 0, 0, 1), ncol = 6, nrow = 3)
+    exp_matrix <- matrix(c(
+      1, 0, 0, 0, 1, 0, 0, 0, 1,
+      1, 0, 0, 0, 1, 0, 0, 0, 1
+    ), ncol = 6, nrow = 3)
     expect_equivalent(exp_matrix, as.matrix(result$matrix))
   })
   it("returns the constraint right hand side", {
@@ -170,10 +174,13 @@ describe("variable_types()", {
       add_variable(x[i], type = "integer", i = 1:2) %>%
       add_variable(a[i], type = "binary", i = 1:2)
     expected <- factor(c("binary", "binary", "integer", "integer"))
-    expect_equal(expected, variable_types(model))
+    expect_setequal(expected, variable_types(model))
   })
   it("returns an empty vector if model has no variables", {
-    expect_equal(factor(), variable_types(MIPModel()))
+    expect_equal(
+      factor(levels = c("binary", "continuous", "integer")),
+      variable_types(MIPModel())
+    )
   })
 })
 
@@ -214,18 +221,51 @@ describe("variable_bounds()", {
       set_objective(0) %>%
       add_constraint(u[i] + 1 <= u[j] + n * (1 - x[i, j]), i = 1:n, j = 1:n)
     result <- variable_bounds(model)
-    expect_equal(c(1, 1, 0, 0, 0, 0), result$lower)
-    expect_equal(c(2, 2, 1, 1, 1, 1), result$upper)
+    expect_equal(c(0, 0, 0, 0, 1, 1), result$lower)
+    expect_equal(c(1, 1, 1, 1, 2, 2), result$upper)
   })
 })
 
 test_that("bug 20170312: variable_keys has wrong orderning", {
   model <- MIPModel() %>%
-    add_variable(x[i, j], i = 1:2, j = 1:3, type = "integer",
-                 lb = 0, ub = 5) %>%
+    add_variable(x[i, j],
+      i = 1:2, j = 1:3, type = "integer",
+      lb = 0, ub = 5
+    ) %>%
     set_bounds(x[i, i], i = 1:2, lb = 1, ub = 1)
   result <- variable_bounds(model)
-  keys <- variable_keys(model)
-  expect_equal(c(1, 0, 0, 1, 0, 0), result$lower)
-  expect_equal(c(1, 5, 5, 1, 5, 5), result$upper)
+  expect_equal(c(1, 0, 0, 0, 1, 0), result$lower)
+  expect_equal(c(1, 5, 5, 5, 1, 5), result$upper)
+})
+
+test_that("bug github#265: expression builder bug with coefficients after var", {
+  a <- b <- 1
+  m <- MIPModel() %>%
+    add_variable(x) %>%
+    set_objective(x * a * b) %>%
+    add_constraint(x <= 1)
+  expect_equal(as.numeric(objective_function(m)$solution), 1)
+})
+
+test_that("bug github#327: Using index 'e' fails in sum_expr", {
+  expect_silent({
+    MIPModel() %>%
+      add_variable(x[e], e = 1:3) %>%
+      set_objective(sum_expr(x[e], e = 1:3))
+  })
+})
+
+test_that("bug github#266: reverting the index names fails", {
+  expect_silent({
+    m <- MIPModel() %>%
+      add_variable(x[i, j], j = 1:3, i = 1:2) %>%
+      add_constraint(x[i, j] == 1, i = 1:2, j = 1:3)
+  })
+  expect_setequal(
+    variable_keys(m),
+    c(
+      "x[1,1]", "x[1,2]", "x[1,3]",
+      "x[2,1]", "x[2,2]", "x[2,3]"
+    )
+  )
 })

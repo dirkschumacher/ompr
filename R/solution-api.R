@@ -65,7 +65,6 @@ get_solution <- function(solution, expr, type = "primal") {
   get_solution_(solution, lazyeval::lazy(expr), type)
 }
 
-#' @inheritParams get_solution
 #' @rdname get_solution
 #' @export
 get_solution_ <- function(solution, expr, type) {

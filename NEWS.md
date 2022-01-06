@@ -1,5 +1,30 @@
 # ompr (development version)
 
+## General changes
+
+* Rewrote the `MIPModel`. It should now be faster, more maintainable,
+  more stable and it has fewer bugs.
+* `sum_over` shall now be used in favor of `sum_expr` in the `MIPModel`
+
+## Bugfixes
+
+* Fixed a bug where using the index "e" in `sum_expr` failed (#327)
+* Fixed a bug where coefficients that came after the variable in the
+  expression would sometimes not be correctly parsed (#265)
+* Fixed a bug where `add_variable` failed if indexes were in the wrong order
+  (#266)
+
+## Deprecations
+
+All listed functions will be removed at some point the future.
+
+* `sum_expr` shall not be used anymore. Please use `sum_over` instead.
+* `MIPLModel` will likely be removed from the package, as the vectorized
+  approach did lead to some problems. Please use `MIPModel` instead.
+* `add_variable_`, `add_constraint_`, `set_objective_`, `set_bounds` and
+  `get_solution_` are not needed anymore with the new `MIPModel` as it is
+  powered by `rlang`.
+
 # ompr 0.8.1
 
 ## General changes

@@ -11,13 +11,14 @@
 #' and examine the coefficients and rows of the constraint matrix.
 #'
 #' @export
+#' @include model-api.R
 MILPModel <- function() {
   structure(list(variables = list(),
                  var_index_mapping_list = list(),
                  var_index_mapping = function(x) NULL,
                  objective = NULL,
                  constraints = list()),
-            class = "milp_model")
+            class = c("milp_model", "abstract_model"))
 }
 
 new_milp_variable <- function(name, arity, type, lb, ub, index_mapping_dt,
@@ -48,7 +49,6 @@ new_milp_variable <- function(name, arity, type, lb, ub, index_mapping_dt,
     )
   }
 }
-
 
 #' @export
 add_variable_.milp_model <- function(.model, .variable, ...,
@@ -317,17 +317,6 @@ set_objective_.milp_model <- function(model, expression,
   model$objective <- obj
   model
 }
-
-#' @export
-solve_model.milp_model <- function(model, solver) {
-  if (!is.function(solver)) {
-    stop(paste0("Solver is not a function Model -> Solution.\n",
-                "Take a look at the examples on the website on how to call",
-                " solve_model."))
-  }
-  solver(model)
-}
-
 
 ## model api
 

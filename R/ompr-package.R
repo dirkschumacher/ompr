@@ -9,8 +9,6 @@
 #'
 #' @docType package
 #' @keywords package
-#' @useDynLib ompr
-#' @importFrom Rcpp sourceCpp
 #' @importFrom methods new
 #' @name ompr
 NULL
