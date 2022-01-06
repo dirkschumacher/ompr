@@ -1,9 +1,4 @@
 #' @export
-get_solution.solution <- function(solution, expr, type = "primal") {
-  get_solution_(solution, lazyeval::lazy(expr), type)
-}
-
-#' @export
 get_solution_.solution <- function(solution, expr, type) {
   type <- match.arg(type, c("primal", "dual"))
   solution_vector <- if (type == "primal") {

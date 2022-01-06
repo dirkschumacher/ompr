@@ -32,17 +32,6 @@ new_variable <- function(arity, type, instances, lb, ub,
             class = "model_variable")
 }
 
-# helper function to check variable bounds
-check_bounds <- function(lb, ub) {
-  if (any(ub < lb)) {
-    stop("The upper bound must not be smaller than the lower bound.",
-         call. = FALSE)
-  }
-  if (any(!is.numeric(lb) | !is.numeric(ub))) {
-    stop("lb and ub must be a number.", call. = FALSE)
-  }
-}
-
 #' @export
 add_variable_.optimization_model <- function(.model, .variable, ...,
                                              type = "continuous",
@@ -332,16 +321,6 @@ add_constraint_.optimization_model <- function(.model,
   }
   model$constraints <- constraints
   model
-}
-
-#' @export
-solve_model.optimization_model <- function(model, solver) {
-  if (!is.function(solver)) {
-    stop(paste0("Solver is not a function Model -> Solution.\n",
-                "Take a look at the examples on the website on how to call",
-                " solve_model."))
-  }
-  solver(model)
 }
 
 #' @export

@@ -138,7 +138,6 @@ add_variable <- function(.model, .variable, ..., type = "continuous",
   UseMethod("add_variable")
 }
 
-#' @inheritParams add_variable
 #' @param .dots Used to work around non-standard evaluation.
 #' @rdname add_variable
 #' @export
@@ -170,7 +169,6 @@ set_bounds <- function(.model, .variable, ..., lb = NULL, ub = NULL) {
   UseMethod("set_bounds")
 }
 
-#' @inheritParams set_bounds
 #' @param .dots Used to work around non-standard evaluation.
 #' @rdname set_bounds
 #' @export
@@ -199,7 +197,6 @@ set_objective <- function(model, expression,
   UseMethod("set_objective")
 }
 
-#' @inheritParams set_objective
 #' @rdname set_objective
 #' @export
 set_objective_ <- function(model, expression,
@@ -234,7 +231,6 @@ add_constraint <- function(.model, .constraint_expr, ...,
   UseMethod("add_constraint")
 }
 
-#' @inheritParams add_constraint
 #' @param .dots Used to work around non-standard evaluation.
 #' @rdname add_constraint
 #' @export

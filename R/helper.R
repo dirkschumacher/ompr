@@ -525,3 +525,14 @@ print_model <- function(x) {
   # constraints
   cat("Constraints:", nconstraints(x), "\n")
 }
+
+# helper function to check variable bounds
+#' @importFrom rlang abort
+check_bounds <- function(lb, ub) {
+  if (any(ub < lb)) {
+    abort("The upper bound must not be smaller than the lower bound.")
+  }
+  if (any(!is.numeric(lb) | !is.numeric(ub))) {
+    abort("lb and ub must be a number.")
+  }
+}

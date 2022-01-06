@@ -1,3 +1,4 @@
+#' @export
 add_variable.abstract_model <- function(.model, .variable, ...,
                                         type = "continuous",
                                         lb = -Inf, ub = Inf) {
@@ -13,6 +14,7 @@ add_variable.abstract_model <- function(.model, .variable, ...,
   )
 }
 
+#' @export
 set_objective.abstract_model <- function(model, expression,
                                          sense = c("max", "min")) {
   set_objective_(model,
@@ -24,6 +26,7 @@ set_objective.abstract_model <- function(model, expression,
   )
 }
 
+#' @export
 add_constraint.abstract_model <- function(.model, .constraint_expr, ...,
                                           .show_progress_bar = TRUE) {
   add_constraint_(.model, lazyeval::as.lazy(
@@ -35,6 +38,7 @@ add_constraint.abstract_model <- function(.model, .constraint_expr, ...,
   )
 }
 
+#' @export
 set_bounds.abstract_model <- function(.model, .variable, ...,
                                       lb = NULL, ub = NULL) {
   set_bounds_(
@@ -46,4 +50,14 @@ set_bounds.abstract_model <- function(.model, .variable, ...,
     ub = ub,
     .dots = lazyeval::lazy_dots(...)
   )
+}
+
+#' @export
+solve_model.abstract_model <- function(model, solver) {
+  if (!is.function(solver)) {
+    stop(paste0("Solver is not a function Model -> Solution.\n",
+                "Take a look at the examples on the website on how to call",
+                " solve_model."))
+  }
+  solver(model)
 }

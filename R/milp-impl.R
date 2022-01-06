@@ -318,17 +318,6 @@ set_objective_.milp_model <- function(model, expression,
   model
 }
 
-#' @export
-solve_model.milp_model <- function(model, solver) {
-  if (!is.function(solver)) {
-    stop(paste0("Solver is not a function Model -> Solution.\n",
-                "Take a look at the examples on the website on how to call",
-                " solve_model."))
-  }
-  solver(model)
-}
-
-
 ## model api
 
 #' @export
