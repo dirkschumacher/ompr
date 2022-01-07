@@ -43,10 +43,12 @@ print_model <- function(x) {
   # obj function
   objective <- x$objective
   if (!is.null(objective) &&
-      length(objective$sense) == 1) {
-    cat("Model sense:",
-        if (objective$sense == "max") "maximize" else "minimize",
-        "\n")
+    length(objective$sense) == 1) {
+    cat(
+      "Model sense:",
+      if (objective$sense == "max") "maximize" else "minimize",
+      "\n"
+    )
   } else {
     cat("No objective function. \n")
   }

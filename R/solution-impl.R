@@ -8,7 +8,9 @@ get_solution_.solution <- function(solution, expr, type) {
   }
   if (is.null(solution_vector) || anyNA(solution_vector)) {
     stop("The solution from the solver is invalid. It is NULL or contains NAs.",
-         " Maybe the solver does not export ", type, "s?", call. = FALSE)
+      " Maybe the solver does not export ", type, "s?",
+      call. = FALSE
+    )
   }
   extract_solution(solution$model, solution_vector, expr)
 }
@@ -32,19 +34,25 @@ extract_solution <- function(model, solution_vector, expr) {
         free_vars <- c(free_vars, as.character(ast[[i]]))
         idx_pattern <- c(idx_pattern, "(\\d+)")
       } else {
-        idx_pattern <- c(idx_pattern,
-                         as.character(as.numeric(ast[[i]])))
+        idx_pattern <- c(
+          idx_pattern,
+          as.character(as.numeric(ast[[i]]))
+        )
       }
     }
-    instance_pattern <- paste0("^",
-                               var_name,
-                               "\\[",
-                               paste0(idx_pattern, collapse = ","),
-                               "\\]",
-                               "$")
+    instance_pattern <- paste0(
+      "^",
+      var_name,
+      "\\[",
+      paste0(idx_pattern, collapse = ","),
+      "\\]",
+      "$"
+    )
     if (length(free_vars) == 0) {
-      return(solution_vector[grepl(x = names(solution_vector),
-                                   pattern = instance_pattern)])
+      return(solution_vector[grepl(
+        x = names(solution_vector),
+        pattern = instance_pattern
+      )])
     } else {
       # the solution is sorted lexigographically
       solution_names <- names(solution_vector)
@@ -53,7 +61,8 @@ extract_solution <- function(model, solution_vector, expr) {
       na_rows <- as.logical(apply(is.na(var_index), 1, all))
       var_index <- var_index[!na_rows, , drop = FALSE]
       var_values <- solution_vector[grepl(solution_names,
-                                          pattern = instance_pattern)]
+        pattern = instance_pattern
+      )]
       result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
       for (x in colnames(result_df)) {
         result_df[[x]] <- as.integer(as.character(result_df[[x]]))
@@ -66,8 +75,10 @@ extract_solution <- function(model, solution_vector, expr) {
     }
   } else {
     if (!var_name %in% names(solution_vector)) {
-      stop(paste0("Either variable is not part of the model or you",
-                  " have to specify the indexes."), call. = FALSE)
+      stop(paste0(
+        "Either variable is not part of the model or you",
+        " have to specify the indexes."
+      ), call. = FALSE)
     }
     return(solution_vector[var_name])
   }
@@ -94,16 +105,20 @@ solver_status.solution <- function(solution) {
 #' @export
 get_column_duals.solution <- function(solution) {
   solution_column_duals <- solution$solution_column_duals()
-  stopifnot(is.numeric(solution_column_duals),
-            (length(solution_column_duals) == 1L && is.na(solution_column_duals)) ||
-              (length(solution_column_duals) == length(solution$solution)))
+  stopifnot(
+    is.numeric(solution_column_duals),
+    (length(solution_column_duals) == 1L && is.na(solution_column_duals)) ||
+      (length(solution_column_duals) == length(solution$solution))
+  )
   solution_column_duals
 }
 
 #' @export
 get_row_duals.solution <- function(solution) {
   solution_row_duals <- solution$solution_row_duals()
-  stopifnot(is.numeric(solution_row_duals),
-            (!is.na(solution_row_duals) || length(solution_row_duals) == 1L))
+  stopifnot(
+    is.numeric(solution_row_duals),
+    (!is.na(solution_row_duals) || length(solution_row_duals) == 1L)
+  )
   solution_row_duals
 }

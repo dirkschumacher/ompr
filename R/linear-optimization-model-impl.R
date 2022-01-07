@@ -16,7 +16,8 @@ MIPModel <- function() {
 
 #' @rdname linear-functions
 setClass("OmprLinearVariableCollection",
-         slots = c(map = "ANY"))
+  slots = c(map = "ANY")
+)
 
 #' @importFrom rlang abort
 #' @rdname linear-functions
@@ -175,8 +176,10 @@ add_variable_.linear_optimization_model <- function(.model, .variable, ...,
                                                     lb = -Inf, ub = Inf, .dots) {
   var <- to_quosure(as.lazy(.variable))
   dots <- capture_lazy_dots(.dots, ...)
-  add_variable(.model, .variable = !!var, !!!dots,
-               type = type, lb = lb, ub = ub)
+  add_variable(.model,
+    .variable = !!var, !!!dots,
+    type = type, lb = lb, ub = ub
+  )
 }
 
 #' @export
@@ -217,10 +220,14 @@ set_objective_.linear_optimization_model <- function(model,
 #' @importFrom listcomp gen_list
 set_bounds.linear_optimization_model <- function(.model, .variable, ...,
                                                  lb = NULL, ub = NULL) {
-  is.null(lb) %||% stopifnot(is.numeric(lb), length(lb) == 1,
-                           !is.na(lb), is.finite(lb))
-  is.null(ub) %||% stopifnot(is.numeric(ub), length(ub) == 1,
-                           !is.na(ub), is.finite(ub))
+  is.null(lb) %||% stopifnot(
+    is.numeric(lb), length(lb) == 1,
+    !is.na(lb), is.finite(lb)
+  )
+  is.null(ub) %||% stopifnot(
+    is.numeric(ub), length(ub) == 1,
+    !is.na(ub), is.finite(ub)
+  )
   expr <- enquo(.variable)
   dots <- enquos(...)
   eval_env <- build_model_environment(.model, caller_env())
@@ -242,12 +249,14 @@ set_bounds.linear_optimization_model <- function(.model, .variable, ...,
 
 #' @export
 set_bounds_.linear_optimization_model <- function(.model, .variable, ...,
-                                                   lb = NULL, ub = NULL,
-                                                  .dots)  {
+                                                  lb = NULL, ub = NULL,
+                                                  .dots) {
   var <- to_quosure(as.lazy(.variable))
   dots <- capture_lazy_dots(.dots, ...)
-  set_bounds(.model, .variable = !!var, !!!dots,
-               lb = lb, ub = ub)
+  set_bounds(.model,
+    .variable = !!var, !!!dots,
+    lb = lb, ub = ub
+  )
 }
 
 #' @importFrom rlang get_expr
@@ -290,10 +299,10 @@ build_model_environment <- function(model, parent_env) {
 #'
 #' @examples
 #' if (FALSE) {
-#' # create a sum from x_1 to x_10
-#' sum_over(x[i], i = 1:10)
-#' # create a sum from x_2 to x_10 with even indexes
-#' sum_over(x[i], i = 1:10, i %% 2 == 0)
+#'   # create a sum from x_1 to x_10
+#'   sum_over(x[i], i = 1:10)
+#'   # create a sum from x_2 to x_10 with even indexes
+#'   sum_over(x[i], i = 1:10, i %% 2 == 0)
 #' }
 #' @export
 #' @importFrom listcomp gen_list
@@ -431,9 +440,11 @@ variable_keys.linear_optimization_model <- function(model) {
     } else {
       var_names <- paste0(var_name, "[", variable@map$keys(), "]")
       setNames(
-        vapply(variable@map$as_list(),
-               function(x) x@variable@column_idx,
-               numeric(1)),
+        vapply(
+          variable@map$as_list(),
+          function(x) x@variable@column_idx,
+          numeric(1)
+        ),
         var_names
       )
     }
