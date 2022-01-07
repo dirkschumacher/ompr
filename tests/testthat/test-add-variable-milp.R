@@ -27,9 +27,11 @@ test_that("variables can be added", {
 })
 
 test_that("variables bounds get replicated for var. groups", {
-  m <- add_variable(MILPModel(), x[i], i = 1:3,
-                    lb = 0, ub = 1,
-                    type = "binary")
+  m <- add_variable(MILPModel(), x[i],
+    i = 1:3,
+    lb = 0, ub = 1,
+    type = "binary"
+  )
   expect_false(is.null(m$variables[["x"]]))
   expect_equal(m$variables[["x"]]$lb, c(0, 0, 0))
   expect_equal(m$variables[["x"]]$ub, c(1, 1, 1))
@@ -106,9 +108,10 @@ test_that("add_variable warns if binary var's bound is not 0/1", {
 
 test_that("variable quantifiers can have filter expressions", {
   result <- add_variable(MILPModel(), x[i, j],
-                         i = 1:5,
-                         j = 1:5,
-                         i == j + 1)
+    i = 1:5,
+    j = 1:5,
+    i == j + 1
+  )
   expect_equal(result$var_index_mapping_list$x$V1, c(2, 3, 4, 5))
   expect_equal(result$var_index_mapping_list$x$V2, c(1, 2, 3, 4))
 })
@@ -118,10 +121,11 @@ test_that("add_variable fails if filter expressions filter out everything", {
 })
 
 test_that("filter epxressions work with SE 2", {
-  result <- add_variable_(MILPModel(), ~x[i, j],
-                          i = 1:5,
-                          j = 1:5,
-                          .dots = ~i == j + 1)
+  result <- add_variable_(MILPModel(), ~ x[i, j],
+    i = 1:5,
+    j = 1:5,
+    .dots = ~ i == j + 1
+  )
   expect_equal(result$var_index_mapping_list$x$V1, c(2, 3, 4, 5))
   expect_equal(result$var_index_mapping_list$x$V2, c(1, 2, 3, 4))
 })

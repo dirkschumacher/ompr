@@ -8,7 +8,7 @@ test_that("add_constraint only accepts linear inequalities", {
 test_that("add_constraint_ supports standard eval.", {
   m <- MIPModel()
   m <- add_variable(m, x)
-  expect_silent(add_constraint_(m, ~x <= 10))
+  expect_silent(add_constraint_(m, ~ x <= 10))
 })
 
 test_that("add_constraint can handle a for all quantifier", {
@@ -82,4 +82,3 @@ test_that("quantifier filter expressions are combined with AND", {
   m <- add_constraint(m, x[i] == 1, i = 1:10, i <= 2, i >= 2)
   expect_equal(1, length(m$constraints))
 })
-

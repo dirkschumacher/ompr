@@ -128,10 +128,11 @@ nconstraints <- function(model) UseMethod("nconstraints")
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
-#'  add_variable(x) %>% # creates 1 variable named x
-#'  add_variable(y[i], i = 1:10, i %% 2 == 0,
-#'                type = "binary") # creates 4 variables
-#'
+#'   add_variable(x) %>% # creates 1 variable named x
+#'   add_variable(y[i],
+#'     i = 1:10, i %% 2 == 0,
+#'     type = "binary"
+#'   ) # creates 4 variables
 #' @export
 add_variable <- function(.model, .variable, ..., type = "continuous",
                          lb = -Inf, ub = Inf) {
@@ -160,10 +161,9 @@ add_variable_ <- function(.model, .variable, ..., type = "continuous",
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
-#'  add_variable(x[i], i = 1:5) %>%
-#'  add_constraint(x[i] >= 1, i = 1:5) %>% # creates 5 constraints
-#'  set_bounds(x[i], lb = 3, i = 1:3)
-#'
+#'   add_variable(x[i], i = 1:5) %>%
+#'   add_constraint(x[i] >= 1, i = 1:5) %>% # creates 5 constraints
+#'   set_bounds(x[i], lb = 3, i = 1:3)
 #' @export
 set_bounds <- function(.model, .variable, ..., lb = NULL, ub = NULL) {
   UseMethod("set_bounds")
@@ -187,10 +187,9 @@ set_bounds_ <- function(.model, .variable, ...,
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
-#'  add_variable(x, lb = 2) %>%
-#'  add_variable(y, lb = 40) %>%
-#'  set_objective(x + y, sense = "min")
-#'
+#'   add_variable(x, lb = 2) %>%
+#'   add_variable(y, lb = 40) %>%
+#'   set_objective(x + y, sense = "min")
 #' @export
 set_objective <- function(model, expression,
                           sense = c("max", "min")) {
@@ -222,9 +221,8 @@ set_objective_ <- function(model, expression,
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
-#'  add_variable(x[i], i = 1:5) %>%
-#'  add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
-#'
+#'   add_variable(x[i], i = 1:5) %>%
+#'   add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
 #' @export
 add_constraint <- function(.model, .constraint_expr, ...,
                            .show_progress_bar = TRUE) {

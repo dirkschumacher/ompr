@@ -42,13 +42,17 @@ describe("objective_function()", {
   it("returns a sparse vector", {
     n <- 2
     model <- MILPModel() %>%
-      add_variable(x[i, j], i = 1:n, j = 1:n,
-                   type = "integer", lb = 0, ub = 1) %>%
+      add_variable(x[i, j],
+        i = 1:n, j = 1:n,
+        type = "integer", lb = 0, ub = 1
+      ) %>%
       set_objective(sum_expr(x[i, j], i = 1:n, j = 1:n)) %>%
       add_constraint(sum_expr(x[i, j], i = 1:n, j = 1:n) <= 10)
     result <- objective_function(model)
-    expected <- Matrix::sparseVector(x = rep.int(1L, n^2),
-                                     i = seq_len(n^2), length = n^2)
+    expected <- Matrix::sparseVector(
+      x = rep.int(1L, n^2),
+      i = seq_len(n^2), length = n^2
+    )
     expect_equal(result$solution, expected)
   })
   it("returns an all 0 vector if objective function is numeric", {
@@ -120,8 +124,10 @@ describe("extract_constraints()", {
       add_variable(y[i], i = 1:3) %>%
       add_constraint(x[i] + y[i] <= 1, i = 1:3)
     result <- extract_constraints(model)
-    exp_matrix <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1,
-                           1, 0, 0, 0, 1, 0, 0, 0, 1), ncol = 6, nrow = 3)
+    exp_matrix <- matrix(c(
+      1, 0, 0, 0, 1, 0, 0, 0, 1,
+      1, 0, 0, 0, 1, 0, 0, 0, 1
+    ), ncol = 6, nrow = 3)
     expect_equivalent(exp_matrix, as.matrix(result$matrix))
   })
   it("returns the constraint right hand side", {
@@ -154,10 +160,14 @@ describe("extract_constraints()", {
     result <- extract_constraints(model)
     expect_s4_class(result$matrix, "dgCMatrix")
     expect_equal(result$rhs, rep.int(0, 3))
-    expect_equivalent(as.matrix(result$matrix),
-                      matrix(c(1, 0, 0,
-                               0, 1, 0,
-                               0, 0, 1), ncol = 3))
+    expect_equivalent(
+      as.matrix(result$matrix),
+      matrix(c(
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
+      ), ncol = 3)
+    )
   })
   it("works with non indexed variables", {
     model <- MILPModel() %>%
@@ -180,9 +190,11 @@ describe("extract_constraints()", {
       add_constraint(x[i] <= 1 + x[c(2, 2, 2)], i = 1:3)
     result <- extract_constraints(model)
     expect_equal(result$rhs, c(1, 1, 1))
-    expect_equivalent(as.matrix(result$matrix), t(matrix(c(1, -1, 0,
-                                                    0, 0, 0,
-                                                    0, -1, 1), ncol = 3, nrow = 3)))
+    expect_equivalent(as.matrix(result$matrix), t(matrix(c(
+      1, -1, 0,
+      0, 0, 0,
+      0, -1, 1
+    ), ncol = 3, nrow = 3)))
     expect_true(all(result$matrix@x != 0))
   })
 })
@@ -252,8 +264,10 @@ describe("variable_bounds()", {
 
 test_that("bug 20170312: variable_keys has wrong ordering", {
   model <- MILPModel() %>%
-    add_variable(x[i, j], i = 1:2, j = 1:3, type = "integer",
-                 lb = 0, ub = 5) %>%
+    add_variable(x[i, j],
+      i = 1:2, j = 1:3, type = "integer",
+      lb = 0, ub = 5
+    ) %>%
     set_bounds(x[i, i], i = 1:2, lb = 1, ub = 1)
   result <- variable_bounds(model)
   keys <- variable_keys(model)

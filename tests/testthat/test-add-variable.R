@@ -71,20 +71,26 @@ test_that("add_variable warns if binary var's bound is not 0/1", {
 
 test_that("variable quantifiers can have filter expressions", {
   result <- add_variable(MIPModel(), x[i, j],
-                         i = 1:5,
-                         j = 1:5,
-                         i == j + 1)
-  expect_setequal(variable_keys(result),
-                  c("x[2,1]", "x[3,2]", "x[4,3]", "x[5,4]"))
+    i = 1:5,
+    j = 1:5,
+    i == j + 1
+  )
+  expect_setequal(
+    variable_keys(result),
+    c("x[2,1]", "x[3,2]", "x[4,3]", "x[5,4]")
+  )
 })
 
 test_that("filter epxressions work with SE 2", {
-  result <- add_variable_(MIPModel(), ~x[i, j],
-                          i = 1:5,
-                          j = 1:5,
-                          .dots = ~i == j + 1)
-  expect_setequal(variable_keys(result),
-                  c("x[2,1]", "x[3,2]", "x[4,3]", "x[5,4]"))
+  result <- add_variable_(MIPModel(), ~ x[i, j],
+    i = 1:5,
+    j = 1:5,
+    .dots = ~ i == j + 1
+  )
+  expect_setequal(
+    variable_keys(result),
+    c("x[2,1]", "x[3,2]", "x[4,3]", "x[5,4]")
+  )
 })
 
 

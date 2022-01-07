@@ -51,11 +51,12 @@ test_that("we can model a tsp", {
     r <- MIPModel() %>%
       add_variable(x[i, j], i = 1:cities, j = 1:cities, type = "binary") %>%
       set_objective(sum_expr(distance_matrix[i, j] * x[i, j],
-                            i = 1:cities, j = 1:cities), sense = "min") %>%
+        i = 1:cities, j = 1:cities
+      ), sense = "min") %>%
       add_constraint(x[i, i] == 0, i = 1:cities) %>%
       add_constraint(x[i, j] == x[j, i], i = 1:cities, j = 1:cities) %>%
       add_constraint(sum_expr(x[i, j], i = sub_tours[[s]], j = sub_tours[[s]]) <=
-                       length(sub_tours[s]) - 1, s = 1:length(sub_tours))
+        length(sub_tours[s]) - 1, s = 1:length(sub_tours))
   )
 })
 
@@ -154,26 +155,37 @@ test_that("evaluates terms", {
 test_that("SE handles sum_expr well", {
   expect_silent({
     MIPModel() %>%
-      add_variable_(~x[j], j = 1:4) %>%
-      add_constraint_(~sum_expr(x[j], j = 1:2, j == 1) -
-                        sum_expr(x[j], j = 3:4) == 0)
+      add_variable_(~ x[j], j = 1:4) %>%
+      add_constraint_(~ sum_expr(x[j], j = 1:2, j == 1) -
+        sum_expr(x[j], j = 3:4) == 0)
   })
 })
 
 test_that("bug 20161110 #106: Error when indices used in sum_expr(...)
            condition already have values in workspace", {
-   i <- 2
-   j <- 2
-   model <- MIPModel()
-   model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
-   expect_silent(result <- set_objective(model,
-                                         sum_expr(x[i, j], i = 1:2,
-                                                  j = 1:2, i != j)))
-   expect_silent(result <- add_constraint(model,
-                                         sum_expr(x[i, j], i = 1:2,
-                                                  j = 1:2, i != j) <= 10))
-   expect_silent(result <- add_constraint(model,
-                                          sum_expr(1 + x[i, j] + x[i, j],
-                                                   i = 1:2, j = 1:2,
-                                                   i != j) <= 10))
+  i <- 2
+  j <- 2
+  model <- MIPModel()
+  model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
+  expect_silent(result <- set_objective(
+    model,
+    sum_expr(x[i, j],
+      i = 1:2,
+      j = 1:2, i != j
+    )
+  ))
+  expect_silent(result <- add_constraint(
+    model,
+    sum_expr(x[i, j],
+      i = 1:2,
+      j = 1:2, i != j
+    ) <= 10
+  ))
+  expect_silent(result <- add_constraint(
+    model,
+    sum_expr(1 + x[i, j] + x[i, j],
+      i = 1:2, j = 1:2,
+      i != j
+    ) <= 10
+  ))
 })

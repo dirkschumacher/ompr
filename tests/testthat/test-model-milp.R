@@ -71,11 +71,12 @@ test_that("we can model a tsp", {
     r <- MILPModel() %>%
       add_variable(x[i, j], i = 1:cities, j = 1:cities, type = "binary") %>%
       set_objective(sum_expr(distance(i, j) * x[i, j],
-                            i = 1:cities, j = 1:cities), sense = "min") %>%
+        i = 1:cities, j = 1:cities
+      ), sense = "min") %>%
       add_constraint(x[i, i] == 0, i = 1:cities) %>%
       add_constraint(x[i, j] == x[j, i], i = 1:cities, j = 1:cities) %>%
       add_constraint(sum_expr(x[i, j], i = sub_tours[s], j = sub_tours[s]) <=
-                       length(sub_tours[s]) - 1, s = 1:length(sub_tours))
+        length(sub_tours[s]) - 1, s = 1:length(sub_tours))
   })
 })
 
@@ -115,10 +116,14 @@ test_that("multiplications in objective fun", {
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
     set_objective(5 * (-x + y), sense = "max")
-  expect_equal(m$objective$objective@variables$coef,
-               c(-5, 5))
-  expect_equal(m$objective$objective@variables$variable,
-               c("x", "y"))
+  expect_equal(
+    m$objective$objective@variables$coef,
+    c(-5, 5)
+  )
+  expect_equal(
+    m$objective$objective@variables$variable,
+    c("x", "y")
+  )
 })
 
 test_that("model output works without an obj. function", {
@@ -131,10 +136,14 @@ test_that("devision in objective fun", {
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
     set_objective((-x + y) / 5, sense = "max")
-  expect_equal(m$objective$objective@variables$coef,
-               c(-0.2, 0.2))
-  expect_equal(m$objective$objective@variables$variable,
-               c("x", "y"))
+  expect_equal(
+    m$objective$objective@variables$coef,
+    c(-0.2, 0.2)
+  )
+  expect_equal(
+    m$objective$objective@variables$variable,
+    c("x", "y")
+  )
 })
 
 test_that("small to mid sized models should work", {
@@ -168,10 +177,14 @@ test_that("bug 20160729: two sum_expr on one side", {
   m <- MILPModel() %>%
     add_variable(x[j], j = 1:4) %>%
     add_constraint(sum_expr(x[j], j = 1:2) - sum_expr(x[j], j = 3:4) == 0)
-  expect_equal(m$constraints[[1]]$lhs@variables$coef,
-               c(1, 1, -1, -1))
-  expect_equal(m$constraints[[1]]$lhs@variables$col,
-               c(1, 2, 3, 4))
+  expect_equal(
+    m$constraints[[1]]$lhs@variables$coef,
+    c(1, 1, -1, -1)
+  )
+  expect_equal(
+    m$constraints[[1]]$lhs@variables$col,
+    c(1, 2, 3, 4)
+  )
 })
 
 test_that("solve_model warns about wrong arguments", {
@@ -199,29 +212,40 @@ test_that("evaluates terms", {
 
 test_that("SE handles sum_expr well", {
   m <- MILPModel() %>%
-    add_variable_(~x[j], j = 1:4) %>%
-    add_constraint_(~sum_expr(x[j], j = 1:2, j == 1) -
-                      sum_expr(x[j], j = 3:4) == 0)
+    add_variable_(~ x[j], j = 1:4) %>%
+    add_constraint_(~ sum_expr(x[j], j = 1:2, j == 1) -
+      sum_expr(x[j], j = 3:4) == 0)
   expect_equal(m$constraints[[1]]$lhs@variables$coef, c(1, -1, -1))
   expect_equal(m$constraints[[1]]$lhs@variables$col, c(1, 3, 4))
 })
 
 test_that("bug 20161110 #106: Error when indices used in sum_expr(...)
            condition already have values in workspace", {
-   i <- 2
-   j <- 2
-   model <- MILPModel()
-   model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
-   expect_silent(result <- set_objective(model,
-                                         sum_expr(x[i, j], i = 1:2,
-                                                  j = 1:2, i != j)))
-   expect_silent(result <- add_constraint(model,
-                                         sum_expr(x[i, j], i = 1:2,
-                                                  j = 1:2, i != j) <= 10))
-   expect_silent(result <- add_constraint(model,
-                                          sum_expr(1 + x[i, j] + x[i, j],
-                                                   i = 1:2, j = 1:2,
-                                                   i != j) <= 10))
+  i <- 2
+  j <- 2
+  model <- MILPModel()
+  model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
+  expect_silent(result <- set_objective(
+    model,
+    sum_expr(x[i, j],
+      i = 1:2,
+      j = 1:2, i != j
+    )
+  ))
+  expect_silent(result <- add_constraint(
+    model,
+    sum_expr(x[i, j],
+      i = 1:2,
+      j = 1:2, i != j
+    ) <= 10
+  ))
+  expect_silent(result <- add_constraint(
+    model,
+    sum_expr(1 + x[i, j] + x[i, j],
+      i = 1:2, j = 1:2,
+      i != j
+    ) <= 10
+  ))
 })
 
 test_that("variable sum divided by number", {
@@ -231,12 +255,15 @@ test_that("variable sum divided by number", {
     add_constraint((1 + x[i] + y[i]) / 5 <= 10, i = 1:3)
   constr <- ompr::extract_constraints(model)
   expected_matrix <- matrix(
-    c(0.2, 0, 0,
+    c(
+      0.2, 0, 0,
       0, 0.2, 0,
       0, 0, 0.2,
       0.2, 0, 0,
       0, 0.2, 0,
-      0, 0, 0.2), ncol = 6, nrow = 3
+      0, 0, 0.2
+    ),
+    ncol = 6, nrow = 3
   )
   expect_equivalent(as.matrix(constr$matrix), expected_matrix)
   expect_equal(constr$rhs, rep.int(10, 3) - 0.2)
@@ -311,15 +338,21 @@ test_that("colwise can be used for all coefficients", {
     add_constraint(sum_expr(colwise(1:6) * x[i, j], j = 1:2) == 0, i = 1:3) %>%
     add_constraint(sum_expr(colwise(1:6) * x[i, j], j = 1:2, i = 1:3) == 0) %>%
     add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, k = 1:2) == 0,
-                   i = 1:3) %>%
-    add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2,
-                            k = 1:2, i = 1:3) == 0) %>%
+      i = 1:3
+    ) %>%
+    add_constraint(sum_expr(colwise(1:12) * y[i, j, k],
+      j = 1:2,
+      k = 1:2, i = 1:3
+    ) == 0) %>%
     add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2) == 0,
-                   i = 1:3, k = 1:2) %>%
-    add_constraint(sum_expr(colwise(1:6) * (x[i, j] +  z[i, j]), j = 1:2) == 0,
-                   i = 1:3) %>%
+      i = 1:3, k = 1:2
+    ) %>%
+    add_constraint(sum_expr(colwise(1:6) * (x[i, j] + z[i, j]), j = 1:2) == 0,
+      i = 1:3
+    ) %>%
     add_constraint(sum_expr(colwise(1:12) * y[i, j, k], j = 1:2, i = 1:3) == 0,
-                   k = 1:2)
+      k = 1:2
+    )
 
   extract_coef <- function(i) {
     model$constraints[[i]]$lhs@variables[["coef"]]
