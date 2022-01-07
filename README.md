@@ -15,11 +15,13 @@ OMPR (Optimization Modeling Package) is a DSL to model and solve Mixed
 Integer Linear Programs. It is inspired by the excellent Jump project in
 Julia.
 
-Here are some problems you could solve with this package: \* What is the
-cost minimal way to visit a set of clients and return home afterwards?
-\* What is the optimal conference time table subject to certain
-constraints (e.g. availability of a projector)? \*
-[Sudokus](https://github.com/dirkschumacher/r-sudoku)
+Here are some problems you could solve with this package:
+
+-   What is the cost minimal way to visit a set of clients and return
+    home afterwards?
+-   What is the optimal conference time table subject to certain
+    constraints (e.g. availability of a projector)?
+-   [Sudokus](https://github.com/dirkschumacher/r-sudoku)
 
 The [Wikipedia](https://en.wikipedia.org/wiki/Integer_programming)
 article gives a good starting point if you would like to learn more
@@ -102,11 +104,13 @@ found in the package function docs or on the
 ### Backends
 
 There are currently two backends. A backend is the function that
-initializes an empty model. \* `MIPModel()` is the standard MILP Model
-\* `MILPModel()` is another backend specifically optimized for linear
-models and is often faster than `MIPModel()`. It has different
-semantics, as it is vectorized. Currently experimental and might be
-deprecated in the future.
+initializes an empty model.
+
+-   `MIPModel()` is the standard MILP Model.
+-   `MILPModel()` is another backend specifically optimized for linear
+    models and is often faster than `MIPModel()`. It has different
+    semantics, as it is vectorized. Currently experimental and might be
+    deprecated in the future.
 
 ### Solvers
 
