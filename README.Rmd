@@ -23,6 +23,7 @@ knitr::opts_chunk$set(
 OMPR (Optimization Modeling Package) is a DSL to model and solve Mixed Integer Linear Programs. It is inspired by the excellent Jump project in Julia.
 
 Here are some problems you could solve with this package:
+
   * What is the cost minimal way to visit a set of clients and return home afterwards?
   * What is the optimal conference time table subject to certain constraints (e.g. availability of a projector)?
   * [Sudokus](https://github.com/dirkschumacher/r-sudoku)
@@ -90,8 +91,9 @@ These functions currently form the public API. More detailed docs can be found i
 
 ### Backends
 
-There are currently two backends. A backend is the function that initializes an empty model. 
-* `MIPModel()` is the standard MILP Model
+There are currently two backends. A backend is the function that initializes an empty model.
+
+* `MIPModel()` is the standard MILP Model.
 * `MILPModel()` is another backend specifically optimized for linear models and is often faster than `MIPModel()`. It has different semantics, as it is vectorized. Currently experimental and might be deprecated in the future.
 
 ### Solvers
