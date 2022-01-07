@@ -9,6 +9,8 @@
 status](https://github.com/dirkschumacher/ompr/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/ompr/actions)
 [![CRAN
 Status](https://www.r-pkg.org/badges/version/ompr)](https://cran.r-project.org/package=ompr)
+[![Codecov test
+coverage](https://codecov.io/gh/dirkschumacher/ompr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/dirkschumacher/ompr?branch=master)
 <!-- badges: end -->
 
 OMPR (Optimization Modeling Package) is a DSL to model and solve Mixed

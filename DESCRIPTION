@@ -27,8 +27,9 @@ Imports:
     Matrix,
     fastmap
 Suggests:
-  magrittr,
-  testthat
+    covr,
+    magrittr,
+    testthat
 Remotes:
   dirkschumacher/listcomp
 ByteCompile: Yes
