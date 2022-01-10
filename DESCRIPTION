@@ -20,7 +20,7 @@ Depends: R (>= 3.2.0)
 Imports:
     lazyeval,
     rlang (>= 0.2.0),
-    listcomp (>= 0.3.0.9000),
+    listcomp (>= 0.4.0),
     methods,
     data.table,
     Matrix,
@@ -29,8 +29,6 @@ Suggests:
     covr,
     magrittr,
     testthat
-Remotes:
-  dirkschumacher/listcomp
 ByteCompile: Yes
 Collate:
     'abstract-model-impl.R'
