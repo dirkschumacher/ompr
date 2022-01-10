@@ -1,14 +1,55 @@
 #' Internal linear constraints classes and methods
 #' @rdname linear-constraints
 #' @slot sense leq, geq or eq
+#' @keywords internal
 setClass("LinearConstraintSense", slots = c(
   sense = "character"
 ))
 
-sense_leq <- new("LinearConstraintSense", sense = "<=")
-sense_eq <- new("LinearConstraintSense", sense = "==")
-sense_geq <- new("LinearConstraintSense", sense = ">=")
+#' @rdname linear-constraints
+#' @keywords internal
+setClass("LinearConstraintSenseLeq", contains = "LinearConstraintSense")
+#' @rdname linear-constraints
+#' @keywords internal
+setClass("LinearConstraintSenseEq", contains = "LinearConstraintSense")
+#' @rdname linear-constraints
+#' @keywords internal
+setClass("LinearConstraintSenseGeq", contains = "LinearConstraintSense")
 
+sense_leq <- new("LinearConstraintSenseLeq", sense = "<=")
+sense_eq <- new("LinearConstraintSenseEq", sense = "==")
+sense_geq <- new("LinearConstraintSenseGeq", sense = ">=")
+
+
+#' @rdname linear-constraints
+#' @keywords internal
+setGeneric("flip_constaint_sense", function(sense) {
+  sense
+})
+
+#' @rdname linear-constraints
+#' @keywords internal
+setMethod(
+  "flip_constaint_sense",
+  signature(
+    sense = "LinearConstraintSenseLeq"
+  ),
+  function(sense) {
+    sense_geq
+  }
+)
+
+#' @rdname linear-constraints
+#' @keywords internal
+setMethod(
+  "flip_constaint_sense",
+  signature(
+    sense = "LinearConstraintSenseGeq"
+  ),
+  function(sense) {
+    sense_leq
+  }
+)
 
 #' @include linear-optimization-model-linear-functions.R
 #' @rdname linear-constraints
@@ -102,5 +143,31 @@ setMethod(
   ">=", signature(e1 = "AbstractLinearFunction", e2 = "ANY"),
   function(e1, e2) {
     new_linear_constraint(e1, e2, sense_geq)
+  }
+)
+
+#' @rdname linear-constraints
+#' @param e1 a parameter
+#' @param e2 a parameter
+setMethod(
+  "<=", signature(e1 = "ANY", e2 = "AbstractLinearFunction"),
+  function(e1, e2) {
+    new_linear_constraint(e2 * -1, e1 * -1, sense_leq)
+  }
+)
+
+#' @rdname linear-constraints
+setMethod(
+  "==", signature(e1 = "ANY", e2 = "AbstractLinearFunction"),
+  function(e1, e2) {
+    new_linear_constraint(e2 * -1, e1 * -1, sense_eq)
+  }
+)
+
+#' @rdname linear-constraints
+setMethod(
+  ">=", signature(e1 = "ANY", e2 = "AbstractLinearFunction"),
+  function(e1, e2) {
+    new_linear_constraint(e2 * -1, e1 * -1, sense_geq)
   }
 )

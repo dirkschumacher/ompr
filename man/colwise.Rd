@@ -21,29 +21,28 @@ below.
 }
 \examples{
 \dontrun{
-  # vectors create matrix rows
-  # x[1, 1]
-  # x[2, 1]
-  # x[3, 1]
-  x[1:3, 1]
+# vectors create matrix rows
+# x[1, 1]
+# x[2, 1]
+# x[3, 1]
+x[1:3, 1]
 
-  # colwise() creates columns per row
-  # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
-  colwise(1, 2, 3) * x[1, colwise(1, 2, 3)]
+# colwise() creates columns per row
+# 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
+colwise(1, 2, 3) * x[1, colwise(1, 2, 3)]
 
-  # or you have multiple rows and columns and different coefficients
-  # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
-  # 4 * x[2, 1] + 5 * x[2, 2] + 6 * x[1, 3]
-  colwise(1:6) * x[1:2, colwise(1:3)]
-  # in the example above, the colwise vector multiplied with the variable
-  # has an element per row and column
-  # in general, it can be a multiple of number of columns
+# or you have multiple rows and columns and different coefficients
+# 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
+# 4 * x[2, 1] + 5 * x[2, 2] + 6 * x[1, 3]
+colwise(1:6) * x[1:2, colwise(1:3)]
+# in the example above, the colwise vector multiplied with the variable
+# has an element per row and column
+# in general, it can be a multiple of number of columns
 
-  # you can also combine the two
-  # x[1, 1]
-  # x[2, 1] + x[2, 2]
-  # x[3, 1] + x[3, 2] + x[3, 2]
-  x[1:3, colwise(1, 1:2, 1:3)]
-
+# you can also combine the two
+# x[1, 1]
+# x[2, 1] + x[2, 2]
+# x[3, 1] + x[3, 2] + x[3, 2]
+x[1:3, colwise(1, 1:2, 1:3)]
 }
 }

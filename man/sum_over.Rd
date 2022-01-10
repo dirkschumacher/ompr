@@ -22,10 +22,10 @@ This functions helps to create summations over indexes.
 }
 \examples{
 if (FALSE) {
-# create a sum from x_1 to x_10
-sum_over(x[i], i = 1:10)
-# create a sum from x_2 to x_10 with even indexes
-sum_over(x[i], i = 1:10, i \%\% 2 == 0)
+  # create a sum from x_1 to x_10
+  sum_over(x[i], i = 1:10)
+  # create a sum from x_2 to x_10 with even indexes
+  sum_over(x[i], i = 1:10, i \%\% 2 == 0)
 }
 }
 \seealso{

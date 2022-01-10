@@ -217,9 +217,102 @@ set_objective_.linear_optimization_model <- function(model,
 
 #' @export
 #' @importFrom rlang caller_env
-#' @importFrom listcomp gen_list
 set_bounds.linear_optimization_model <- function(.model, .variable, ...,
                                                  lb = NULL, ub = NULL) {
+  expr <- enquo(.variable)
+  dots <- enquos(...)
+  if (is.null(lb) && is.null(ub)) {
+    set_bounds_ineq(.model, expr, dots = dots, env = caller_env())
+  } else {
+    set_bounds_old(
+      .model, expr,
+      dots = dots, lb = lb, ub = ub, env = caller_env()
+    )
+  }
+}
+
+#' @importFrom listcomp gen_list
+set_bounds_ineq <- function(.model, .expr, dots, env) {
+  eval_env <- build_model_environment(.model, env)
+  constraints <- gen_list(!!get_expr(.expr), !!!dots, .env = eval_env)
+  any_type_errors <- !all(vapply(
+    constraints,
+    function(x) {
+      inherits(x, "LinearConstraint")
+    }, logical(1L)
+  ))
+  if (any_type_errors) {
+    abort(
+      "Bounds need to be defined as linear constraints with a single",
+      " variable on one side and a numeric value on the other"
+    )
+  }
+  for (constraint in constraints) {
+    bound <- extract_bound_from_constraint(
+      constraint@lhs, constraint@rhs, constraint@sense
+    )
+    col_idx <- bound$variable@column_idx
+    numeric_bound <- bound$bound
+    if (inherits(bound$sense, "LinearConstraintSenseLeq")) {
+      .model$variable_bounds_upper[[col_idx]] <- numeric_bound
+    } else if (inherits(bound$sense, "LinearConstraintSenseGeq")) {
+      .model$variable_bounds_lower[[col_idx]] <- numeric_bound
+    } else if (inherits(bound$sense, "LinearConstraintSenseEq")) {
+      .model$variable_bounds_lower[[col_idx]] <- numeric_bound
+      .model$variable_bounds_upper[[col_idx]] <- numeric_bound
+    } else {
+      abort("Constraint type not implemented")
+    }
+  }
+  .model
+}
+
+#' Extract a scalar bound for a variable from a constraint
+#' @rdname extract_bound_from_constraint
+#' @include linear-optimization-model-linear-constraints.R
+#' @keywords internal
+setGeneric("extract_bound_from_constraint", function(lhs, rhs, sense) {
+  stop("not implemented")
+})
+
+#' @rdname extract_bound_from_constraint
+setMethod(
+  "extract_bound_from_constraint",
+  signature(
+    lhs = "LinearFunction", rhs = "numeric",
+    sense = "LinearConstraintSense"
+  ),
+  function(lhs, rhs, sense) {
+    stopifnot(length(lhs@terms) == 1,
+              lhs@constant == 0)
+    extract_bound_from_constraint(lhs@terms[[1]], rhs, sense)
+  }
+)
+
+#' @rdname extract_bound_from_constraint
+setMethod(
+  "extract_bound_from_constraint",
+  signature(
+    lhs = "LinearTerm", rhs = "numeric",
+    sense = "LinearConstraintSense"
+  ),
+  function(lhs, rhs, sense) {
+    term <- lhs
+    coefficient <- term@coefficient
+    if (coefficient < 0) {
+      sense <- flip_constaint_sense(sense)
+    }
+    list(
+      sense = sense,
+      variable = term@variable,
+      bound = rhs / coefficient
+    )
+  }
+)
+
+#' @importFrom listcomp gen_list
+set_bounds_old <- function(.model, expr, dots,
+                           lb = NULL, ub = NULL, env = NULL) {
   is.null(lb) %||% stopifnot(
     is.numeric(lb), length(lb) == 1,
     !is.na(lb), is.finite(lb)
@@ -228,9 +321,7 @@ set_bounds.linear_optimization_model <- function(.model, .variable, ...,
     is.numeric(ub), length(ub) == 1,
     !is.na(ub), is.finite(ub)
   )
-  expr <- enquo(.variable)
-  dots <- enquos(...)
-  eval_env <- build_model_environment(.model, caller_env())
+  eval_env <- build_model_environment(.model, env)
   vars <- gen_list(!!expr, !!!dots, .env = eval_env)
   for (var in vars) {
     if (inherits(var, "LinearTerm")) {

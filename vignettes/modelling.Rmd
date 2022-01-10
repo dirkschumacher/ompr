@@ -128,7 +128,7 @@ MIPModel() %>%
 
 ## Special bounds on a subset of variables
 
-Imagine you want to model a matching problem with a single binary decision variable $x_{i,j}$ that is $1$ iff object $i$ is matched to object $j$. One constraint would be to allow matches only if $i \neq j$. This can be modelled by a constraint or by selectively changing bounds on variables. The latter approach can be used by solvers to improve the solution process.
+Imagine you want to model a matching problem with a single binary decision variable $x_{i,j}$ that is $1$ iff object $i$ is matched to object $j$. One constraint would be to allow matches only if $i \neq j$. This can be modeled by a constraint or by selectively changing bounds on variables. The latter approach can be used by solvers to improve the solution process.
 
 ```{r}
 MIPModel() %>% 
@@ -138,7 +138,7 @@ MIPModel() %>%
   add_constraint(x[i, i] == 0, i = 1:10) %>% 
   
    # this sets the ub to 0 without adding new constraints
-  set_bounds(x[i, i], ub = 0, i = 1:10)
+  set_bounds(x[i, i] <= 0, i = 1:10)
 ```
 
 ## External model parameters

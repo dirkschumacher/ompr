@@ -3,6 +3,12 @@
 \docType{class}
 \name{LinearConstraintSense-class}
 \alias{LinearConstraintSense-class}
+\alias{LinearConstraintSenseLeq-class}
+\alias{LinearConstraintSenseEq-class}
+\alias{LinearConstraintSenseGeq-class}
+\alias{flip_constaint_sense}
+\alias{flip_constaint_sense,LinearConstraintSenseLeq-method}
+\alias{flip_constaint_sense,LinearConstraintSenseGeq-method}
 \alias{LinearConstraint-class}
 \alias{new_linear_constraint}
 \alias{new_linear_constraint,LinearFunction,numeric,LinearConstraintSense-method}
@@ -12,8 +18,17 @@
 \alias{<=,AbstractLinearFunction,ANY-method}
 \alias{==,AbstractLinearFunction,ANY-method}
 \alias{>=,AbstractLinearFunction,ANY-method}
+\alias{<=,ANY,AbstractLinearFunction-method}
+\alias{==,ANY,AbstractLinearFunction-method}
+\alias{>=,ANY,AbstractLinearFunction-method}
 \title{Internal linear constraints classes and methods}
 \usage{
+flip_constaint_sense(sense)
+
+\S4method{flip_constaint_sense}{LinearConstraintSenseLeq}(sense)
+
+\S4method{flip_constaint_sense}{LinearConstraintSenseGeq}(sense)
+
 new_linear_constraint(lhs, rhs, sense)
 
 \S4method{new_linear_constraint}{LinearFunction,numeric,LinearConstraintSense}(lhs, rhs, sense)
@@ -29,13 +44,19 @@ new_linear_constraint(lhs, rhs, sense)
 \S4method{==}{AbstractLinearFunction,ANY}(e1, e2)
 
 \S4method{>=}{AbstractLinearFunction,ANY}(e1, e2)
+
+\S4method{<=}{ANY,AbstractLinearFunction}(e1, e2)
+
+\S4method{==}{ANY,AbstractLinearFunction}(e1, e2)
+
+\S4method{>=}{ANY,AbstractLinearFunction}(e1, e2)
 }
 \arguments{
+\item{sense}{the constraint sense}
+
 \item{lhs}{a linear function}
 
 \item{rhs}{a numeric scalar}
-
-\item{sense}{the constraint sense}
 
 \item{e1}{a parameter}
 
@@ -50,3 +71,4 @@ Internal linear constraints classes and methods
 \item{\code{sense}}{leq, geq or eq}
 }}
 
+\keyword{internal}
