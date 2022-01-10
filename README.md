@@ -157,7 +157,7 @@ MIPModel() %>%
 
 ### Bin Packing
 
-An example of a more difficult model solved by symphony.
+An example of a more difficult model solved by GLPK
 
 ``` r
 max_bins <- 10
@@ -206,7 +206,7 @@ MIPModel() %>%
 
 ## License
 
-Currently GPL.
+MIT
 
 ## Contributing
 
