@@ -66,13 +66,13 @@ library(ROI.plugin.glpk)
 library(ompr)
 library(ompr.roi)
 
-result <- MIPModel() %>%
-  add_variable(x, type = "integer") %>%
-  add_variable(y, type = "continuous", lb = 0) %>%
-  set_bounds(x, lb = 0) %>%
-  set_objective(x + y, "max") %>%
-  add_constraint(x + y <= 11.25) %>%
-  solve_model(with_ROI(solver = "glpk")) 
+result <- MIPModel() |>
+  add_variable(x, type = "integer") |>
+  add_variable(y, type = "continuous", lb = 0) |>
+  set_bounds(x, lb = 0) |>
+  set_objective(x + y, "max") |>
+  add_constraint(x + y <= 11.25) |>
+  solve_model(with_ROI(solver = "glpk"))
 get_solution(result, x)
 #>  x 
 #> 11
@@ -141,12 +141,12 @@ max_capacity <- 5
 n <- 10
 set.seed(1234)
 weights <- runif(n, max = max_capacity)
-MIPModel() %>%
-  add_variable(x[i], i = 1:n, type = "binary") %>%
-  set_objective(sum_over(weights[i] * x[i], i = 1:n), "max") %>%
-  add_constraint(sum_over(weights[i] * x[i], i = 1:n) <= max_capacity) %>%
-  solve_model(with_ROI(solver = "glpk")) %>%
-  get_solution(x[i]) %>% 
+MIPModel() |>
+  add_variable(x[i], i = 1:n, type = "binary") |>
+  set_objective(sum_over(weights[i] * x[i], i = 1:n), "max") |>
+  add_constraint(sum_over(weights[i] * x[i], i = 1:n) <= max_capacity) |>
+  solve_model(with_ROI(solver = "glpk")) |>
+  get_solution(x[i]) |>
   filter(value > 0)
 #>   variable i value
 #> 1        x 1     1
@@ -164,15 +164,15 @@ max_bins <- 10
 bin_size <- 3
 n <- 10
 weights <- runif(n, max = bin_size)
-MIPModel() %>%
-  add_variable(y[i], i = 1:max_bins, type = "binary") %>%
-  add_variable(x[i, j], i = 1:max_bins, j = 1:n, type = "binary") %>%
-  set_objective(sum_over(y[i], i = 1:max_bins), "min") %>%
-  add_constraint(sum_over(weights[j] * x[i, j], j = 1:n) <= y[i] * bin_size, i = 1:max_bins) %>%
-  add_constraint(sum_over(x[i, j], i = 1:max_bins) == 1, j = 1:n) %>%
-  solve_model(with_ROI(solver = "glpk", verbose = TRUE)) %>%
-  get_solution(x[i, j]) %>%
-  filter(value > 0) %>%
+MIPModel() |>
+  add_variable(y[i], i = 1:max_bins, type = "binary") |>
+  add_variable(x[i, j], i = 1:max_bins, j = 1:n, type = "binary") |>
+  set_objective(sum_over(y[i], i = 1:max_bins), "min") |>
+  add_constraint(sum_over(weights[j] * x[i, j], j = 1:n) <= y[i] * bin_size, i = 1:max_bins) |>
+  add_constraint(sum_over(x[i, j], i = 1:max_bins) == 1, j = 1:n) |>
+  solve_model(with_ROI(solver = "glpk", verbose = TRUE)) |>
+  get_solution(x[i, j]) |>
+  filter(value > 0) |>
   arrange(i)
 #> <SOLVER MSG>  ----
 #> GLPK Simplex Optimizer, v4.65
@@ -222,5 +222,5 @@ abide by its terms.
     “object-oriented modeling language for convex optimization”. LP/MIP
     is a special case.
 -   [ROML](https://r-forge.r-project.org/projects/roml/) follows a
-    similiar approach, but it seems the package is still under initial
+    similar approach, but it seems the package is still under initial
     development.
