@@ -16,7 +16,7 @@ set_bounds_(.model, .variable, ..., lb = NULL, ub = NULL, .dots)
 
 \item{...}{quantifiers for the indexed variable}
 
-\item{lb}{the lower bound of the variable}
+\item{lb}{the lower bound of the variable.}
 
 \item{ub}{the upper bound of the variable
 

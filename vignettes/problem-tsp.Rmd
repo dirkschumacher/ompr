@@ -128,11 +128,11 @@ kable(head(solution, 3))
 
 Now we need to link back the indexes in our model with the actual cities.
 ```{r}
-paths <- select(solution, i, j) %>% 
-  rename(from = i, to = j) %>% 
-  mutate(trip_id = row_number()) %>% 
-  tidyr::gather(property, idx_val, from:to) %>% 
-  mutate(idx_val = as.integer(idx_val)) %>% 
+paths <- select(solution, i, j) %>%
+  rename(from = i, to = j) %>%
+  mutate(trip_id = row_number()) %>%
+  tidyr::gather(property, idx_val, from:to) %>%
+  mutate(idx_val = as.integer(idx_val)) %>%
   inner_join(cities, by = c("idx_val" = "id"))
 kable(head(arrange(paths, trip_id), 4))
 ```

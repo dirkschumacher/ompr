@@ -33,8 +33,8 @@ n <- 10; W <- 2
 v <- runif(n);w <- runif(n)
 model <- MIPModel() %>% 
   add_variable(x[i], i = 1:n, type = "binary") %>% 
-  set_objective(sum_expr(v[i] * x[i], i = 1:n)) %>% 
-  add_constraint(sum_expr(w[i] * x[i], i = 1:n) <= W)
+  set_objective(sum_over(v[i] * x[i], i = 1:n)) %>% 
+  add_constraint(sum_over(w[i] * x[i], i = 1:n) <= W)
 ```
 
 
@@ -98,13 +98,13 @@ The following code creates a model with three decision variables $x_1$, $x_2$, $
 ```{r}
 MIPModel() %>% 
   add_variable(x[i], i = 1:3) %>% 
-  set_objective(sum_expr(x[i], i = 1:3)) %>% 
-  add_constraint(sum_expr(x[i], i = 1:3) <= 10)
+  set_objective(sum_over(x[i], i = 1:3)) %>% 
+  add_constraint(sum_over(x[i], i = 1:3) <= 10)
 ```
 
 ## Quantifiers
 
-`add_variable`, `add_constraint`, `set_bounds`, `sum_expr` all support a common quantifier interface that also supports filter expression. A more complex example will show what that means.
+`add_variable`, `add_constraint`, `set_bounds`, `sum_over` all support a common quantifier interface that also supports filter expression. A more complex example will show what that means.
 
 ```{r}
 MIPModel() %>% 
@@ -116,14 +116,14 @@ MIPModel() %>%
   add_variable(y[i], type = "binary", i = 1:10, i %% 2 == 0) %>% 
   
   # we maximize all x_{i,j} where i = j + 1
-  set_objective(sum_expr(x[i, j], i = 1:10, j = 1:10, i == j + 1)) %>% 
+  set_objective(sum_over(x[i, j], i = 1:10, j = 1:10, i == j + 1)) %>% 
   
   # for each i between 1 and 10 with i mod 2 = 0
   # we add a constraint \sum_j x_{i,j}
-  add_constraint(sum_expr(x[i, j], j = 1:10) <= 1, i = 1:10, i %% 2 == 0) %>% 
+  add_constraint(sum_over(x[i, j], j = 1:10) <= 1, i = 1:10, i %% 2 == 0) %>% 
   
   # of course you can leave out filters or add more than 1
-  add_constraint(sum_expr(x[i, j], j = 1:10) <= 2, i = 1:10) 
+  add_constraint(sum_over(x[i, j], j = 1:10) <= 2, i = 1:10) 
 ```
 
 ## Special bounds on a subset of variables
@@ -134,7 +134,7 @@ Imagine you want to model a matching problem with a single binary decision varia
 MIPModel() %>% 
   add_variable(x[i, j], i = 1:10, j = 1:10, 
                type = "integer", lb = 0, ub = 1) %>% 
-  set_objective(sum_expr(x[i, j], i = 1:10, j = 1:10)) %>% 
+  set_objective(sum_over(x[i, j], i = 1:10, j = 1:10)) %>% 
   add_constraint(x[i, i] == 0, i = 1:10) %>% 
   
    # this sets the ub to 0 without adding new constraints
@@ -151,8 +151,8 @@ costs <- rpois(n, lambda = 3) # a cost vector
 max_elements <- 3
 MIPModel() %>% 
   add_variable(x[i], type = "binary", i = 1:n) %>% 
-  set_objective(sum_expr(costs[i] * x[i], i = 1:n)) %>% 
-  add_constraint(sum_expr(x[i], i = 1:n) <= max_elements)
+  set_objective(sum_over(costs[i] * x[i], i = 1:n)) %>% 
+  add_constraint(sum_over(x[i], i = 1:n) <= max_elements)
 ```
 
 ## Extract model solutions
@@ -173,8 +173,8 @@ n <- 5
 weights <- matrix(rpois(n * n, 5), ncol = n, nrow = n)
 result <- MIPModel() %>% 
   add_variable(x[i, j], i = 1:n, j = 1:n, type = "binary") %>% 
-  set_objective(sum_expr(weights[i, j] * x[i, j], i = 1:n, j = 1:n)) %>% 
-  add_constraint(sum_expr(x[i, j], j = 1:n) == 1, i = 1:n) %>% 
+  set_objective(sum_over(weights[i, j] * x[i, j], i = 1:n, j = 1:n)) %>% 
+  add_constraint(sum_over(x[i, j], j = 1:n) == 1, i = 1:n) %>% 
   solve_model(with_ROI("glpk", verbose = TRUE))
 ```
 

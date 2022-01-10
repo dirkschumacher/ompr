@@ -110,13 +110,13 @@ model <- MIPModel() %>%
   add_variable(x[i, j], i = 1:n, j = 1:m, type = "binary") %>%
   
   # maximize the preferences
-  set_objective(sum_expr(weight(i, j) * x[i, j], i = 1:n, j = 1:m)) %>%
+  set_objective(sum_over(weight(i, j) * x[i, j], i = 1:n, j = 1:m)) %>%
   
   # we cannot exceed the capacity of a course
-  add_constraint(sum_expr(x[i, j], i = 1:n) <= capacity[j], j = 1:m) %>% 
+  add_constraint(sum_over(x[i, j], i = 1:n) <= capacity[j], j = 1:m) %>% 
   
   # each student needs to be assigned to one course
-  add_constraint(sum_expr(x[i, j], j = 1:m) == 1, i = 1:n)
+  add_constraint(sum_over(x[i, j], j = 1:m) == 1, i = 1:n)
 model
 ```
 

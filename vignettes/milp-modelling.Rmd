@@ -33,9 +33,9 @@ This is the `ompr` equivalent:
 ```{r, eval=FALSE}
 n <- 10; W <- 2
 v <- runif(n);w <- runif(n)
-model <- MILPModel() %>% 
-  add_variable(x[i], i = 1:n, type = "binary") %>% 
-  set_objective(sum_expr(colwise(v[i]) * x[i], i = 1:n)) %>% 
+model <- MILPModel() %>%
+  add_variable(x[i], i = 1:n, type = "binary") %>%
+  set_objective(sum_expr(colwise(v[i]) * x[i], i = 1:n)) %>%
   add_constraint(sum_expr(colwise(w[i]) * x[i], i = 1:n) <= W)
 ```
 
@@ -57,9 +57,9 @@ Compared to the old `MIPModel` backend, `MILPModel` has vectorized semantics. Me
 Each function in `ompr` creates immutable copies of the models. In addition the function interface has been designed to work with `magrittr` pipes. You always start with an empty model and add components to it.
 
 ```{r}
-MIPModel() %>% 
-  add_variable(x) %>% 
-  set_objective(x) %>% 
+MIPModel() %>%
+  add_variable(x) %>%
+  set_objective(x) %>%
   add_constraint(x <= 1)
 ```
 
@@ -68,9 +68,9 @@ MIPModel() %>%
 Variables can be of type `continuous`, `integer` or `binary`.
 
 ```{r}
-MIPModel() %>% 
-  add_variable(x, type = "integer") %>% 
-  add_variable(y, type = "continuous") %>% 
+MIPModel() %>%
+  add_variable(x, type = "integer") %>%
+  add_variable(y, type = "continuous") %>%
   add_variable(z, type = "binary")
 ```
 

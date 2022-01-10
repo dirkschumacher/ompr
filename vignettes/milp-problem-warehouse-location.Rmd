@@ -81,7 +81,7 @@ Now let's plot everything. Black dots are customers and red dots are possible wa
 
 ```{r}
 library(ggplot2)
-p <- ggplot(customer_locations, aes(x, y)) + 
+p <- ggplot(customer_locations, aes(x, y)) +
   geom_point() + 
   geom_point(data = warehouse_locations, color = "red", alpha = 0.5, shape = 17) +
   scale_x_continuous(limits = c(0, grid_size)) +
@@ -110,7 +110,7 @@ model <- MILPModel() %>%
                   sum_expr(colwise(fixedcost[j]) * y[j], j = 1:m), "min") %>%
   
   # every customer needs to be assigned to a warehouse
-  add_constraint(sum_expr(x[i, j], j = 1:m) == 1, i = 1:n) %>% 
+  add_constraint(sum_expr(x[i, j], j = 1:m) == 1, i = 1:n) %>%
   
   # if a customer is assigned to a warehouse, then this warehouse must be built
   add_constraint(x[i,j] <= y[j], i = 1:n, j = 1:m)
@@ -131,22 +131,22 @@ We solved the problem with an objective value of `r sprintf("%d", objective_valu
 
 ```{r}
 suppressPackageStartupMessages(library(dplyr))
-matching <- result %>% 
+matching <- result %>%
   get_solution(x[i,j]) %>%
-  filter(value > .9) %>%  
+  filter(value > .9) %>%
   select(i, j)
 ```
 
 The last step is to add the assignments to the previous plot we generated.
 
 ```{r}
-plot_assignment <- matching %>% 
-  inner_join(customer_locations, by = c("i" = "id")) %>% 
+plot_assignment <- matching %>%
+  inner_join(customer_locations, by = c("i" = "id")) %>%
   inner_join(warehouse_locations, by = c("j" = "id"))
 customer_count <- matching %>% group_by(j) %>% summarise(n = n()) %>% rename(id = j)
-plot_warehouses <- warehouse_locations %>% 
-  mutate(costs = fixedcost) %>% 
-  inner_join(customer_count, by = "id") %>% 
+plot_warehouses <- warehouse_locations %>%
+  mutate(costs = fixedcost) %>%
+  inner_join(customer_count, by = "id") %>%
   filter(id %in% unique(matching$j))
 p + 
   geom_segment(data = plot_assignment, aes(x = x.y, y = y.y, xend = x.x, yend = y.x)) + 

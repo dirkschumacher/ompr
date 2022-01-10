@@ -24,7 +24,7 @@ variable_keys <- function(model) UseMethod("variable_keys")
 #' library(magrittr)
 #' model <- MIPModel() %>%
 #'   add_variable(x[i], i = 1:5) %>%
-#'   set_objective(sum_expr(i * x[i], i = 1:5) + 10)
+#'   set_objective(sum_over(i * x[i], i = 1:5) + 10)
 #' objective_function(model)
 #' @export
 objective_function <- function(model) UseMethod("objective_function")
