@@ -25,8 +25,7 @@ Set the model objective
 \examples{
 library(magrittr)
 MIPModel() \%>\%
- add_variable(x, lb = 2) \%>\%
- add_variable(y, lb = 40) \%>\%
- set_objective(x + y, sense = "min")
-
+  add_variable(x, lb = 2) \%>\%
+  add_variable(y, lb = 40) \%>\%
+  set_objective(x + y, sense = "min")
 }

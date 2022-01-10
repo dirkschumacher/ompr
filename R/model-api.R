@@ -153,17 +153,28 @@ add_variable_ <- function(.model, .variable, ..., type = "continuous",
 #' indexed variable or a group of variables.
 #'
 #' @param .model the model
-#' @param .variable the variable name/definition
+#' @param .variable the variable name/definition or a linear constraint
 #' @param ... quantifiers for the indexed variable
-#' @param lb the lower bound of the variable
+#' @param lb the lower bound of the variable.
 #' @param ub the upper bound of the variable
+#'
+#' For \code{MIPModel} you can also pass (in)equalities to define bounds. Please
+#' look at the examples.
 #'
 #' @examples
 #' library(magrittr)
 #' MIPModel() %>%
 #'   add_variable(x[i], i = 1:5) %>%
 #'   add_constraint(x[i] >= 1, i = 1:5) %>% # creates 5 constraints
-#'   set_bounds(x[i], lb = 3, i = 1:3)
+#'   set_bounds(x[i], lb = 3, i = 1:3) %>%
+#'   variable_bounds()
+#'
+#' MIPModel() %>%
+#'   add_variable(x[i], i = 1:5) %>%
+#'   set_bounds(x[i] <= i, i = 1:5) %>% # upper bound
+#'   set_bounds(x[i] >= 0, i = 1:5) %>% # lower bound
+#'   set_bounds(x[5] == 45) %>%
+#'   variable_bounds()
 #' @export
 set_bounds <- function(.model, .variable, ..., lb = NULL, ub = NULL) {
   UseMethod("set_bounds")

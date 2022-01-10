@@ -26,20 +26,20 @@ A variable collection essentially is a data frame having values for rows and col
 }
 \examples{
 \dontrun{
-  # vectors create matrix rows
-  # x[1, 1]
-  # x[2, 1]
-  # x[3, 1]
-  x[1:3, 1]
+# vectors create matrix rows
+# x[1, 1]
+# x[2, 1]
+# x[3, 1]
+x[1:3, 1]
 
-  # colwise() creates columns per row
-  # 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
-  colwise(1, 2, 3) * x[1, colwise(1, 2, 3)]
+# colwise() creates columns per row
+# 1 * x[1, 1] + 2 * x[1, 2] + 3 * x[1, 3]
+colwise(1, 2, 3) * x[1, colwise(1, 2, 3)]
 
-  # you can also combine the two
-  # x[1, 1]
-  # x[2, 1] + x[2, 2]
-  # x[3, 1] + x[3, 2] + x[3, 2]
-  x[1:3, colwise(1, 1:2, 1:3)]
+# you can also combine the two
+# x[1, 1]
+# x[2, 1] + x[2, 2]
+# x[3, 1] + x[3, 2] + x[3, 2]
+x[1:3, colwise(1, 1:2, 1:3)]
 }
 }

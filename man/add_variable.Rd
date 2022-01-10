@@ -38,8 +38,9 @@ A variable can either be a name or an indexed name. See examples.
 \examples{
 library(magrittr)
 MIPModel() \%>\%
- add_variable(x) \%>\% # creates 1 variable named x
- add_variable(y[i], i = 1:10, i \%\% 2 == 0,
-               type = "binary") # creates 4 variables
-
+  add_variable(x) \%>\% # creates 1 variable named x
+  add_variable(y[i],
+    i = 1:10, i \%\% 2 == 0,
+    type = "binary"
+  ) # creates 4 variables
 }

@@ -114,3 +114,65 @@ test_that("quantifiers support filter expressions with SE", {
   expect_equal(m$variable_bounds_lower[1], 1)
   expect_equal(m$variable_bounds_upper[1], 2)
 })
+
+test_that("bounds can be added using inequalities", {
+  n <- 3
+  m <- add_variable(MIPModel(), x[i], i = 1:n)
+  m1 <- set_bounds(m, x[i] <= 10 + 1, i = 1:n)
+  m1 <- set_bounds(m1, x[i] >= 10 + 1, i = 1:n)
+  m2 <- set_bounds(m, 10 + 1 <= x[i], i = 1:n)
+  m2 <- set_bounds(m2, 10 + 1 >= x[i], i = 1:n)
+  expect_equal(m1$variable_bounds_lower, rep.int(11, n))
+  expect_equal(m1$variable_bounds_upper, rep.int(11, n))
+  expect_equal(m2$variable_bounds_lower, rep.int(11, n))
+  expect_equal(m2$variable_bounds_upper, rep.int(11, n))
+
+  m <- add_variable(MIPModel(), x)
+  m1 <- set_bounds(m, x <= 10 + 1)
+  m1 <- set_bounds(m1, x >= 10 + 1)
+  m2 <- set_bounds(m, 10 + 1 <= x)
+  m2 <- set_bounds(m2, 10 + 1 >= x)
+  expect_equal(m1$variable_bounds_lower, 11)
+  expect_equal(m1$variable_bounds_upper, 11)
+  expect_equal(m2$variable_bounds_lower, 11)
+  expect_equal(m2$variable_bounds_upper, 11)
+})
+
+test_that("bounds can be added using equalities", {
+  n <- 3
+  m <- add_variable(MIPModel(), x[i], i = 1:n)
+  m1 <- set_bounds(m, x[i] == i, i = 1:n)
+  expect_equal(m1$variable_bounds_lower, 1:n)
+  expect_equal(m1$variable_bounds_upper, 1:n)
+  m2 <- set_bounds(m, i == x[i], i = 1:n)
+  expect_equal(m2$variable_bounds_lower, 1:n)
+  expect_equal(m2$variable_bounds_upper, 1:n)
+
+  m <- add_variable(MIPModel(), x)
+  m1 <- set_bounds(m, x == 1)
+  expect_equal(m1$variable_bounds_lower, 1)
+  expect_equal(m1$variable_bounds_upper, 1)
+  m2 <- set_bounds(m, 1 == x)
+  expect_equal(m2$variable_bounds_lower, 1)
+  expect_equal(m2$variable_bounds_upper, 1)
+})
+
+test_that("set_bounds fails if no linear constraint is passed and no bounds either", {
+  m <- add_variable(MIPModel(), x)
+  expect_error(
+    set_bounds(m, x + 10), "Bounds"
+  )
+  expect_error(
+    set_bounds(m, x + 10 < 10)
+  )
+})
+
+test_that("set_bounds doc example works", {
+  model <- add_variable(MIPModel(), x[i], i = 1:5)
+  model <- set_bounds(model, x[i] <= i, i = 1:5)
+  model <- set_bounds(model, x[i] >= 0, i = 1:5)
+  model <- set_bounds(model, x[5] == 45)
+  bnds <- variable_bounds(model)
+  expect_equal(bnds$lower, c(0, 0, 0, 0, 45))
+  expect_equal(bnds$upper, c(1, 2, 3, 4, 45))
+})
