@@ -11,7 +11,6 @@ Description: Model mixed integer linear programs in an algebraic way directly in
              website <https://dirkschumacher.github.io/ompr/> for more information,
              documentation and examples.
 License: MIT + file LICENSE
-LazyData: TRUE
 RoxygenNote: 7.1.2
 Encoding: UTF-8
 URL: https://github.com/dirkschumacher/ompr

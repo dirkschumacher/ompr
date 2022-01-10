@@ -83,32 +83,32 @@ model <- MIPModel() %>%
   add_variable(x[i, j, k], i = 1:n, j = 1:n, k = 1:m, type = "binary") %>%
   
   # helper variable for the MTZ sub-tour constraints
-  add_variable(u[i, k], i = 1:n, k = 1:m, lb = 1, ub = n) %>% 
+  add_variable(u[i, k], i = 1:n, k = 1:m, lb = 1, ub = n) %>%
   
   # minimize travel distance and latest arrival
-  set_objective(sum_expr(distance[i, j] * x[i, j, k], i = 1:n, j = 1:n, k = 1:m), "min") %>%
+  set_objective(sum_over(distance[i, j] * x[i, j, k], i = 1:n, j = 1:n, k = 1:m), "min") %>%
   
   # you cannot go to the same city
   add_constraint(x[i, i, k] == 0, i = 1:n, k = 1:m) %>%
   
   # each salesman needs to leave the depot
-  add_constraint(sum_expr(x[1, j, k], j = 2:n) == 1, k = 1:m) %>%
+  add_constraint(sum_over(x[1, j, k], j = 2:n) == 1, k = 1:m) %>%
   
   # each salesman needs to come back to the depot
-  add_constraint(sum_expr(x[i, 1, k], i = 2:n) == 1, k = 1:m) %>%
+  add_constraint(sum_over(x[i, 1, k], i = 2:n) == 1, k = 1:m) %>%
   
   # if a salesman comes to a city he has to leave it as well
-  add_constraint(sum_expr(x[j, i, k], j = 1:n) == sum_expr(x[i, j, k], j = 1:n), i = 2:n, k = 1:m) %>%
+  add_constraint(sum_over(x[j, i, k], j = 1:n) == sum_over(x[i, j, k], j = 1:n), i = 2:n, k = 1:m) %>%
   
   
   # leave each city with only one salesman
-  add_constraint(sum_expr(x[i, j, k], j = 1:n, k = 1:m) == 1, i = 2:n) %>% 
+  add_constraint(sum_over(x[i, j, k], j = 1:n, k = 1:m) == 1, i = 2:n) %>%
   
   # arrive at each city with only one salesman
-  add_constraint(sum_expr(x[i, j, k], i = 1:n, k = 1:m) == 1, j = 2:n) %>% 
+  add_constraint(sum_over(x[i, j, k], i = 1:n, k = 1:m) == 1, j = 2:n) %>%
   
   # ensure no subtours (arc constraints)
-  add_constraint(u[i, k] >= 2, i = 2:n, k = 1:m) %>% 
+  add_constraint(u[i, k] >= 2, i = 2:n, k = 1:m) %>%
   add_constraint(u[i, k] - u[j, k] + 1 <= (n - 1) * (1 - x[i, j, k]), i = 2:n, j = 2:n, k = 1:m)
 model
 ```
@@ -129,18 +129,18 @@ result <- solve_model(model, with_ROI(solver = "glpk"))
 To extract the solution we can use `get_solution` method that will return a data.frame which we can further be used with `tidyverse` packages.
 
 ```{r, results = 'asis'}
-solution <- get_solution(result, x[i, j, k]) %>% 
-  filter(value > 0) 
+solution <- get_solution(result, x[i, j, k]) %>%
+  filter(value > 0)
 kable(head(solution, 3))
 ```
 
 Now we need to link back the indexes in our model with the actual cities.
 ```{r}
-paths <- select(solution, i, j, k) %>% 
-  rename(from = i, to = j, salesman = k) %>% 
-  mutate(trip_id = row_number()) %>% 
-  tidyr::gather(property, idx_val, from:to) %>% 
-  mutate(idx_val = as.integer(idx_val)) %>% 
+paths <- select(solution, i, j, k) %>%
+  rename(from = i, to = j, salesman = k) %>%
+  mutate(trip_id = row_number()) %>%
+  tidyr::gather(property, idx_val, from:to) %>%
+  mutate(idx_val = as.integer(idx_val)) %>%
   inner_join(cities, by = c("idx_val" = "id"))
 kable(head(arrange(paths, trip_id), 4))
 ```

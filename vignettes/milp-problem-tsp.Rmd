@@ -87,7 +87,7 @@ model <- MILPModel() %>%
                type = "integer", lb = 0, ub = 1) %>%
   
   # a helper variable for the MTZ formulation of the tsp
-  add_variable(u[i], i = 1:n, lb = 1, ub = n) %>% 
+  add_variable(u[i], i = 1:n, lb = 1, ub = n) %>%
   
   # minimize travel distance
   set_objective(sum_expr(colwise(dist_fun(i, j)) * x[i, j], i = 1:n, j = 1:n), "min") %>%
@@ -123,18 +123,18 @@ result <- solve_model(model, with_ROI(solver = "glpk", verbose = TRUE))
 To extract the solution we can use `get_solution` method that will return a data.frame which we can further be used with `tidyverse` packages.
 
 ```{r, results = 'asis'}
-solution <- get_solution(result, x[i, j]) %>% 
+solution <- get_solution(result, x[i, j]) %>%
   filter(value > 0) 
 kable(head(solution, 3))
 ```
 
 Now we need to link back the indexes in our model with the actual cities.
 ```{r}
-paths <- select(solution, i, j) %>% 
-  rename(from = i, to = j) %>% 
-  mutate(trip_id = row_number()) %>% 
-  tidyr::gather(property, idx_val, from:to) %>% 
-  mutate(idx_val = as.integer(idx_val)) %>% 
+paths <- select(solution, i, j) %>%
+  rename(from = i, to = j) %>%
+  mutate(trip_id = row_number()) %>%
+  tidyr::gather(property, idx_val, from:to) %>%
+  mutate(idx_val = as.integer(idx_val)) %>%
   inner_join(cities, by = c("idx_val" = "id"))
 kable(head(arrange(paths, trip_id), 4))
 ```

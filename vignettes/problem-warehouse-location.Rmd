@@ -106,11 +106,11 @@ model <- MIPModel() %>%
   add_variable(y[j], j = 1:m, type = "binary") %>%
   
   # maximize the preferences
-  set_objective(sum_expr(transportcost(i, j) * x[i, j], i = 1:n, j = 1:m) + 
-                  sum_expr(fixedcost[j] * y[j], j = 1:m), "min") %>%
+  set_objective(sum_over(transportcost(i, j) * x[i, j], i = 1:n, j = 1:m) + 
+                  sum_over(fixedcost[j] * y[j], j = 1:m), "min") %>%
   
   # every customer needs to be assigned to a warehouse
-  add_constraint(sum_expr(x[i, j], j = 1:m) == 1, i = 1:n) %>% 
+  add_constraint(sum_over(x[i, j], j = 1:m) == 1, i = 1:n) %>% 
   
   # if a customer is assigned to a warehouse, then this warehouse must be built
   add_constraint(x[i,j] <= y[j], i = 1:n, j = 1:m)
