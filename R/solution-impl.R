@@ -66,7 +66,7 @@ extract_solution <- function(model, solution_vector, expr) {
       na_rows <- as.logical(apply(is.na(var_index), 1, all))
       var_index <- var_index[!na_rows, , drop = FALSE]
       var_values <- solution_vector[grepl(solution_names,
-        pattern = instance_pattern
+                                          pattern = instance_pattern
       )]
       result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
       for (x in colnames(result_df)) {
