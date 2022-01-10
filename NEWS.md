@@ -4,7 +4,7 @@
 
 * Rewrote the `MIPModel`. It should now be faster, more maintainable,
   more stable and it has fewer bugs.
-* `sum_over` shall now be used in favor of `sum_expr` in the `MIPModel`
+* Added `sum_over`, a replacement for `sum_expr` in the `MIPModel`
 
 ## Bugfixes
 
@@ -16,7 +16,7 @@
 
 ## Deprecations
 
-All listed functions will be removed at some point the future.
+All listed functions will likely be removed at some later point the future.
 
 * `sum_expr` shall not be used anymore. Please use `sum_over` instead.
 * `MIPLModel` will likely be removed from the package, as the vectorized
@@ -24,6 +24,11 @@ All listed functions will be removed at some point the future.
 * `add_variable_`, `add_constraint_`, `set_objective_`, `set_bounds` and
   `get_solution_` are not needed anymore with the new `MIPModel` as it is
   powered by `rlang`.
+* The `.show_progress_bar` parameter is now deprecated in all functions.
+
+## Licensing
+
+* ompr is now licensed under the MIT license (#353).
 
 # ompr 0.8.1
 
