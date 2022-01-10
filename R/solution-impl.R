@@ -1,5 +1,4 @@
-#' @export
-get_solution_.solution <- function(solution, expr, type) {
+get_solution_impl <- function(solution, expr, type) {
   type <- match.arg(type, c("primal", "dual"))
   solution_vector <- if (type == "primal") {
     solution$solution
@@ -8,18 +7,24 @@ get_solution_.solution <- function(solution, expr, type) {
   }
   if (is.null(solution_vector) || anyNA(solution_vector)) {
     stop("The solution from the solver is invalid. It is NULL or contains NAs.",
-      " Maybe the solver does not export ", type, "s?",
-      call. = FALSE
+         " Maybe the solver does not export ", type, "s?",
+         call. = FALSE
     )
   }
   extract_solution(solution$model, solution_vector, expr)
 }
 
+#' @rdname get_solution
+#' @export
+get_solution_ <- function(solution, expr, type = "primal") {
+  # we accept a lazy object for backwards compatibility reasons
+  expr <- to_quosure(as.lazy(expr))
+  get_solution_impl(solution, expr, type)
+}
 
 extract_solution <- function(model, solution_vector, expr) {
   stopifnot(length(solution_vector) == length(names(solution_vector)))
-  expr <- lazyeval::as.lazy(expr)
-  ast <- expr$expr
+  ast <- get_expr(expr)
   is_indexed_var <- is.call(ast)
   stopifnot(!is_indexed_var || ast[[1]] == "[" && length(ast) >= 3)
   var_name <- as.character(if (is_indexed_var) ast[[2]] else ast)

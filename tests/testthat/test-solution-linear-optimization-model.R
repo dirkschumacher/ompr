@@ -224,3 +224,25 @@ test_that("solver_status gets the solver_status", {
   )
   expect_equal("optimal", solver_status(solution))
 })
+
+test_that("get_solution_ is supported (though deprecated)", {
+  model <- MIPModel() %>%
+    add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
+    set_objective(sum_expr(x[10, i], i = 10:12))
+  solution <- new_solution(
+    status = "optimal",
+    model = model,
+    objective_value = 3,
+    solution = setNames(
+      c(2, 2, 2, 1, 1, 1),
+      c(
+        "x[10,10]", "x[10,11]", "x[10,12]",
+        "x[11,10]", "x[11,11]", "x[11,12]"
+      )
+    )
+  )
+  res <- get_solution_(solution, ~x[i, j])
+  expect_equal(res$value, c(2, 2, 2, 1, 1, 1))
+  expect_equal(res$i, c(10, 10, 10, 11, 11, 11))
+  expect_equal(res$j, c(10, 11, 12, 10, 11, 12))
+})
