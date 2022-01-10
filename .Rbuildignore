@@ -10,9 +10,9 @@
 ^src/\.clang-format
 ^cran-comments\.md$
 ^README\.Rmd$
-^LICENSE
 ^\.gitignore$
 ^\.Rhistory$
 ^_pkgdown\.yml$
 ^\.github$
 ^codecov\.yml$
+^LICENSE\.md$
