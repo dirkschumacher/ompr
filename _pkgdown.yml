@@ -1,7 +1,9 @@
 url: https://dirkschumacher.github.io/ompr/
 title: ompr
+template:
+  bootstrap: 5
 development:
-  mode: auto
+  mode: release
 navbar:
   structure:
     left:
