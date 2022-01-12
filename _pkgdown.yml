@@ -2,6 +2,7 @@ url: https://dirkschumacher.github.io/ompr/
 title: ompr
 template:
   bootstrap: 5
+  bootswatch: lux
 development:
   mode: release
 navbar:
