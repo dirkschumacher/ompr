@@ -28,7 +28,9 @@ Imports:
 Suggests:
     covr,
     magrittr,
-    testthat
+    testthat,
+    ROI.plugin.glpk,
+    ompr.roi
 ByteCompile: Yes
 Collate:
     'abstract-model-impl.R'
