@@ -12,4 +12,5 @@ The model is solver-independent and thus offers the possibility
 to solve a model with different solvers. See the ompr
 website <https://dirkschumacher.github.io/ompr/> for more information, documentation and examples.
 }
+\keyword{internal}
 \keyword{package}

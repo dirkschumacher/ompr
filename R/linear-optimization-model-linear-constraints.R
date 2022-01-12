@@ -7,13 +7,10 @@ setClass("LinearConstraintSense", slots = c(
 ))
 
 #' @rdname linear-constraints
-#' @keywords internal
 setClass("LinearConstraintSenseLeq", contains = "LinearConstraintSense")
 #' @rdname linear-constraints
-#' @keywords internal
 setClass("LinearConstraintSenseEq", contains = "LinearConstraintSense")
 #' @rdname linear-constraints
-#' @keywords internal
 setClass("LinearConstraintSenseGeq", contains = "LinearConstraintSense")
 
 sense_leq <- new("LinearConstraintSenseLeq", sense = "<=")
@@ -22,13 +19,11 @@ sense_geq <- new("LinearConstraintSenseGeq", sense = ">=")
 
 
 #' @rdname linear-constraints
-#' @keywords internal
 setGeneric("flip_constaint_sense", function(sense) {
   sense
 })
 
 #' @rdname linear-constraints
-#' @keywords internal
 setMethod(
   "flip_constaint_sense",
   signature(
@@ -40,7 +35,6 @@ setMethod(
 )
 
 #' @rdname linear-constraints
-#' @keywords internal
 setMethod(
   "flip_constaint_sense",
   signature(

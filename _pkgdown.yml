@@ -45,6 +45,7 @@ reference:
   - new_solution
   - extract_constraints
   - nvars
+  - nconstraints
   - objective_function
   - variable_bounds
   - variable_keys

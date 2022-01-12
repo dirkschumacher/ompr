@@ -108,3 +108,4 @@
 \description{
 Internal linear function classes and methods
 }
+\keyword{internal}

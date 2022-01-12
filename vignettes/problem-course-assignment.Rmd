@@ -4,7 +4,7 @@ author: "Dirk Schumacher"
 date: "2016-12-16"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Assign students to courses}
+  %\VignetteIndexEntry{Assigning students to courses}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

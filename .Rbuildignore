@@ -18,3 +18,4 @@
 ^LICENSE\.md$
 ^docs$
 ^pkgdown$
+^revdep$
