@@ -3,6 +3,8 @@ title: ompr
 template:
   bootstrap: 5
   bootswatch: lux
+  bslib:
+    pkgdown-nav-height: 100px
 development:
   mode: release
 navbar:
