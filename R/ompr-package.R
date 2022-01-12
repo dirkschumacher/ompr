@@ -9,6 +9,7 @@
 #'
 #' @docType package
 #' @keywords package
+#' @keywords internal
 #' @importFrom methods new
 #' @name ompr
 NULL

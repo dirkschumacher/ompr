@@ -1,5 +1,6 @@
 #' Internal linear function classes and methods
 #' @rdname linear-functions
+#' @keywords internal
 setClass("OmprLinearVariable", slots = c(column_idx = "numeric"))
 
 #' @rdname linear-functions

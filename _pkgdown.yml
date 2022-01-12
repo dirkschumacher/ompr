@@ -1,7 +1,9 @@
 url: https://dirkschumacher.github.io/ompr/
 title: ompr
+template:
+  bootstrap: 5
 development:
-  mode: auto
+  mode: release
 navbar:
   structure:
     left:
@@ -45,6 +47,7 @@ reference:
   - new_solution
   - extract_constraints
   - nvars
+  - nconstraints
   - objective_function
   - variable_bounds
   - variable_keys
