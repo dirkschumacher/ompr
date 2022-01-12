@@ -16,3 +16,5 @@
 ^\.github$
 ^codecov\.yml$
 ^LICENSE\.md$
+^docs$
+^pkgdown$
