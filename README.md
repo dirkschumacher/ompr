@@ -45,8 +45,8 @@ install.packages("ompr.roi")
 To install the current development version use devtools:
 
 ``` r
-devtools::install_github("dirkschumacher/ompr")
-devtools::install_github("dirkschumacher/ompr.roi")
+remotes::install_github("dirkschumacher/ompr")
+remotes::install_github("dirkschumacher/ompr.roi")
 ```
 
 ## Available solver bindings
