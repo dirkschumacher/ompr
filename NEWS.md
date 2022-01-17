@@ -6,6 +6,7 @@
   more stable and it has fewer bugs.
 * Added `sum_over`, a replacement for `sum_expr` in the `MIPModel`
 * `set_bounds` for `MIPModel` now accepts (in)equalities as well (#365)
+* `MIPModel` now supports characters as variable indexes
 
 ## Bugfixes
 

@@ -246,3 +246,22 @@ test_that("get_solution_ is supported (though deprecated)", {
   expect_equal(res$i, c(10, 10, 10, 11, 11, 11))
   expect_equal(res$j, c(10, 11, 12, 10, 11, 12))
 })
+
+test_that("get_solution works with character indexes", {
+  model <- MIPModel() %>%
+    add_variable(x[letter], letter = letters, ub = 1) %>%
+    set_objective(sum_expr(x[letter], letter = letters))
+  solution <- new_solution(
+    status = "optimal",
+    model = model,
+    objective_value = length(letters),
+    solution = setNames(
+      rep.int(1, length(letters)),
+      paste0("x[", letters, "]")
+    )
+  )
+  res <- get_solution(solution, x[letter])
+  res <- res[order(res$letter), ]
+  expect_equal(res$value, rep.int(1, length(letters)))
+  expect_equal(res$letter, letters)
+})

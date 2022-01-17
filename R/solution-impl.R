@@ -37,7 +37,7 @@ extract_solution <- function(model, solution_vector, expr) {
     for (i in 3:length(ast)) {
       if (is.symbol(ast[[i]]) || is.name(ast[[i]])) {
         free_vars <- c(free_vars, as.character(ast[[i]]))
-        idx_pattern <- c(idx_pattern, "(\\d+)")
+        idx_pattern <- c(idx_pattern, "(.+)")
       } else {
         idx_pattern <- c(
           idx_pattern,
@@ -70,7 +70,10 @@ extract_solution <- function(model, solution_vector, expr) {
       )]
       result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
       for (x in colnames(result_df)) {
-        result_df[[x]] <- as.integer(as.character(result_df[[x]]))
+        is_all_integer <- all(grepl("\\d+", result_df[[x]]))
+        if (!is.na(is_all_integer) && is_all_integer) {
+          result_df[[x]] <- as.integer(result_df[[x]])
+        }
       }
       result_df$value <- var_values
       result_df$variable <- var_name
