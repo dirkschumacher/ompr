@@ -613,28 +613,33 @@ extract_constraints.linear_optimization_model <- function(model) {
   }
   n_constraints <- nconstraints(model)
   n_vars <- Reduce(`+`, nvars(model))
-  matrix <- Reduce(function(matrix, constraint) {
-    # TODO: make this faster
+  row_counter <- 0
+  matrix_coefs <- lapply(model$constraints, function(constraint) {
     lhs <- (constraint@lhs - constraint@rhs) + 0
     stopifnot(inherits(lhs, "LinearFunction"))
     rhs_numeric <- -1 * lhs@constant
     lhs_terms <- reduce_linear_function(lhs)@terms
     coefs <- vapply(lhs_terms, function(x) x@coefficient, numeric(1))
     cols <- vapply(lhs_terms, function(x) x@variable@column_idx, numeric(1))
-    row <- sparseMatrix(
-      i = rep.int(1, length(coefs)),
-      j = cols,
-      x = coefs, dims = c(1, n_vars + 1)
-    )
-    row[1, n_vars + 1] <- rhs_numeric
-    rbind(matrix, row)
-  }, model$constraints, init = sparseMatrix(
-    i = integer(), j = integer(),
-    x = numeric(), dims = c(0, n_vars + 1)
-  ))
+    cols <- c(cols, n_vars + 1) # O(n)
+    coefs <- c(coefs, rhs_numeric) # O(n)
+    row_counter <<- row_counter + 1
+    list(rep.int(row_counter, length(coefs)), cols, coefs)
+  })
+  # The below could be made faster. It probably runs O(n^2) as the vectors
+  # get concatenated all the time. But the bottleneck is somewhere else
+  i_s <- unlist(lapply(matrix_coefs, function(x) x[[1]]))
+  j_s <- unlist(lapply(matrix_coefs, function(x) x[[2]]))
+  values <- unlist(lapply(matrix_coefs, function(x) x[[3]]))
+  matrix <- sparseMatrix(
+    i = i_s,
+    j = j_s,
+    x = values,
+    dims = c(n_constraints, n_vars + 1)
+  )
   sense <- vapply(model$constraints, function(x) x@sense@sense, character(1))
   list(
-    matrix = matrix[, 1:(ncol(matrix) - 1), drop = FALSE],
+    matrix = matrix[, seq_len(ncol(matrix) - 1), drop = FALSE],
     sense = sense,
     rhs = matrix[, ncol(matrix), drop = TRUE]
   )
