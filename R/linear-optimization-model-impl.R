@@ -388,12 +388,16 @@ build_model_environment <- function(model, parent_env) {
 #' @seealso \code{\link{add_constraint}}
 #' @seealso \code{\link{set_objective}}
 #'
+#' Please note that \code{sum_expr} is deprecated when used together with
+#' \code{MIPModel}.
+#'
 #' @examples
 #' if (FALSE) {
 #'   # create a sum from x_1 to x_10
 #'   sum_over(x[i], i = 1:10)
 #'   # create a sum from x_2 to x_10 with even indexes
 #'   sum_over(x[i], i = 1:10, i %% 2 == 0)
+#'   sum_over(x[i, j], i = 1:10, j = 1:i)
 #' }
 #' @export
 #' @importFrom listcomp gen_list

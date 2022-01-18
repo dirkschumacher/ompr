@@ -233,7 +233,12 @@ set_objective_ <- function(model, expression,
 #' library(magrittr)
 #' MIPModel() %>%
 #'   add_variable(x[i], i = 1:5) %>%
-#'   add_constraint(x[i] >= 1, i = 1:5) # creates 5 constraints
+#'   # creates 5 constraints
+#'   add_constraint(x[i] >= 1, i = 1:5) %>%
+#'   # you can also use filter expressions
+#'   add_constraint(x[i] >= 1, i = 1:5, i %% 2 == 0) %>%
+#'   # and depent on other indexes
+#'   add_constraint(x[j] >= 1, i = 1:10, j = 1:i, j <= 5)
 #' @export
 add_constraint <- function(.model, .constraint_expr, ...,
                            .show_progress_bar = TRUE) {
