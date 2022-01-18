@@ -58,7 +58,7 @@ setClass("LinearConstraint", slots = c(
 
 #' @rdname linear-constraints
 setGeneric("new_linear_constraint", function(lhs, rhs, sense) {
-  stop("not implemented")
+  stop("not implemented") #nocovr
 })
 
 #' @rdname linear-constraints

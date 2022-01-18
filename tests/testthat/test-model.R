@@ -189,3 +189,33 @@ test_that("bug 20161110 #106: Error when indices used in sum_expr(...)
     ) <= 10
   ))
 })
+
+test_that("MIPModel supports a numeric objective", {
+  model <- MIPModel()
+  model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
+  model <- set_objective(model, 42)
+  res <- objective_function(model)
+  expect_equal(res$constant, 42)
+})
+
+test_that("MIPModel edge case work", {
+  model <- MIPModel()
+  model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
+  model <- set_objective(model, x[1, 2] + x[1, 2] + x[1, 2] + x[1, 2])
+  res <- objective_function(model)
+  expect_equal(res$constant, 0)
+  expect_equal(as.numeric(res$solution), c(4, 0))
+})
+
+test_that("MIPModel add_variable signals some errors", {
+  model <- MIPModel()
+  model <- add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j)
+  expect_error(
+    add_variable(model, x[i, j], i = 1:2, j = 1:2, i != j),
+    "already"
+  )
+  expect_error(
+    add_variable(model, sum(x), i = 1:2, j = 1:2, i != j),
+    "form"
+  )
+})

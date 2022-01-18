@@ -272,7 +272,7 @@ set_bounds_ineq <- function(.model, .expr, dots, env) {
 #' @include linear-optimization-model-linear-constraints.R
 #' @keywords internal
 setGeneric("extract_bound_from_constraint", function(lhs, rhs, sense) {
-  stop("not implemented")
+  stop("not implemented") #nocovr
 })
 
 #' @rdname extract_bound_from_constraint

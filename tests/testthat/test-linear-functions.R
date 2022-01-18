@@ -89,4 +89,16 @@ test_that("substracting a linear function and linear terms", {
   z <- new_linear_term(variable = new_linear_variable(2), coefficient = 42)
   res <- (x - y) - z
   expect_equal(length(res@terms), 3)
+  expect_equal(res@constant, 1)
+  expect_setequal(
+    vapply(res@terms, function(x) x@coefficient, numeric(1)),
+    c(1, -1, -42)
+  )
+  res <- z - (x - y)
+  expect_equal(length(res@terms), 3)
+  expect_equal(res@constant, -1)
+  expect_setequal(
+    vapply(res@terms, function(x) x@coefficient, numeric(1)),
+    c(1, -1, 42)
+  )
 })

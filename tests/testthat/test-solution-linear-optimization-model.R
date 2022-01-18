@@ -265,3 +265,78 @@ test_that("get_solution works with character indexes", {
   expect_equal(res$value, rep.int(1, length(letters)))
   expect_equal(res$letter, letters)
 })
+
+test_that("row and column duals", {
+  model <- MIPModel() %>%
+    add_variable(x[letter], letter = letters, ub = 1) %>%
+    set_objective(sum_expr(x[letter], letter = letters)) %>%
+    add_constraint(x[i] == 1, i = letters)
+  solution <- new_solution(
+    status = "optimal",
+    model = model,
+    objective_value = length(letters),
+    solution = setNames(
+      rep.int(1, length(letters)),
+      paste0("x[", letters, "]")
+    ),
+    solution_column_duals <- function() setNames(
+      rep.int(42, length(letters)),
+      paste0("x[", letters, "]")
+    ),
+    solution_row_duals <- function() rep.int(48, length(letters))
+  )
+  expect_equal(
+    get_column_duals(solution),
+    setNames(
+      rep.int(42, length(letters)),
+      paste0("x[", letters, "]")
+    )
+  )
+  expect_equal(
+    get_row_duals(solution),
+    rep.int(48, length(letters))
+  )
+  expect_equal(
+    get_solution(solution, x[letter], type = "dual")$value,
+    rep.int(42, length(letters))
+  )
+})
+
+test_that("get_solution errors when variable not found", {
+  model <- MIPModel() %>%
+    add_variable(y[i], i = 1, ub = 1) %>%
+    set_objective(sum_expr(y[i], i = 1))
+  solution <- new_solution(
+    status = "optimal",
+    model = model,
+    objective_value = 3,
+    solution = setNames(
+      1,
+      c("y[1]")
+    )
+  )
+  expect_error(get_solution(solution, z[1]), "Variable")
+})
+
+test_that("get_solution errors when solution is not a vector or has NAs", {
+  model <- MIPModel() %>%
+    add_variable(y[i], i = 1, ub = 1) %>%
+    set_objective(sum_expr(y[i], i = 1))
+  solution <- new_solution(
+    status = "optimal",
+    model = model,
+    objective_value = 3,
+    solution = NULL
+  )
+  expect_error(get_solution(solution, y[1]), "solver")
+  solution <- new_solution(
+    status = "optimal",
+    model = model,
+    objective_value = 3,
+    solution = setNames(
+      NA_real_,
+      c("y[1]")
+    )
+  )
+  expect_error(get_solution(solution, y[1]), "solver")
+})
