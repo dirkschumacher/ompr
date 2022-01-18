@@ -608,11 +608,15 @@ reduce_linear_function <- function(linear_function) {
 #' @export
 #' @importFrom Matrix sparseMatrix
 extract_constraints.linear_optimization_model <- function(model) {
-  if (length(model$constraints) == 0) {
-    return(list(matrix = NULL, sense = character(0L), rhs = numeric(0L)))
-  }
   n_constraints <- nconstraints(model)
   n_vars <- Reduce(`+`, nvars(model))
+  if (n_constraints == 0) {
+    return(list(
+      matrix = sparseMatrix(i = numeric(), j = numeric(), dims = c(0, n_vars)),
+      sense = character(0L),
+      rhs = numeric(0L))
+    )
+  }
   row_counter <- 0
   matrix_coefs <- lapply(model$constraints, function(constraint) {
     lhs <- (constraint@lhs - constraint@rhs) + 0

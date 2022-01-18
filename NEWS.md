@@ -32,6 +32,11 @@ All listed functions will likely be removed at some later point the future.
 
 * ompr is now licensed under the MIT license (#353).
 
+## Breaking Changes
+
+* `extract_constraints` now always returns a sparse matrix, even if there are 0
+  constraints or variables.
+
 # ompr 0.8.1
 
 ## General changes
