@@ -79,7 +79,9 @@
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="add_constraint.html">add_constraint</a></code></p>
-<p><code><a href="set_objective.html">set_objective</a></code></p></div>
+<p><code><a href="set_objective.html">set_objective</a></code></p>
+<p>Please note that <code>sum_expr</code> is deprecated when used together with
+<code>MIPModel</code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -89,6 +91,7 @@
 <span class="r-in">  <span class="fu">sum_over</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span class="r-in">  <span class="co"># create a sum from x_2 to x_10 with even indexes</span></span>
 <span class="r-in">  <span class="fu">sum_over</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="va">i</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu">sum_over</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">i</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
