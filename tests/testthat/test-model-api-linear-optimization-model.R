@@ -158,6 +158,15 @@ describe("extract_constraints()", {
       add_constraint(x_a[1] == 1)
     expect_equal(1, sum(extract_constraints(model)$matrix))
   })
+  it("returns an empy matrix when no constraints are present", {
+    model <- MIPModel() %>%
+      add_variable(x_a[i], i = 1:3)
+    res <- extract_constraints(model)
+    expect_equal(ncol(res$matrix), 3)
+    expect_equal(nrow(res$matrix), 0)
+    expect_equal(res$sense, character(0))
+    expect_equal(res$rhs, numeric(0))
+  })
 })
 
 describe("variable_types()", {
