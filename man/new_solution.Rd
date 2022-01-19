@@ -10,7 +10,8 @@ new_solution(
   status,
   solution,
   solution_column_duals = function() NA_real_,
-  solution_row_duals = function() NA_real_
+  solution_row_duals = function() NA_real_,
+  additional_solver_output = list()
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ new_solution(
 \item{solution_column_duals}{A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.}
 
 \item{solution_row_duals}{A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.}
+
+\item{additional_solver_output}{A named list of additional solver information}
 }
 \description{
 This function/class should only be used if you develop your own solver.

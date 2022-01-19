@@ -126,7 +126,8 @@ get_row_duals.solution <- function(solution) {
   solution_row_duals <- solution$solution_row_duals()
   stopifnot(
     is.numeric(solution_row_duals),
-    !anyNA(solution_row_duals)
+    (length(solution_row_duals) == 1L && is.na(solution_row_duals)) ||
+      !anyNA(solution_row_duals)
   )
   solution_row_duals
 }

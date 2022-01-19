@@ -7,6 +7,9 @@
 * Added `sum_over`, a replacement for `sum_expr` in the `MIPModel`
 * `set_bounds` for `MIPModel` now accepts (in)equalities as well (#365)
 * `MIPModel` now supports characters as variable indexes
+* A `solution` object has a new named entry called `additional_solver_output`.
+  In that place solver packages, like `ompr.roi` can store arbitrary solver
+  information. Including solver specific messages and status codes.
 
 ## Bugfixes
 
