@@ -8,6 +8,7 @@
 #' @param solution a named numeric vector containing the primal solution values
 #' @param solution_column_duals A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
 #' @param solution_row_duals A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.
+#' @param additional_solver_output A named list of additional solver information
 #'
 #' @export
 new_solution <- function(model,
@@ -15,13 +16,10 @@ new_solution <- function(model,
                          status,
                          solution,
                          solution_column_duals = function() NA_real_,
-                         solution_row_duals = function() NA_real_) {
+                         solution_row_duals = function() NA_real_,
+                         additional_solver_output = list()) {
   stopifnot(is.numeric(objective_value))
-  stopifnot(status %in% c(
-    "infeasible",
-    "unbounded", "optimal",
-    "userlimit", "error"
-  ))
+  stopifnot(status %in% SOLUTION_STATUS_CODES)
   stopifnot(all(nchar(names(solution))))
   stopifnot(is.function(solution_column_duals), is.function(solution_row_duals))
   structure(list(
@@ -30,9 +28,16 @@ new_solution <- function(model,
     status = status,
     solution = solution,
     solution_column_duals = solution_column_duals,
-    solution_row_duals = solution_row_duals
+    solution_row_duals = solution_row_duals,
+    additional_solver_output = additional_solver_output
   ), class = "solution")
 }
+
+SOLUTION_STATUS_CODES <- c(
+  "infeasible", "feasible",
+  "unbounded", "optimal",
+  "userlimit", "error"
+)
 
 #' Get variable values from a solution
 #'
