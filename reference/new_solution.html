@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">ompr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.8.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.8.1.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,8 @@
   <span class="va">status</span>,
   <span class="va">solution</span>,
   solution_column_duals <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="cn">NA_real_</span>,
-  solution_row_duals <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="cn">NA_real_</span>
+  solution_row_duals <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="cn">NA_real_</span>,
+  additional_solver_output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -84,6 +85,8 @@
 <dd><p>A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.</p></dd>
 <dt>solution_row_duals</dt>
 <dd><p>A function without arguments that returns a numeric vector containing the column dual solution values. `NA_real_`, if no column duals are available/defined.</p></dd>
+<dt>additional_solver_output</dt>
+<dd><p>A named list of additional solver information</p></dd>
 </dl></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

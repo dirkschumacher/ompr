@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">ompr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.8.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.8.1.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,6 +64,7 @@
 <code>set_bounds</code> for <code>MIPModel</code> now accepts (in)equalities as well (<a href="https://github.com/dirkschumacher/ompr/issues/365" class="external-link">#365</a>)</li>
 <li>
 <code>MIPModel</code> now supports characters as variable indexes</li>
+<li>A <code>solution</code> object has a new named entry called <code>additional_solver_output</code>. In that place solver packages, like <code>ompr.roi</code> can store arbitrary solver information. Including solver specific messages and status codes.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bugfixes-development-version">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-development-version"></a></h3>
