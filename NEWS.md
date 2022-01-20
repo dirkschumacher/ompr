@@ -10,6 +10,8 @@
 * A `solution` object has a new named entry called `additional_solver_output`.
   In that place solver packages, like `ompr.roi` can store arbitrary solver
   information. Including solver specific messages and status codes.
+* A `solution` can now have the `solver_status = "success"` which is used
+  by the most recent `ompr.roi` version.
 
 ## Bugfixes
 

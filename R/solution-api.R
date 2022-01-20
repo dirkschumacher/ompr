@@ -19,7 +19,7 @@ new_solution <- function(model,
                          solution_row_duals = function() NA_real_,
                          additional_solver_output = list()) {
   stopifnot(is.numeric(objective_value))
-  stopifnot(status %in% SOLUTION_STATUS_CODES)
+  stopifnot(status %in% SOLVER_STATUS_CODES)
   stopifnot(all(nchar(names(solution))))
   stopifnot(is.function(solution_column_duals), is.function(solution_row_duals))
   structure(list(
@@ -33,10 +33,15 @@ new_solution <- function(model,
   ), class = "solution")
 }
 
-SOLUTION_STATUS_CODES <- c(
-  "infeasible", "feasible",
-  "unbounded", "optimal",
-  "userlimit", "error"
+SOLVER_STATUS_CODES <- c(
+  "infeasible",
+  "unbounded",
+  "error",
+
+  "optimal",
+  "success",
+  "feasible",
+  "userlimit"
 )
 
 #' Get variable values from a solution
