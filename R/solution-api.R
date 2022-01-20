@@ -44,6 +44,17 @@ SOLVER_STATUS_CODES <- c(
   "userlimit"
 )
 
+#' Retrieve additional solver specific output
+#'
+#' @param solution a solution object
+#'
+#' @return A list of named entries. What is in that list is determined
+#' by the solver function. For \code{ompr.roi} this is usually a solver specific
+#' message and status information.
+additional_solver_output <- function(solution) {
+  UseMethod("additional_solver_output")
+}
+
 #' Get variable values from a solution
 #'
 #' @param solution the solution object
@@ -56,6 +67,10 @@ SOLVER_STATUS_CODES <- c(
 #' @return a data.frame. One row for each variable instance
 #'         and a column for each index.
 #'         Unless it is a single variable, then it returns a single number.
+#'         Please note that in case of a \code{data.frame} there is no
+#'         guarantee about the ordering of the rows. This could change
+#'         in future \code{ompr} versions. Please always use the indexes
+#'         to retrieve the correct values.
 #'
 #'
 #' @examples
@@ -76,7 +91,7 @@ SOLVER_STATUS_CODES <- c(
 #'
 #' @export
 get_solution <- function(solution, expr, type = "primal") {
-  get_solution_impl(solution, enquo(expr), type)
+  UseMethod("get_solution")
 }
 
 #' Extract the numerical objective value from a solution

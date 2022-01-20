@@ -1,5 +1,7 @@
-get_solution_impl <- function(solution, expr, type) {
+#' @export
+get_solution.solution <- function(solution, expr, type = "primal") {
   type <- match.arg(type, c("primal", "dual"))
+  expr <- enquo(expr)
   solution_vector <- if (type == "primal") {
     solution$solution
   } else {
@@ -19,7 +21,7 @@ get_solution_impl <- function(solution, expr, type) {
 get_solution_ <- function(solution, expr, type = "primal") {
   # we accept a lazy object for backwards compatibility reasons
   expr <- to_quosure(as.lazy(expr))
-  get_solution_impl(solution, expr, type)
+  get_solution(solution, !!expr, type)
 }
 
 extract_solution <- function(model, solution_vector, expr) {
@@ -108,6 +110,11 @@ objective_value.solution <- function(solution) {
 #' @export
 solver_status.solution <- function(solution) {
   solution$status
+}
+
+#' @export
+additional_solver_output.solution <- function(solution) {
+  solution$additional_solver_output
 }
 
 #' @export

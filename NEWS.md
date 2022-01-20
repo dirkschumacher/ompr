@@ -9,7 +9,8 @@
 * `MIPModel` now supports characters as variable indexes
 * A `solution` object has a new named entry called `additional_solver_output`.
   In that place solver packages, like `ompr.roi` can store arbitrary solver
-  information. Including solver specific messages and status codes.
+  information. Including solver specific messages and status codes. It should
+  be read using the function `additional_solver_output()`.
 * A `solution` can now have the `solver_status = "success"` which is used
   by the most recent `ompr.roi` version.
 
@@ -41,6 +42,10 @@ All listed functions will likely be removed at some later point the future.
 
 * `extract_constraints` now always returns a sparse matrix, even if there are 0
   constraints or variables.
+* The ordering of the `data.frame` return with `get_solution(x[i, j])` has changed.
+  Please do not depend on the ordering of the rows, but use the indexes to
+  retrieve the correct value. For example by sorting the `data.frame`, before
+  reading.
 
 # ompr 0.8.1
 
