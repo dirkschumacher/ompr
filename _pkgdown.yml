@@ -45,6 +45,7 @@ reference:
   - solver_status
   - get_column_duals
   - get_row_duals
+  - additional_solver_output
 - title: Solver-developer functions
   contents:
   - new_solution

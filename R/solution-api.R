@@ -44,6 +44,17 @@ SOLVER_STATUS_CODES <- c(
   "userlimit"
 )
 
+#' Retrieve additional solver specific output
+#'
+#' @param solution a solution object
+#'
+#' @return A list of named entries. What is in that list is determined
+#' by the solver function. For \code{ompr.roi} this is usually a solver specific
+#' message and status information.
+additional_solver_output <- function(solution) {
+  UseMethod("additional_solver_output")
+}
+
 #' Get variable values from a solution
 #'
 #' @param solution the solution object

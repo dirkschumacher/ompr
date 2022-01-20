@@ -111,6 +111,11 @@ solver_status.solution <- function(solution) {
 }
 
 #' @export
+additional_solver_output.solution <- function(solution) {
+  solution$additional_solver_output
+}
+
+#' @export
 get_column_duals.solution <- function(solution) {
   solution_column_duals <- solution$solution_column_duals()
   stopifnot(
