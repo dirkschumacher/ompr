@@ -67,6 +67,10 @@ additional_solver_output <- function(solution) {
 #' @return a data.frame. One row for each variable instance
 #'         and a column for each index.
 #'         Unless it is a single variable, then it returns a single number.
+#'         Please note that in case of a \code{data.frame} there is no
+#'         guarantee about the ordering of the rows. This could change
+#'         in future \code{ompr} versions. Please always use the indexes
+#'         to retrieve the correct values.
 #'
 #'
 #' @examples
