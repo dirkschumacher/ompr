@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">ompr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.8.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.8.1.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,6 +65,7 @@
 <li>
 <code>MIPModel</code> now supports characters as variable indexes</li>
 <li>A <code>solution</code> object has a new named entry called <code>additional_solver_output</code>. In that place solver packages, like <code>ompr.roi</code> can store arbitrary solver information. Including solver specific messages and status codes.</li>
+<li>A <code>solution</code> can now have the <code>solver_status = "success"</code> which is used by the most recent <code>ompr.roi</code> version.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bugfixes-development-version">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-development-version"></a></h3>
