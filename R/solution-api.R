@@ -87,7 +87,7 @@ additional_solver_output <- function(solution) {
 #'
 #' @export
 get_solution <- function(solution, expr, type = "primal") {
-  get_solution_impl(solution, enquo(expr), type)
+  UseMethod("get_solution")
 }
 
 #' Extract the numerical objective value from a solution
