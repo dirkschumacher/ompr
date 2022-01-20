@@ -64,7 +64,7 @@
 <code>set_bounds</code> for <code>MIPModel</code> now accepts (in)equalities as well (<a href="https://github.com/dirkschumacher/ompr/issues/365" class="external-link">#365</a>)</li>
 <li>
 <code>MIPModel</code> now supports characters as variable indexes</li>
-<li>A <code>solution</code> object has a new named entry called <code>additional_solver_output</code>. In that place solver packages, like <code>ompr.roi</code> can store arbitrary solver information. Including solver specific messages and status codes.</li>
+<li>A <code>solution</code> object has a new named entry called <code>additional_solver_output</code>. In that place solver packages, like <code>ompr.roi</code> can store arbitrary solver information. Including solver specific messages and status codes. It should be read using the function <code><a href="../reference/additional_solver_output.html">additional_solver_output()</a></code>.</li>
 <li>A <code>solution</code> can now have the <code>solver_status = "success"</code> which is used by the most recent <code>ompr.roi</code> version.</li>
 </ul></div>
 <div class="section level3">
@@ -92,6 +92,7 @@
 <h3 id="breaking-changes-development-version">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
 <ul><li>
 <code>extract_constraints</code> now always returns a sparse matrix, even if there are 0 constraints or variables.</li>
+<li>The ordering of the <code>data.frame</code> return with <code>get_solution(x[i, j])</code> has changed. Please do not depend on the ordering of the rows, but use the indexes to retrieve the correct value. For example by sorting the <code>data.frame</code>, before reading.</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -81,7 +81,11 @@ the function stops with an error message.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>a data.frame. One row for each variable instance
         and a column for each index.
-        Unless it is a single variable, then it returns a single number.</p>
+        Unless it is a single variable, then it returns a single number.
+        Please note that in case of a <code>data.frame</code> there is no
+        guarantee about the ordering of the rows. This could change
+        in future <code>ompr</code> versions. Please always use the indexes
+        to retrieve the correct values.</p>
     </div>
 
     <div class="section level2">
