@@ -1,0 +1,192 @@
+# -----------------------------------------------------------
+# CITATION file created with {cffr} R package, v0.2.1
+# See also: https://docs.ropensci.org/cffr/
+# -----------------------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "ompr" in publications use:'
+type: software
+license: MIT
+title: 'ompr: Model and Solve Mixed Integer Linear Programs'
+version: 0.8.1.9002
+abstract: Model mixed integer linear programs in an algebraic way directly in R. The
+  model is solver-independent and thus offers the possibility to solve a model with
+  different solvers. It currently only supports linear constraints and objective functions.
+  See the 'ompr' website <https://dirkschumacher.github.io/ompr/> for more information,
+  documentation and examples.
+authors:
+- family-names: Schumacher
+  given-names: Dirk
+  email: mail@dirk-schumacher.net
+preferred-citation:
+  type: manual
+  title: 'ompr: Model and Solve Mixed Integer Linear Programs'
+  authors:
+  - family-names: Schumacher
+    given-names: Dirk
+    email: mail@dirk-schumacher.net
+  version: 0.8.1.9002
+  abstract: Model mixed integer linear programs in an algebraic way directly in R.
+    The model is solver-independent and thus offers the possibility to solve a model
+    with different solvers. It currently only supports linear constraints and objective
+    functions. See the 'ompr' website <https://dirkschumacher.github.io/ompr/> for
+    more information, documentation and examples.
+  repository: https://CRAN.R-project.org/package=ompr
+  repository-code: https://github.com/dirkschumacher/ompr
+  url: https://github.com/dirkschumacher/ompr
+  contact:
+  - family-names: Schumacher
+    given-names: Dirk
+    email: mail@dirk-schumacher.net
+  keywords:
+  - integer-programming
+  - linear-programming
+  - milp
+  - mip
+  - optimization
+  - r
+  license: MIT
+  year: '2022'
+repository: https://CRAN.R-project.org/package=ompr
+repository-code: https://github.com/dirkschumacher/ompr
+url: https://github.com/dirkschumacher/ompr
+contact:
+- family-names: Schumacher
+  given-names: Dirk
+  email: mail@dirk-schumacher.net
+keywords:
+- integer-programming
+- linear-programming
+- milp
+- mip
+- optimization
+- r
+references:
+- type: software
+  title: 'R: A Language and Environment for Statistical Computing'
+  notes: Depends
+  authors:
+  - name: R Core Team
+  location:
+    name: Vienna, Austria
+  year: '2022'
+  url: https://www.R-project.org/
+  institution:
+    name: R Foundation for Statistical Computing
+  version: '>= 3.2.0'
+- type: software
+  title: lazyeval
+  abstract: 'lazyeval: Lazy (Non-Standard) Evaluation'
+  notes: Imports
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  url: https://CRAN.R-project.org/package=lazyeval
+- type: software
+  title: rlang
+  abstract: 'rlang: Functions for Base Types and Core R and ''Tidyverse'' Features'
+  notes: Imports
+  authors:
+  - family-names: Henry
+    given-names: Lionel
+    email: lionel@rstudio.com
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  url: https://CRAN.R-project.org/package=rlang
+  version: '>= 0.2.0'
+- type: software
+  title: listcomp
+  abstract: 'listcomp: List Comprehensions'
+  notes: Imports
+  authors:
+  - family-names: Schumacher
+    given-names: Dirk
+    email: mail@dirk-schumacher.net
+  year: '2022'
+  url: https://CRAN.R-project.org/package=listcomp
+  version: '>= 0.4.0'
+- type: software
+  title: methods
+  abstract: 'R: A Language and Environment for Statistical Computing'
+  notes: Imports
+  authors:
+  - name: R Core Team
+  location:
+    name: Vienna, Austria
+  year: '2022'
+  url: https://www.R-project.org/
+  institution:
+    name: R Foundation for Statistical Computing
+- type: software
+  title: data.table
+  abstract: 'data.table: Extension of `data.frame`'
+  notes: Imports
+  authors:
+  - family-names: Dowle
+    given-names: Matt
+    email: mattjdowle@gmail.com
+  - family-names: Srinivasan
+    given-names: Arun
+    email: asrini@pm.me
+  year: '2022'
+  url: https://CRAN.R-project.org/package=data.table
+- type: software
+  title: Matrix
+  abstract: 'Matrix: Sparse and Dense Matrix Classes and Methods'
+  notes: Imports
+  authors:
+  - family-names: Bates
+    given-names: Douglas
+  - family-names: Maechler
+    given-names: Martin
+    email: mmaechler+Matrix@gmail.com
+    orcid: https://orcid.org/0000-0002-8685-9910
+  year: '2022'
+  url: https://CRAN.R-project.org/package=Matrix
+- type: software
+  title: fastmap
+  abstract: 'fastmap: Fast Data Structures'
+  notes: Imports
+  authors:
+  - family-names: Chang
+    given-names: Winston
+    email: winston@rstudio.com
+  year: '2022'
+  url: https://CRAN.R-project.org/package=fastmap
+- type: software
+  title: covr
+  abstract: 'covr: Test Coverage for Packages'
+  notes: Suggests
+  authors:
+  - family-names: Hester
+    given-names: Jim
+    email: james.f.hester@gmail.com
+  year: '2022'
+  url: https://CRAN.R-project.org/package=covr
+- type: software
+  title: magrittr
+  abstract: 'magrittr: A Forward-Pipe Operator for R'
+  notes: Suggests
+  authors:
+  - family-names: Bache
+    given-names: Stefan Milton
+    email: stefan@stefanbache.dk
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  url: https://CRAN.R-project.org/package=magrittr
+- type: software
+  title: testthat
+  abstract: 'testthat: Unit Testing for R'
+  notes: Suggests
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  url: https://CRAN.R-project.org/package=testthat
