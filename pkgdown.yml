@@ -11,7 +11,7 @@ articles:
   problem-sudoku: problem-sudoku.html
   problem-tsp: problem-tsp.html
   problem-warehouse-location: problem-warehouse-location.html
-last_built: 2022-01-20T10:49Z
+last_built: 2022-01-25T16:09Z
 urls:
   reference: https://dirkschumacher.github.io/ompr/reference
   article: https://dirkschumacher.github.io/ompr/articles
