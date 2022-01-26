@@ -20,3 +20,4 @@
 ^pkgdown$
 ^revdep$
 ^CITATION\.cff$
+^CRAN-SUBMISSION$
