@@ -51,6 +51,7 @@ SOLVER_STATUS_CODES <- c(
 #' @return A list of named entries. What is in that list is determined
 #' by the solver function. For \code{ompr.roi} this is usually a solver specific
 #' message and status information.
+#' @export
 additional_solver_output <- function(solution) {
   UseMethod("additional_solver_output")
 }
