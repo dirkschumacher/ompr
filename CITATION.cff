@@ -8,7 +8,7 @@ message: 'To cite package "ompr" in publications use:'
 type: software
 license: MIT
 title: 'ompr: Model and Solve Mixed Integer Linear Programs'
-version: 0.8.1.9002
+version: 1.0.1
 abstract: Model mixed integer linear programs in an algebraic way directly in R. The
   model is solver-independent and thus offers the possibility to solve a model with
   different solvers. It currently only supports linear constraints and objective functions.
