@@ -47,27 +47,6 @@ test_that("export solutions to data.frame with index", {
   expect_equivalent(as.numeric(result$i), c(1, 2, 3))
 })
 
-test_that("export solutions to data.frame with two indexes", {
-  model <- MILPModel() %>%
-    add_variable(x[i, j], i = 1:2, j = 1:2, ub = 1)
-  solution_vars <- setNames(
-    c(1, 1, 1, 1),
-    c("x[1,1]", "x[1,2]", "x[2,1]", "x[2,2]")
-  )
-  solution <- new_solution(
-    status = "optimal",
-    model = model,
-    objective_value = 3,
-    solution = solution_vars
-  )
-  result <- get_solution(solution, x[i, j])
-  expect_s3_class(result, "data.frame")
-  expect_equivalent(result$variable, c("x", "x", "x", "x"))
-  expect_equivalent(result$value, c(1, 1, 1, 1))
-  expect_equivalent(as.numeric(result$i), c(1, 1, 2, 2))
-  expect_equivalent(as.numeric(result$j), c(1, 2, 1, 2))
-})
-
 test_that("export infeasible solutions to data.frame", {
   model <- MILPModel() %>%
     add_variable(x[i], i = 1:3, ub = 1) %>%
@@ -165,26 +144,6 @@ test_that("solution indexes should not be factors", {
     )
   )
   expect_equal(class(get_solution(solution, y[i])$i), "integer")
-})
-
-test_that("bug 20160908: solution indexes mixed up", {
-  model <- MILPModel() %>%
-    add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
-    set_objective(sum_expr(x[10, i], i = 10:12))
-  solution <- new_solution(
-    status = "optimal",
-    model = model,
-    objective_value = 3,
-    solution = setNames(
-      c(2, 2, 2, 1, 1, 1),
-      c(
-        "x[10,10]", "x[10,11]", "x[10,12]",
-        "x[11,10]", "x[11,11]", "x[11,12]"
-      )
-    )
-  )
-  sol <- get_solution(solution, x[i, j])
-  expect_equal(sol$i, c(10, 10, 10, 11, 11, 11))
 })
 
 test_that("objective_value gets the obj. value", {

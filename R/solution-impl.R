@@ -65,6 +65,9 @@ extract_solution <- function(model, solution_vector, expr) {
       solution_names <- names(solution_vector)
       rexp_c <- regexec(instance_pattern, solution_names)
       var_index <- do.call(rbind, regmatches(solution_names, rexp_c))
+      if (ncol(var_index) == 0) {
+        abort("No variable values found given the indexes.")
+      }
       na_rows <- as.logical(apply(is.na(var_index), 1, all))
       var_index <- var_index[!na_rows, , drop = FALSE]
       var_values <- solution_vector[grepl(solution_names,
@@ -81,6 +84,10 @@ extract_solution <- function(model, solution_vector, expr) {
       result_df$variable <- var_name
       colnames(result_df) <- c(free_vars, "value", "variable")
       result_df <- result_df[, c("variable", free_vars, "value")]
+
+      # at last, for backwards compatibility order by free vars
+      ordering <- do.call(order, lapply(rev(free_vars), function(x) result_df[[x]]))
+      result_df <- result_df[ordering, ]
       return(result_df)
     }
   } else {
