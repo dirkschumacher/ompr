@@ -593,19 +593,21 @@ reduce_linear_function <- function(linear_function) {
   stopifnot(inherits(linear_function, "LinearFunction"))
   # a linear function can have multiple terms pointing to the same variable
   # we need reduce, such that each variables only occurs once
-  term_map <- list()
+  term_map <- fastmap()
   for (term in linear_function@terms) {
     var_idx <- as.character(term@variable@column_idx)
-    old_term <- term_map[[var_idx]]
-    if (is.null(old_term)) {
-      term_map[[var_idx]] <- term
-    } else {
-      term_map[[var_idx]] <- new_linear_term(
-        old_term@variable, old_term@coefficient + term@coefficient
-      )
-    }
+    old_term <- term_map$get(var_idx, NULL)
+    term_map$set(var_idx,
+      if (is.null(old_term)) {
+        term
+      } else {
+        new_linear_term(
+          old_term@variable, old_term@coefficient + term@coefficient
+        )
+      }
+    )
   }
-  linear_function@terms <- setNames(term_map, NULL)
+  linear_function@terms <- setNames(term_map$as_list(), NULL)
   linear_function
 }
 
