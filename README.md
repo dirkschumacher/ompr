@@ -58,10 +58,7 @@ remotes::install_github("dirkschumacher/ompr.roi")
 
 ``` r
 suppressPackageStartupMessages(library(dplyr, quietly = TRUE)) 
-library(ROI)
-#> ROI: R Optimization Infrastructure
-#> Registered solver plugins: nlminb, alabama, glpk, quadprog.
-#> Default solver: auto.
+suppressPackageStartupMessages(library(ROI))
 library(ROI.plugin.glpk)
 library(ompr)
 library(ompr.roi)

@@ -59,7 +59,7 @@ remotes::install_github("dirkschumacher/ompr.roi")
 
 ```{r}
 suppressPackageStartupMessages(library(dplyr, quietly = TRUE)) 
-library(ROI)
+suppressPackageStartupMessages(library(ROI))
 library(ROI.plugin.glpk)
 library(ompr)
 library(ompr.roi)
