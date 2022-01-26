@@ -25,7 +25,7 @@ preferred-citation:
   - family-names: Schumacher
     given-names: Dirk
     email: mail@dirk-schumacher.net
-  version: 1.0.0
+  version: 1.0.1
   abstract: Model mixed integer linear programs in an algebraic way directly in R.
     The model is solver-independent and thus offers the possibility to solve a model
     with different solvers. It currently only supports linear constraints and objective
