@@ -64,8 +64,8 @@ test_that("export solutions to data.frame with two indexes", {
   expect_s3_class(result, "data.frame")
   expect_equivalent(result$variable, c("x", "x", "x", "x"))
   expect_equivalent(result$value, c(1, 1, 1, 1))
-  expect_equivalent(as.numeric(result$i), c(1, 1, 2, 2))
-  expect_equivalent(as.numeric(result$j), c(1, 2, 1, 2))
+  expect_equivalent(as.numeric(result$j), c(1, 1, 2, 2))
+  expect_equivalent(as.numeric(result$i), c(1, 2, 1, 2))
 })
 
 test_that("export infeasible solutions to data.frame", {
@@ -184,7 +184,7 @@ test_that("bug 20160908: solution indexes mixed up", {
     )
   )
   sol <- get_solution(solution, x[i, j])
-  expect_equal(sol$i, c(10, 10, 10, 11, 11, 11))
+  expect_equal(sol$i, c(10, 11, 10, 11, 10, 11))
 })
 
 test_that("objective_value gets the obj. value", {
@@ -242,9 +242,9 @@ test_that("get_solution_ is supported (though deprecated)", {
     )
   )
   res <- get_solution_(solution, ~x[i, j])
-  expect_equal(res$value, c(2, 2, 2, 1, 1, 1))
-  expect_equal(res$i, c(10, 10, 10, 11, 11, 11))
-  expect_equal(res$j, c(10, 11, 12, 10, 11, 12))
+  expect_equal(res$value, c(2, 1, 2, 1, 2, 1))
+  expect_equal(res$i, c(10, 11, 10, 11, 10, 11))
+  expect_equal(res$j, c(10, 10, 11, 11, 12, 12))
 })
 
 test_that("get_solution works with character indexes", {
@@ -339,4 +339,49 @@ test_that("get_solution errors when solution is not a vector or has NAs", {
     )
   )
   expect_error(get_solution(solution, y[1]), "solver")
+})
+
+
+test_that("get_solution orders by indexes", {
+  model <- MIPModel() %>%
+    add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
+    set_objective(sum_expr(x[10, i], i = 10:12))
+  solution <- new_solution(
+    status = "optimal",
+    model = model,
+    objective_value = 3,
+    solution = setNames(
+      c(2, 2, 2, 1, 1, 1),
+      c(
+        "x[11,10]", "x[11,11]", "x[11,12]",
+        "x[10,10]", "x[10,11]", "x[10,12]"
+      )
+    )
+  )
+  res <- get_solution(solution, x[i, j])
+  expect_equal(res$value, c(1, 2, 1, 2, 1, 2))
+  expect_equal(get_solution(solution, x[10, j])$value, c(1, 1, 1))
+  expect_equal(get_solution(solution, x[i, 11])$value, c(1, 2))
+})
+
+test_that("get_solution signals a proper error if fixed indexes are not found", {
+  model <- MIPModel() %>%
+    add_variable(x[i, j], i = 10:11, j = 10:12, ub = 1) %>%
+    set_objective(sum_expr(x[10, i], i = 10:12))
+  solution <- new_solution(
+    status = "optimal",
+    model = model,
+    objective_value = 3,
+    solution = setNames(
+      c(2, 2, 2, 1, 1, 1),
+      c(
+        "x[11,10]", "x[11,11]", "x[11,12]",
+        "x[10,10]", "x[10,11]", "x[10,12]"
+      )
+    )
+  )
+  expect_error(
+    get_solution(solution, x[i, 20]),
+    "found"
+  )
 })

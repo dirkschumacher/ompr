@@ -42,10 +42,14 @@ All listed functions will likely be removed at some later point the future.
 
 * `extract_constraints` now always returns a sparse matrix, even if there are 0
   constraints or variables.
-* The ordering of the `data.frame` return with `get_solution(x[i, j])` has changed.
-  Please do not depend on the ordering of the rows, but use the indexes to
-  retrieve the correct value. For example by sorting the `data.frame`, before
-  reading.
+* The row ordering of the `data.frame` returned with `get_solution(x[i, j])` has
+  slightly changed in special cases, but for the majority of calls, it
+  should stay the same. One of these special cases is if you created your
+  variable similar to `add_variable(model, x[i, j], j = ..., i = ...)`, where
+  the indexes in the variable and the quantifiers have different orderings.
+  In general, please do not depend on the ordering of the rows, but use the
+  indexes to retrieve the correct value. For example by sorting the `data.frame`
+  , before reading.
 
 # ompr 0.8.1
 
