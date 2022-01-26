@@ -77,7 +77,7 @@ get_solution(result, y)
 
 ## API
 
-These functions currently form the public API. More detailed docs can be found in the package function docs or on the [website](https://dirkschumacher.github.io/ompr)
+These functions currently form the public API. More detailed docs can be found in the package function docs or on the [website](https://dirkschumacher.github.io/ompr/)
 
 ### DSL
 * `MIPModel()` create an empty mixed integer linear model (the old way)

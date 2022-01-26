@@ -82,7 +82,7 @@ get_solution(result, y)
 
 These functions currently form the public API. More detailed docs can be
 found in the package function docs or on the
-[website](https://dirkschumacher.github.io/ompr)
+[website](https://dirkschumacher.github.io/ompr/)
 
 ### DSL
 
