@@ -1,3 +1,9 @@
+# ompr 1.0.1
+
+## Bugfixes
+
+* `additional_solver_output()` is now an exported function.
+
 # ompr 1.0.0
 
 ## General changes
