@@ -1,4 +1,4 @@
-# ompr (development version)
+# ompr 1.0.0
 
 ## General changes
 

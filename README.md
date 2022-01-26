@@ -58,10 +58,7 @@ remotes::install_github("dirkschumacher/ompr.roi")
 
 ``` r
 suppressPackageStartupMessages(library(dplyr, quietly = TRUE)) 
-library(ROI)
-#> ROI: R Optimization Infrastructure
-#> Registered solver plugins: nlminb, alabama, glpk, quadprog.
-#> Default solver: auto.
+suppressPackageStartupMessages(library(ROI))
 library(ROI.plugin.glpk)
 library(ompr)
 library(ompr.roi)
@@ -85,7 +82,7 @@ get_solution(result, y)
 
 These functions currently form the public API. More detailed docs can be
 found in the package function docs or on the
-[website](https://dirkschumacher.github.io/ompr)
+[website](https://dirkschumacher.github.io/ompr/)
 
 ### DSL
 
@@ -212,9 +209,9 @@ MIT
 
 Please post an issue first before sending a PR.
 
-Please note that this project is released with a [Contributor Code of
-Conduct](CONDUCT.md). By participating in this project you agree to
-abide by its terms.
+Please note that this project is released with a Contributor Code of
+Conduct. By participating in this project you agree to abide by its
+terms.
 
 ## Related Projects
 
