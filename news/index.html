@@ -92,7 +92,7 @@
 <h3 id="breaking-changes-development-version">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
 <ul><li>
 <code>extract_constraints</code> now always returns a sparse matrix, even if there are 0 constraints or variables.</li>
-<li>The ordering of the <code>data.frame</code> return with <code>get_solution(x[i, j])</code> has changed. Please do not depend on the ordering of the rows, but use the indexes to retrieve the correct value. For example by sorting the <code>data.frame</code>, before reading.</li>
+<li>The row ordering of the <code>data.frame</code> returned with <code>get_solution(x[i, j])</code> has slightly changed in special cases, but for the majority of calls, it should stay the same. One of these special cases is if you created your variable similar to <code>add_variable(model, x[i, j], j = ..., i = ...)</code>, where the indexes in the variable and the quantifiers have different orderings. In general, please do not depend on the ordering of the rows, but use the indexes to retrieve the correct value. For example by sorting the <code>data.frame</code> , before reading.</li>
 </ul></div>
 </div>
     <div class="section level2">
