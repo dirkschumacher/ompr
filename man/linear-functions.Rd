@@ -32,8 +32,10 @@
 \alias{/,LinearFunction,numeric-method}
 \alias{OmprLinearVariableCollection-class}
 \alias{[,OmprLinearVariableCollection,ANY,ANY,missing-method}
-\alias{length,OmprLinearVariableCollection-method}
-\alias{length,OmprLinearVariable-method}
+\alias{n_columns}
+\alias{n_columns,OmprLinearVariableCollection-method}
+\alias{n_columns,OmprLinearVariable-method}
+\alias{n_columns,LinearTerm-method}
 \title{Internal linear function classes and methods}
 \usage{
 \S4method{*}{LinearTerm,numeric}(e1, e2)
@@ -86,9 +88,13 @@
 
 \S4method{[}{OmprLinearVariableCollection,ANY,ANY,missing}(x, i, j, ..., drop = TRUE)
 
-\S4method{length}{OmprLinearVariableCollection}(x)
+n_columns(x)
 
-\S4method{length}{OmprLinearVariable}(x)
+\S4method{n_columns}{OmprLinearVariableCollection}(x)
+
+\S4method{n_columns}{OmprLinearVariable}(x)
+
+\S4method{n_columns}{LinearTerm}(x)
 }
 \arguments{
 \item{e1}{a parameter}
