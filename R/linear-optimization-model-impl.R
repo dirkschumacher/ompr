@@ -46,13 +46,24 @@ setMethod(
 )
 
 #' @rdname linear-functions
-setMethod("length", signature("OmprLinearVariableCollection"), function(x) {
+setGeneric("n_columns", function(x) {
+  stop("not implemented")
+})
+
+#' @rdname linear-functions
+setMethod("n_columns", signature("OmprLinearVariableCollection"), function(x) {
   x@map$size()
 })
 
 #' @include linear-optimization-model-linear-functions.R
 #' @rdname linear-functions
-setMethod("length", signature("OmprLinearVariable"), function(x) {
+setMethod("n_columns", signature("OmprLinearVariable"), function(x) {
+  1
+})
+
+#' @include linear-optimization-model-linear-functions.R
+#' @rdname linear-functions
+setMethod("n_columns", signature("LinearTerm"), function(x) {
   1
 })
 
@@ -484,7 +495,7 @@ nvars.linear_optimization_model <- function(model) {
     binary = 0
   )
   Reduce(function(buckets, var_name) {
-    var_count <- length(model$variables[[var_name]])
+    var_count <- n_columns(model$variables[[var_name]])
     var_type <- model$variable_types[[var_name]]
     buckets[[var_type]] <- buckets[[var_type]] + var_count
     buckets
