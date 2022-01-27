@@ -1,245 +1,180 @@
-#' Internal linear function classes and methods
-#' @rdname linear-functions
-#' @keywords internal
-setClass("OmprLinearVariable", slots = c(column_idx = "numeric"))
-
-#' @rdname linear-functions
-setClass("AbstractLinearFunction")
-
-#' @rdname linear-functions
-setClass("LinearTerm", slots = c(
-  coefficient = "numeric", variable = "OmprLinearVariable"
-), contains = "AbstractLinearFunction")
-
-#' @rdname linear-functions
-setClass("LinearFunction", slots = c(
-  terms = "list",
-  constant = "numeric"
-), contains = "AbstractLinearFunction")
-
 new_linear_variable <- function(column_idx) {
-  stopifnot(length(column_idx) == 1, !is.na(column_idx), column_idx >= 1)
-  new("OmprLinearVariable", column_idx = column_idx)
+  structure(list(column_idx = column_idx), class = "OmprLinearVariable")
+}
+
+new_variable_collection <- function(map = map) {
+  structure(
+    list(map = map), class = "OmprLinearVariableCollection"
+  )
+}
+
+#' @export
+`+.AbstractLinearFunction` <- function(x, y) {
+  if (inherits(x, "LinearTerm")) {
+    add.LinearTerm(x, y)
+  } else if (inherits(x, "LinearFunction")) {
+    add.LinearFunction(x, y)
+  } else if (is.numeric(x)) {
+    add.numeric(x, y)
+  } else {
+    not_supported()
+  }
+}
+
+add.LinearFunction <- function(x, y) {
+  if (missing(y)) {
+    x
+  } else if (inherits(y, "LinearTerm")) {
+    x$terms <- c(x$terms, list(y))
+    x
+  } else if (inherits(y, "LinearFunction")) {
+    x$terms <- c(x$terms, y$terms)
+    x$constant <- x$constant + y$constant
+    x
+  } else if (inherits(y, "numeric")) {
+    x$constant <- x$constant + y
+    x
+  } else {
+    not_supported()
+  }
+}
+
+add.LinearTerm <- function(x, y) {
+  if (missing(y)) {
+    x
+  } else if (inherits(y, "LinearTerm")) {
+    new_linear_function(list(x, y), 0)
+  } else if (inherits(y, "LinearFunction")) {
+    y$terms <- c(y$terms, list(x))
+    y
+  } else if (inherits(y, "numeric")) {
+    new_linear_function(list(x), y)
+  } else {
+    not_supported()
+  }
+}
+
+add.numeric <- function(x, y) {
+  if (missing(y)) {
+    x
+  } else if (inherits(y, "LinearTerm")) {
+    new_linear_function(list(y), x)
+  } else if (inherits(y, "LinearFunction")) {
+    y$constant <- y$constant + x
+    y
+  } else if (inherits(y, "numeric")) {
+    unreachable() #nocovr
+  } else {
+    not_supported()
+  }
+}
+
+#' @export
+`-.AbstractLinearFunction` <- function(x, y) {
+  if (missing(y)) {
+    -1 * x
+  } else {
+    x + (-1 * y)
+  }
+}
+
+#' @export
+`*.AbstractLinearFunction` <- function(x, y) {
+  if (inherits(x, "LinearTerm")) {
+    multiply.LinearTerm(x, y)
+  } else if (inherits(x, "LinearFunction")) {
+    multiply.LinearFunction(x, y)
+  } else if (is.numeric(x)) {
+    multiply.numeric(x, y)
+  } else {
+    not_supported()
+  }
+}
+
+multiply.LinearTerm <- function(x, y) {
+  if (inherits(y, "LinearTerm")) {
+    abort("Quadratic expression are not supported")
+  } else if (inherits(y, "LinearFunction")) {
+    abort("Quadratic expression are not supported")
+  } else if (is.numeric(y)) {
+    x$coefficient <- x$coefficient * y
+    x
+  } else {
+    not_supported()
+  }
+}
+
+multiply.LinearFunction <- function(x, y) {
+  if (inherits(y, "LinearTerm")) {
+    abort("Quadratic expression are not supported")
+  } else if (inherits(y, "LinearFunction")) {
+    abort("Quadratic expression are not supported")
+  } else if (is.numeric(y)) {
+    x$constant <- x$constant * y
+    x$terms <- lapply(x$terms, function(el) el * y)
+    x
+  } else {
+    not_supported()
+  }
+}
+
+multiply.numeric <- function(x, y) {
+  if (inherits(y, "LinearTerm")) {
+    y$coefficient <- y$coefficient * x
+    y
+  } else if (inherits(y, "LinearFunction")) {
+    y$constant <- y$constant * x
+    y$terms <- lapply(y$terms, function(el) el * x)
+    y
+  } else {
+    not_supported()
+  }
+}
+
+#' @export
+`/.AbstractLinearFunction` <- function(x, y) {
+  if (inherits(x, "LinearTerm")) {
+    divide.LinearTerm(x, y)
+  } else if (inherits(x, "LinearFunction")) {
+    divide.LinearFunction(x, y)
+  } else {
+    not_supported()
+  }
+}
+
+divide.LinearFunction <- function(x, y) {
+  if (is.numeric(y)) {
+    x$constant <- x$constant / y
+    x$terms <- lapply(x$terms, function(el) el / y)
+    x
+  } else {
+    abort("Operation not supported")
+  }
+}
+
+divide.LinearTerm <- function(x, y) {
+  if (is.numeric(y)) {
+    x$coefficient <- x$coefficient / y
+    x
+  } else {
+    abort("Operation not supported")
+  }
 }
 
 new_linear_term <- function(variable, coefficient) {
-  stopifnot(length(coefficient) == 1, !is.na(coefficient))
-  stopifnot(inherits(variable, "OmprLinearVariable"))
-  new("LinearTerm", variable = variable, coefficient = coefficient)
+  structure(
+    list(variable = variable, coefficient = coefficient),
+    class = c("LinearTerm", "AbstractLinearFunction")
+  )
 }
 
 new_linear_function <- function(terms, constant) {
-  stopifnot(length(constant) == 1, !is.na(constant))
-  stopifnot(
-    all(
-      vapply(terms, function(term) {
-        inherits(term, "LinearTerm")
-      }, logical(1L))
-    )
+  structure(
+    list(terms = terms, constant = constant),
+    class = c("LinearFunction", "AbstractLinearFunction")
   )
-  # TODO: make it a typed list, maybe
-  new("LinearFunction", terms = terms, constant = constant)
 }
 
-# Linear Terms
-#' @rdname linear-functions
-#' @param e1 a parameter
-#' @param e2 a parameter
-setMethod(
-  "*", signature(e1 = "LinearTerm", e2 = "numeric"),
-  function(e1, e2) {
-    e1@coefficient <- e1@coefficient * e2
-    e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "*", signature(e1 = "numeric", e2 = "LinearTerm"),
-  function(e1, e2) e2 * e1
-)
-
-#' @rdname linear-functions
-setMethod(
-  "/", signature(e1 = "LinearTerm", e2 = "numeric"),
-  function(e1, e2) {
-    e1@coefficient <- e1@coefficient / e2
-    e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearTerm", e2 = "numeric"),
-  function(e1, e2) {
-    new_linear_function(terms = list(e1), constant = e2)
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "numeric", e2 = "LinearTerm"),
-  function(e1, e2) e2 + e1
-)
-
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearTerm", e2 = "missing"),
-  function(e1, e2) {
-    e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearTerm", e2 = "LinearTerm"),
-  function(e1, e2) {
-    new_linear_function(terms = list(e1, e2), constant = 0)
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearTerm", e2 = "missing"),
-  function(e1, e2) {
-    e1@coefficient <- -1 * e1@coefficient
-    e1
-  }
-)
-
-# Linear Functions
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearFunction", e2 = "numeric"),
-  function(e1, e2) {
-    e1@constant <- e1@constant + e2
-    e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "numeric", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e2 + e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearFunction", e2 = "LinearTerm"),
-  function(e1, e2) {
-    e1@terms <- c(e1@terms, list(e2))
-    e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearTerm", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e2 + e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearFunction", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e1@terms <- c(e1@terms, e2@terms)
-    e1@constant <- e1@constant + e2@constant
-    e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearFunction", e2 = "numeric"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "numeric", e2 = "LinearFunction"),
-  function(e1, e2) {
-    (-1 * e2) + e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearTerm", e2 = "LinearTerm"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "numeric", e2 = "LinearTerm"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearFunction", e2 = "LinearTerm"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearTerm", e2 = "LinearFunction"),
-  function(e1, e2) {
-    (-1 * e2) + e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearFunction", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearFunction", e2 = "LinearFunction"),
-  function(e1, e2) {
-    (-1 * e2) + e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "*", signature(e1 = "LinearFunction", e2 = "numeric"),
-  function(e1, e2) {
-    e1@constant <- e1@constant * e2
-    e1@terms <- lapply(e1@terms, function(x) x * e2)
-    e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "*", signature(e1 = "numeric", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e2 * e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "/", signature(e1 = "LinearFunction", e2 = "numeric"),
-  function(e1, e2) {
-    e1@constant <- e1@constant / e2
-    e1@terms <- lapply(e1@terms, function(x) x / e2)
-    e1
-  }
-)
+not_supported <- function() {
+  abort("Operation not supported")
+}

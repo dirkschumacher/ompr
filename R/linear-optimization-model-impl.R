@@ -14,47 +14,36 @@ MIPModel <- function() {
   )
 }
 
-#' @rdname linear-functions
-setClass("OmprLinearVariableCollection",
-  slots = c(map = "ANY")
-)
 
-#' @importFrom rlang abort
-#' @rdname linear-functions
-#' @param x some value
-#' @param i an index
-#' @param j an index
-#' @param ... more indexes
-#' @param drop unused
-setMethod(
-  "[", signature("OmprLinearVariableCollection",
-    i = "ANY", j = "ANY", drop = "missing"
-  ),
-  function(x, i, j, ..., drop) {
-    indexes <- c(
-      if (!missing(i)) i,
-      if (!missing(j)) j,
-      ...
-    )
-    var_name <- hash_var_indexes(indexes)
-    var <- x@map$get(var_name)
-    if (is.null(var)) {
-      abort("Variable not found for indexes")
-    }
-    var
+#' @export
+`[.OmprLinearVariableCollection` <- function(x, i, j, ..., drop) {
+  indexes <- c(
+    if (!missing(i)) i,
+    if (!missing(j)) j,
+    ...
+  )
+  var_name <- hash_var_indexes(indexes)
+  var <- x$map$get(var_name)
+  if (is.null(var)) {
+    abort("Variable not found for indexes")
   }
-)
+  var
+}
 
-#' @rdname linear-functions
-setMethod("length", signature("OmprLinearVariableCollection"), function(x) {
-  x@map$size()
-})
+#' @export
+length.OmprLinearVariableCollection <- function(x) {
+  x$map$size()
+}
 
-#' @include linear-optimization-model-linear-functions.R
-#' @rdname linear-functions
-setMethod("length", signature("OmprLinearVariable"), function(x) {
+#' @export
+length.OmprLinearVariable <- function(x) {
   1
-})
+}
+
+#' @export
+length.LinearTerm <- function(x) {
+  1
+}
 
 #' @export
 #' @inheritParams print
@@ -149,18 +138,18 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
       current_column_count <<- current_column_count + 1
       model$variable_bounds_lower[[current_column_count]] <<- lb
       model$variable_bounds_upper[[current_column_count]] <<- ub
-      var <- new("OmprLinearVariable", column_idx = current_column_count)
+      var <- new_linear_variable(column_idx = current_column_count)
       new_linear_term(var, 1)
     })
     vars <- setNames(vars, el_names)
     map <- fastmap()
     map$mset(.list = vars)
-    new_variable <- new("OmprLinearVariableCollection", map = map)
+    new_variable <- new_variable_collection(map = map)
   } else {
     current_column_count <- current_column_count + 1
     model$variable_bounds_lower[[current_column_count]] <- lb
     model$variable_bounds_upper[[current_column_count]] <- ub
-    new_variable <- new("OmprLinearVariable", column_idx = current_column_count)
+    new_variable <- new_linear_variable(column_idx = current_column_count)
     new_variable <- new_linear_term(new_variable, 1)
   }
   model$column_count <- current_column_count
@@ -249,9 +238,9 @@ set_bounds_ineq <- function(.model, .expr, dots, env) {
   }
   for (constraint in constraints) {
     bound <- extract_bound_from_constraint(
-      constraint@lhs, constraint@rhs, constraint@sense
+      constraint$lhs, constraint$rhs, constraint$sense
     )
-    col_idx <- bound$variable@column_idx
+    col_idx <- bound$variable$column_idx
     numeric_bound <- bound$bound
     if (inherits(bound$sense, "LinearConstraintSenseLeq")) {
       .model$variable_bounds_upper[[col_idx]] <- numeric_bound
@@ -267,48 +256,30 @@ set_bounds_ineq <- function(.model, .expr, dots, env) {
   .model
 }
 
-#' Extract a scalar bound for a variable from a constraint
-#' @rdname extract_bound_from_constraint
-#' @include linear-optimization-model-linear-constraints.R
-#' @keywords internal
-setGeneric("extract_bound_from_constraint", function(lhs, rhs, sense) {
-  stop("not implemented") #nocovr
-})
+extract_bound_from_constraint <- function(lhs, rhs, sense) {
+  UseMethod("extract_bound_from_constraint", lhs)
+}
 
-#' @rdname extract_bound_from_constraint
-setMethod(
-  "extract_bound_from_constraint",
-  signature(
-    lhs = "LinearFunction", rhs = "numeric",
-    sense = "LinearConstraintSense"
-  ),
-  function(lhs, rhs, sense) {
-    stopifnot(length(lhs@terms) == 1,
-              lhs@constant == 0)
-    extract_bound_from_constraint(lhs@terms[[1]], rhs, sense)
-  }
-)
+#' @export
+extract_bound_from_constraint.LinearFunction <- function(lhs, rhs, sense) {
+  stopifnot(length(lhs$terms) == 1,
+            lhs$constant == 0)
+  extract_bound_from_constraint(lhs$terms[[1]], rhs, sense)
+}
 
-#' @rdname extract_bound_from_constraint
-setMethod(
-  "extract_bound_from_constraint",
-  signature(
-    lhs = "LinearTerm", rhs = "numeric",
-    sense = "LinearConstraintSense"
-  ),
-  function(lhs, rhs, sense) {
-    term <- lhs
-    coefficient <- term@coefficient
-    if (coefficient < 0) {
-      sense <- flip_constaint_sense(sense)
-    }
-    list(
-      sense = sense,
-      variable = term@variable,
-      bound = rhs / coefficient
-    )
+#' @export
+extract_bound_from_constraint.LinearTerm <- function(lhs, rhs, sense) {
+  term <- lhs
+  coefficient <- term$coefficient
+  if (coefficient < 0) {
+    sense <- flip_constaint_sense(sense)
   }
-)
+  list(
+    sense = sense,
+    variable = term$variable,
+    bound = rhs / coefficient
+  )
+}
 
 #' @importFrom listcomp gen_list
 set_bounds_old <- function(.model, expr, dots,
@@ -325,9 +296,9 @@ set_bounds_old <- function(.model, expr, dots,
   vars <- gen_list(!!expr, !!!dots, .env = eval_env)
   for (var in vars) {
     if (inherits(var, "LinearTerm")) {
-      var <- var@variable
+      var <- var$variable
     }
-    col_idx <- var@column_idx
+    col_idx <- var$column_idx
     if (!is.null(lb)) {
       .model$variable_bounds_lower[[col_idx]] <- lb
     }
@@ -405,7 +376,11 @@ sum_over <- function(.expr, ...) {
   vals <- gen_list(!!enquo(.expr), !!!enquos(...),
     .env = parent.frame()
   )
-  Reduce(`+`, vals, init = 0)
+  res <- 0
+  for (x in vals) {
+    res <- res + x
+  }
+  res
 }
 
 #' @export
@@ -505,9 +480,9 @@ variable_types.linear_optimization_model <- function(model) {
     type <- model$variable_types[[var_name]]
     variable <- model$variables[[var_name]]
     column_indexes <- if (inherits(variable, "LinearTerm")) {
-      variable@variable@column_idx
+      variable$variable$column_idx
     } else {
-      vapply(variable@map$as_list(), function(x) x@variable@column_idx, numeric(1))
+      vapply(variable$map$as_list(), function(x) x$variable$column_idx, numeric(1))
     }
     data.frame(column_idx = column_indexes, type = type)
   })
@@ -531,13 +506,13 @@ variable_keys.linear_optimization_model <- function(model) {
     variable <- model$variables[[var_name]]
 
     column_indexes <- if (inherits(variable, "LinearTerm")) {
-      setNames(variable@variable@column_idx, var_name)
+      setNames(variable$variable$column_idx, var_name)
     } else {
-      var_names <- paste0(var_name, "[", variable@map$keys(), "]")
+      var_names <- paste0(var_name, "[", variable$map$keys(), "]")
       setNames(
         vapply(
-          variable@map$as_list(),
-          function(x) x@variable@column_idx,
+          variable$map$as_list(),
+          function(x) x$variable$column_idx,
           numeric(1)
         ),
         var_names
@@ -573,15 +548,15 @@ objective_function.linear_optimization_model <- function(model) {
     obj_constant <- if (inherits(obj_fun, "LinearTerm")) {
       0
     } else {
-      obj_fun@constant
+      obj_fun$constant
     }
     if (inherits(obj_fun, "LinearTerm")) {
-      obj[obj_fun@variable@column_idx] <- obj_fun@coefficient
+      obj[obj_fun$variable$column_idx] <- obj_fun$coefficient
     } else {
-      terms <- reduce_linear_function(obj_fun)@terms
+      terms <- reduce_linear_function(obj_fun)$terms
       for (term in terms) {
-        if (term@coefficient != 0) {
-          obj[term@variable@column_idx] <- term@coefficient
+        if (term$coefficient != 0) {
+          obj[term$variable$column_idx] <- term$coefficient
         }
       }
     }
@@ -594,20 +569,20 @@ reduce_linear_function <- function(linear_function) {
   # a linear function can have multiple terms pointing to the same variable
   # we need reduce, such that each variables only occurs once
   term_map <- fastmap()
-  for (term in linear_function@terms) {
-    var_idx <- as.character(term@variable@column_idx)
+  for (term in linear_function$terms) {
+    var_idx <- as.character(term$variable$column_idx)
     old_term <- term_map$get(var_idx, NULL)
     term_map$set(var_idx,
       if (is.null(old_term)) {
         term
       } else {
         new_linear_term(
-          old_term@variable, old_term@coefficient + term@coefficient
+          old_term$variable, old_term$coefficient + term$coefficient
         )
       }
     )
   }
-  linear_function@terms <- setNames(term_map$as_list(), NULL)
+  linear_function$terms <- setNames(term_map$as_list(), NULL)
   linear_function
 }
 
@@ -625,12 +600,12 @@ extract_constraints.linear_optimization_model <- function(model) {
   }
   row_counter <- 0
   matrix_coefs <- lapply(model$constraints, function(constraint) {
-    lhs <- (constraint@lhs - constraint@rhs) + 0
+    lhs <- (constraint$lhs - constraint$rhs) + 0
     stopifnot(inherits(lhs, "LinearFunction"))
-    rhs_numeric <- -1 * lhs@constant
-    lhs_terms <- reduce_linear_function(lhs)@terms
-    coefs <- vapply(lhs_terms, function(x) x@coefficient, numeric(1))
-    cols <- vapply(lhs_terms, function(x) x@variable@column_idx, numeric(1))
+    rhs_numeric <- -1 * lhs$constant
+    lhs_terms <- reduce_linear_function(lhs)$terms
+    coefs <- vapply(lhs_terms, function(x) x$coefficient, numeric(1))
+    cols <- vapply(lhs_terms, function(x) x$variable$column_idx, numeric(1))
     cols <- c(cols, n_vars + 1) # O(n)
     coefs <- c(coefs, rhs_numeric) # O(n)
     row_counter <<- row_counter + 1
@@ -647,7 +622,7 @@ extract_constraints.linear_optimization_model <- function(model) {
     x = values,
     dims = c(n_constraints, n_vars + 1)
   )
-  sense <- vapply(model$constraints, function(x) x@sense@sense, character(1))
+  sense <- vapply(model$constraints, function(x) x$sense$sense, character(1))
   list(
     matrix = matrix[, seq_len(ncol(matrix) - 1), drop = FALSE],
     sense = sense,
