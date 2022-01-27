@@ -30,18 +30,22 @@ MIPModel <- function() {
   var
 }
 
+n_columns <- function(x) {
+  UseMethod("n_columns")
+}
+
 #' @export
-length.OmprLinearVariableCollection <- function(x) {
+n_columns.OmprLinearVariableCollection <- function(x) {
   x$map$size()
 }
 
 #' @export
-length.OmprLinearVariable <- function(x) {
+n_columns.OmprLinearVariable <- function(x) {
   1
 }
 
 #' @export
-length.LinearTerm <- function(x) {
+n_columns.LinearTerm <- function(x) {
   1
 }
 
@@ -123,7 +127,6 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
   }
 
   current_column_count <- model$column_count
-  # TODO: batch grow vectors, e.g. lower/upper bounds
   if (is_indexed_var) {
     stopifnot(
       !is.null(variable_index_names),
@@ -134,10 +137,16 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
       .env = parent.frame()
     )
     el_names <- lapply(vars, hash_var_indexes)
+    model$variable_bounds_lower <- c(
+      model$variable_bounds_lower,
+      rep.int(lb, length(vars))
+    )
+    model$variable_bounds_upper <- c(
+      model$variable_bounds_upper,
+      rep.int(ub, length(vars))
+    )
     vars <- lapply(vars, function(x) {
       current_column_count <<- current_column_count + 1
-      model$variable_bounds_lower[[current_column_count]] <<- lb
-      model$variable_bounds_upper[[current_column_count]] <<- ub
       var <- new_linear_variable(column_idx = current_column_count)
       new_linear_term(var, 1)
     })
@@ -459,7 +468,7 @@ nvars.linear_optimization_model <- function(model) {
     binary = 0
   )
   Reduce(function(buckets, var_name) {
-    var_count <- length(model$variables[[var_name]])
+    var_count <- n_columns(model$variables[[var_name]])
     var_type <- model$variable_types[[var_name]]
     buckets[[var_type]] <- buckets[[var_type]] + var_count
     buckets
