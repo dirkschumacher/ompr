@@ -134,7 +134,6 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
   }
 
   current_column_count <- model$column_count
-  # TODO: batch grow vectors, e.g. lower/upper bounds
   if (is_indexed_var) {
     stopifnot(
       !is.null(variable_index_names),
@@ -145,10 +144,16 @@ add_variable.linear_optimization_model <- function(.model, .variable, ...,
       .env = parent.frame()
     )
     el_names <- lapply(vars, hash_var_indexes)
+    model$variable_bounds_lower <- c(
+      model$variable_bounds_lower,
+      rep.int(lb, length(vars))
+    )
+    model$variable_bounds_upper <- c(
+      model$variable_bounds_upper,
+      rep.int(ub, length(vars))
+    )
     vars <- lapply(vars, function(x) {
       current_column_count <<- current_column_count + 1
-      model$variable_bounds_lower[[current_column_count]] <<- lb
-      model$variable_bounds_upper[[current_column_count]] <<- ub
       var <- new("OmprLinearVariable", column_idx = current_column_count)
       new_linear_term(var, 1)
     })
