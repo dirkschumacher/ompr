@@ -94,7 +94,7 @@ add.numeric <- function(x, y) {
   } else if (inherits(y, "LinearFunction")) {
     y$constant <- y$constant + x
     y
-  } else if (inherits(y, "numeric")) {
+  } else if (is.numeric(y)) {
     unreachable() #nocovr
   } else {
     not_supported()
