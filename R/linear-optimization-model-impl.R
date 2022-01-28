@@ -413,12 +413,16 @@ add_constraint.linear_optimization_model <- function(.model, .constraint_expr,
   any_type_errors <- !all(vapply(
     constraints,
     function(x) {
-      inherits(x, "LinearConstraint")
+      inherits(x, "LinearConstraint") ||
+        (is.logical(x) && x)
     }, logical(1L)
   ))
   if (any_type_errors) {
-    abort("Some constraints are not proper linear constraints")
+    abort("Some constraints are not proper linear constraints or are not true.")
   }
+  constraints <- Filter(function(x) {
+    inherits(x, "LinearConstraint")
+  }, constraints)
   .model$constraints <- c(.model$constraints, constraints) # O(n)
   .model
 }

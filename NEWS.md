@@ -1,5 +1,13 @@
 # ompr (development version)
 
+## General changes
+
+* Model-building is now significantly faster
+* Constraints without variables that evaluate to `TRUE` are not added to the
+  model, as they are always satisfied. Likewise, constraints that evaluate to
+  `FALSE` throw an error. Previously specifying a constraint without
+  a variable would have caused a run time error.
+
 # ompr 1.0.1
 
 ## Bugfixes

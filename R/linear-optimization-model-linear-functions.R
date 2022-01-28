@@ -196,9 +196,7 @@ divide.LinearTerm <- function(x, y) {
 update_terms <- function(linear_fun, update_fun) {
   terms <- linear_fun$terms
   # we modify linear_fun's terms, so make sure we are the owner
-  if (linear_fun$owner != terms$get("owner")) {
-    abort("This is a bug. Two linear functions share a mutable reference.")
-  }
+  check_ownership(linear_fun)
   for (key in terms$keys()) {
     if (key == "owner") {
       next
@@ -213,10 +211,8 @@ merge_terms <- function(linear_fun1, linear_fun2) {
   terms2 <- linear_fun2$terms
   # we modify linear_fun1's terms, so make sure we are the owner
   # also for we check ownership of linear_fun2 as well, why not
-  if (linear_fun1$owner != terms1$get("owner") ||
-        linear_fun2$owner != terms2$get("owner")) {
-    abort("This is a bug. Two linear functions share a mutable reference.")
-  }
+  check_ownership(linear_fun1)
+  check_ownership(linear_fun2)
   for (key in terms2$keys()) {
     if (key == "owner") {
       next
@@ -234,6 +230,7 @@ merge_terms <- function(linear_fun1, linear_fun2) {
 }
 
 terms_list <- function(linear_function) {
+  check_ownership(linear_function)
   x <- linear_function$terms$as_list()
   x[names(x) != "owner"]
 }
@@ -242,6 +239,12 @@ update_owner <- function(fun) {
   fun$owner <- new_nonce()
   fun$terms$set("owner", fun$owner)
   fun
+}
+
+check_ownership <- function(linear_function) {
+  if (linear_function$owner != linear_function$terms$get("owner")) {
+    abort("Two linear functions share a mutable reference, this is a bug.")
+  }
 }
 
 not_supported <- function() {

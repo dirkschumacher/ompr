@@ -219,3 +219,19 @@ test_that("MIPModel add_variable signals some errors", {
     "form"
   )
 })
+
+test_that("Adding constraints with no variables works", {
+  model <- MIPModel() |>
+    add_variable(x[i], i = 1:10) |>
+    add_constraint(sum_over(x[i], i = 1:10, i < 1) <= 10)
+  expect_equal(length(model$constraints), 0)
+})
+
+test_that("An error is thrown if a constraint is false", {
+  expect_error(
+    MIPModel() |>
+      add_variable(x[i], i = 1:10) |>
+      add_constraint(sum_over(x[i], i = 1:10, i < 1) + 100 <= 10),
+    "true"
+  )
+})

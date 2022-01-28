@@ -103,3 +103,12 @@ test_that("substracting a linear function and linear terms", {
     c(0, 42)
   )
 })
+
+test_that("unary addition/substraction for LinearFunctions", {
+  y <- -(new_linear_term(variable = new_linear_variable(1), coefficient = 1) + 1)
+  z <- +(new_linear_term(variable = new_linear_variable(1), coefficient = 1) + 1)
+  expect_equal(y$constant, -1)
+  expect_equal(terms_list(y)[["1"]]$coefficient, -1)
+  expect_equal(z$constant, 1)
+  expect_equal(terms_list(z)[["1"]]$coefficient, 1)
+})

@@ -26,11 +26,6 @@ new_linear_constraint <- function(lhs, rhs, sense) {
 }
 
 #' @export
-new_linear_constraint.numeric <- function(lhs, rhs, sense) {
-  new_linear_constraint(new_linear_function(list(), lhs), rhs, sense)
-}
-
-#' @export
 new_linear_constraint.LinearTerm <- function(lhs, rhs, sense) {
   lhs <- lhs + 0 # now it is a Linearfunction
   new_linear_constraint(lhs, rhs, sense)
