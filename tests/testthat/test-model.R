@@ -235,3 +235,17 @@ test_that("An error is thrown if a constraint is false", {
     "true"
   )
 })
+
+test_that("constraint senses are correct", {
+  model <- MIPModel() %>%
+    add_variable(x) %>%
+    add_constraint(x <= 10) %>%
+    add_constraint(x == 10) %>%
+    add_constraint(x >= 10)
+  expect_s3_class(model$constraints[[1]]$sense, "LinearConstraintSenseLeq")
+  expect_s3_class(model$constraints[[2]]$sense, "LinearConstraintSenseEq")
+  expect_s3_class(model$constraints[[3]]$sense, "LinearConstraintSenseGeq")
+  expect_equal(model$constraints[[1]]$sense$sense, "<=")
+  expect_equal(model$constraints[[2]]$sense$sense, "==")
+  expect_equal(model$constraints[[3]]$sense$sense, ">=")
+})

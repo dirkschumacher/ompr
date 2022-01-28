@@ -3,11 +3,11 @@ sense_leq <- structure(
   class = c("LinearConstraintSenseLeq", "LinearConstraintSense")
 )
 sense_eq <- structure(
-  list(sense = "<="),
+  list(sense = "=="),
   class = c("LinearConstraintSenseEq", "LinearConstraintSense")
 )
 sense_geq <- structure(
-  list(sense = "<="),
+  list(sense = ">="),
   class = c("LinearConstraintSenseGeq", "LinearConstraintSense")
 )
 
