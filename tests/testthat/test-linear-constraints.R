@@ -3,19 +3,22 @@ test_that("LinearTerm constraints are converted correctly", {
   res <- 5 * x <= 10
   expect_s3_class(res, "LinearConstraint")
   expect_equal(res$rhs, 10)
-  expect_equal(res$lhs, 5 * x + 0)
+  expect_equal(terms_list(res$lhs), terms_list(5 * x + 0))
+  expect_equal(res$lhs$constant, 0)
   expect_equal(res$sense, sense_leq)
 
   res <- 5 * x >= 10
   expect_s3_class(res, "LinearConstraint")
   expect_equal(res$rhs, 10)
-  expect_equal(res$lhs, 5 * x + 0)
+  expect_equal(terms_list(res$lhs), terms_list(5 * x + 0))
+  expect_equal(res$lhs$constant, 0)
   expect_equal(res$sense, sense_geq)
 
   res <- 5 * x == 10
   expect_s3_class(res, "LinearConstraint")
   expect_equal(res$rhs, 10)
-  expect_equal(res$lhs, 5 * x + 0)
+  expect_equal(terms_list(res$lhs), terms_list(5 * x + 0))
+  expect_equal(res$lhs$constant, 0)
   expect_equal(res$sense, sense_eq)
 })
 
@@ -24,19 +27,22 @@ test_that("LinearFunctions constraints are converted correctly", {
   res <- 5 * x + 0 <= 10
   expect_s3_class(res, "LinearConstraint")
   expect_equal(res$rhs, 10)
-  expect_equal(res$lhs, 5 * x + 0)
+  expect_equal(terms_list(res$lhs), terms_list(5 * x + 0))
+  expect_equal(res$lhs$constant, 0)
   expect_equal(res$sense, sense_leq)
 
   res <- 5 * x + 0 >= 10
   expect_s3_class(res, "LinearConstraint")
   expect_equal(res$rhs, 10)
-  expect_equal(res$lhs, 5 * x + 0)
+  expect_equal(terms_list(res$lhs), terms_list(5 * x + 0))
+  expect_equal(res$lhs$constant, 0)
   expect_equal(res$sense, sense_geq)
 
   res <- 5 * x + 0 == 10
   expect_s3_class(res, "LinearConstraint")
   expect_equal(res$rhs, 10)
-  expect_equal(res$lhs, 5 * x + 0)
+  expect_equal(terms_list(res$lhs), terms_list(5 * x + 0))
+  expect_equal(res$lhs$constant, 0)
   expect_equal(res$sense, sense_eq)
 })
 

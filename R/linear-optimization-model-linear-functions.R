@@ -8,6 +8,39 @@ new_variable_collection <- function(map = map) {
   )
 }
 
+new_linear_term <- function(variable, coefficient) {
+  structure(
+    list(variable = variable, coefficient = coefficient),
+    class = c("LinearTerm", "AbstractLinearFunction")
+  )
+}
+
+new_linear_function <- function(terms, constant) {
+  map <- fastmap()
+  if (length(terms) > 0) {
+    terms <- setNames(
+      terms,
+      vapply(terms, function(x) {
+        as.character(x$variable$column_idx)
+      }, character(1))
+    )
+    map$mset(.list = terms)
+  }
+  owner <- new_nonce()
+  map$set("owner", owner)
+  structure(
+    list(terms = map, constant = constant, owner = owner),
+    class = c("LinearFunction", "AbstractLinearFunction")
+  )
+}
+
+
+NonceManager <- new.env(hash = FALSE, size = 1L)
+NonceManager$counter <- 1
+new_nonce <- function() {
+  NonceManager$counter <- NonceManager$counter + 1
+}
+
 #' @export
 `+.AbstractLinearFunction` <- function(x, y) {
   if (inherits(x, "LinearTerm")) {
@@ -25,13 +58,13 @@ add.LinearFunction <- function(x, y) {
   if (missing(y)) {
     x
   } else if (inherits(y, "LinearTerm")) {
-    x$terms <- c(x$terms, list(y))
-    x
+    x + (y + 0)
   } else if (inherits(y, "LinearFunction")) {
-    x$terms <- c(x$terms, y$terms)
     x$constant <- x$constant + y$constant
-    x
-  } else if (inherits(y, "numeric")) {
+    new_terms <- merge_terms(x, y)
+    x$terms <- new_terms
+    update_owner(x)
+  } else if (is.numeric(y)) {
     x$constant <- x$constant + y
     x
   } else {
@@ -43,11 +76,10 @@ add.LinearTerm <- function(x, y) {
   if (missing(y)) {
     x
   } else if (inherits(y, "LinearTerm")) {
-    new_linear_function(list(x, y), 0)
+    (x + 0) + (y + 0)
   } else if (inherits(y, "LinearFunction")) {
-    y$terms <- c(y$terms, list(x))
-    y
-  } else if (inherits(y, "numeric")) {
+    y + x
+  } else if (is.numeric(y)) {
     new_linear_function(list(x), y)
   } else {
     not_supported()
@@ -111,8 +143,8 @@ multiply.LinearFunction <- function(x, y) {
     abort("Quadratic expression are not supported")
   } else if (is.numeric(y)) {
     x$constant <- x$constant * y
-    x$terms <- lapply(x$terms, function(el) el * y)
-    x
+    update_terms(x, function(value) value * y)
+    update_owner(x)
   } else {
     not_supported()
   }
@@ -124,8 +156,8 @@ multiply.numeric <- function(x, y) {
     y
   } else if (inherits(y, "LinearFunction")) {
     y$constant <- y$constant * x
-    y$terms <- lapply(y$terms, function(el) el * x)
-    y
+    update_terms(y, function(value) value * x)
+    update_owner(y)
   } else {
     not_supported()
   }
@@ -145,8 +177,8 @@ multiply.numeric <- function(x, y) {
 divide.LinearFunction <- function(x, y) {
   if (is.numeric(y)) {
     x$constant <- x$constant / y
-    x$terms <- lapply(x$terms, function(el) el / y)
-    x
+    update_terms(x, function(value) value / y)
+    update_owner(x)
   } else {
     abort("Operation not supported")
   }
@@ -161,18 +193,55 @@ divide.LinearTerm <- function(x, y) {
   }
 }
 
-new_linear_term <- function(variable, coefficient) {
-  structure(
-    list(variable = variable, coefficient = coefficient),
-    class = c("LinearTerm", "AbstractLinearFunction")
-  )
+update_terms <- function(linear_fun, update_fun) {
+  terms <- linear_fun$terms
+  # we modify linear_fun's terms, so make sure we are the owner
+  if (linear_fun$owner != terms$get("owner")) {
+    abort("This is a bug. Two linear functions share a mutable reference.")
+  }
+  for (key in terms$keys()) {
+    if (key == "owner") {
+      next
+    }
+    terms$set(key, update_fun(terms$get(key)))
+  }
+  invisible(linear_fun)
 }
 
-new_linear_function <- function(terms, constant) {
-  structure(
-    list(terms = terms, constant = constant),
-    class = c("LinearFunction", "AbstractLinearFunction")
-  )
+merge_terms <- function(linear_fun1, linear_fun2) {
+  terms1 <- linear_fun1$terms
+  terms2 <- linear_fun2$terms
+  # we modify linear_fun1's terms, so make sure we are the owner
+  # also for we check ownership of linear_fun2 as well, why not
+  if (linear_fun1$owner != terms1$get("owner") ||
+        linear_fun2$owner != terms2$get("owner")) {
+    abort("This is a bug. Two linear functions share a mutable reference.")
+  }
+  for (key in terms2$keys()) {
+    if (key == "owner") {
+      next
+    }
+    if (terms1$has(key)) {
+      term1 <- terms1$get(key)
+      term2 <- terms2$get(key)
+      term1$coefficient <- term1$coefficient + term2$coefficient
+      terms1$set(key, term1)
+    } else {
+      terms1$set(key, terms2$get(key))
+    }
+  }
+  terms1
+}
+
+terms_list <- function(linear_function) {
+  x <- linear_function$terms$as_list()
+  x[names(x) != "owner"]
+}
+
+update_owner <- function(fun) {
+  fun$owner <- new_nonce()
+  fun$terms$set("owner", fun$owner)
+  fun
 }
 
 not_supported <- function() {

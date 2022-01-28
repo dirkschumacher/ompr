@@ -97,8 +97,8 @@ test_that("multiplications in objective fun", {
     add_constraint(x + y <= 10) %>%
     set_objective(5 * (-x + y), sense = "max")
   expect_equal(m$objective$fun$constant, 0)
-  expect_equal(m$objective$fun$terms[[1]]$coefficient, -5)
-  expect_equal(m$objective$fun$terms[[2]]$coefficient, 5)
+  expect_equal(terms_list(m$objective$fun)[[1]]$coefficient, -5)
+  expect_equal(terms_list(m$objective$fun)[[2]]$coefficient, 5)
 })
 
 test_that("model output works without an obj. function", {

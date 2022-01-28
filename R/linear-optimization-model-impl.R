@@ -271,9 +271,10 @@ extract_bound_from_constraint <- function(lhs, rhs, sense) {
 
 #' @export
 extract_bound_from_constraint.LinearFunction <- function(lhs, rhs, sense) {
-  stopifnot(length(lhs$terms) == 1,
+  terms <- terms_list(lhs)
+  stopifnot(length(terms) == 1,
             lhs$constant == 0)
-  extract_bound_from_constraint(lhs$terms[[1]], rhs, sense)
+  extract_bound_from_constraint(terms[[1]], rhs, sense)
 }
 
 #' @export
@@ -562,7 +563,7 @@ objective_function.linear_optimization_model <- function(model) {
     if (inherits(obj_fun, "LinearTerm")) {
       obj[obj_fun$variable$column_idx] <- obj_fun$coefficient
     } else {
-      terms <- reduce_linear_function(obj_fun)$terms
+      terms <- terms_list(obj_fun)
       for (term in terms) {
         if (term$coefficient != 0) {
           obj[term$variable$column_idx] <- term$coefficient
@@ -571,28 +572,6 @@ objective_function.linear_optimization_model <- function(model) {
     }
   }
   list(solution = obj, constant = obj_constant)
-}
-
-reduce_linear_function <- function(linear_function) {
-  stopifnot(inherits(linear_function, "LinearFunction"))
-  # a linear function can have multiple terms pointing to the same variable
-  # we need reduce, such that each variables only occurs once
-  term_map <- fastmap()
-  for (term in linear_function$terms) {
-    var_idx <- as.character(term$variable$column_idx)
-    old_term <- term_map$get(var_idx, NULL)
-    term_map$set(var_idx,
-      if (is.null(old_term)) {
-        term
-      } else {
-        new_linear_term(
-          old_term$variable, old_term$coefficient + term$coefficient
-        )
-      }
-    )
-  }
-  linear_function$terms <- setNames(term_map$as_list(), NULL)
-  linear_function
 }
 
 #' @export
@@ -612,7 +591,7 @@ extract_constraints.linear_optimization_model <- function(model) {
     lhs <- (constraint$lhs - constraint$rhs) + 0
     stopifnot(inherits(lhs, "LinearFunction"))
     rhs_numeric <- -1 * lhs$constant
-    lhs_terms <- reduce_linear_function(lhs)$terms
+    lhs_terms <- terms_list(lhs)
     coefs <- vapply(lhs_terms, function(x) x$coefficient, numeric(1))
     cols <- vapply(lhs_terms, function(x) x$variable$column_idx, numeric(1))
     cols <- c(cols, n_vars + 1) # O(n)
