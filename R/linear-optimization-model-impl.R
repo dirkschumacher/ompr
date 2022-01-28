@@ -272,8 +272,10 @@ extract_bound_from_constraint <- function(lhs, rhs, sense) {
 #' @export
 extract_bound_from_constraint.LinearFunction <- function(lhs, rhs, sense) {
   terms <- terms_list(lhs)
-  stopifnot(length(terms) == 1,
-            lhs$constant == 0)
+  stopifnot(
+    length(terms) == 1,
+    lhs$constant == 0
+  )
   extract_bound_from_constraint(terms[[1]], rhs, sense)
 }
 
@@ -587,8 +589,8 @@ extract_constraints.linear_optimization_model <- function(model) {
     return(list(
       matrix = sparseMatrix(i = numeric(), j = numeric(), dims = c(0, n_vars)),
       sense = character(0L),
-      rhs = numeric(0L))
-    )
+      rhs = numeric(0L)
+    ))
   }
   row_counter <- 0
   matrix_coefs <- lapply(model$constraints, function(constraint) {

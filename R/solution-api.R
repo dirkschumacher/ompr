@@ -37,7 +37,6 @@ SOLVER_STATUS_CODES <- c(
   "infeasible",
   "unbounded",
   "error",
-
   "optimal",
   "success",
   "feasible",

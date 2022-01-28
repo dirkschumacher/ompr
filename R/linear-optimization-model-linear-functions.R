@@ -4,7 +4,8 @@ new_linear_variable <- function(column_idx) {
 
 new_variable_collection <- function(map = map) {
   structure(
-    list(map = map), class = "OmprLinearVariableCollection"
+    list(map = map),
+    class = "OmprLinearVariableCollection"
   )
 }
 
@@ -95,7 +96,7 @@ add.numeric <- function(x, y) {
     y$constant <- y$constant + x
     y
   } else if (is.numeric(y)) {
-    unreachable() #nocovr
+    unreachable() # nocovr
   } else {
     not_supported()
   }

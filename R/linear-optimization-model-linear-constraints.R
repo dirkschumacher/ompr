@@ -1,6 +1,15 @@
-sense_leq <- structure(list(sense = "<="), class = c("LinearConstraintSenseLeq", "LinearConstraintSense"))
-sense_eq <- structure(list(sense = "<="), class = c("LinearConstraintSenseEq", "LinearConstraintSense"))
-sense_geq <- structure(list(sense = "<="), class = c("LinearConstraintSenseGeq", "LinearConstraintSense"))
+sense_leq <- structure(
+  list(sense = "<="),
+  class = c("LinearConstraintSenseLeq", "LinearConstraintSense")
+)
+sense_eq <- structure(
+  list(sense = "<="),
+  class = c("LinearConstraintSenseEq", "LinearConstraintSense")
+)
+sense_geq <- structure(
+  list(sense = "<="),
+  class = c("LinearConstraintSenseGeq", "LinearConstraintSense")
+)
 
 flip_constaint_sense <- function(sense) {
   UseMethod("flip_constaint_sense")
