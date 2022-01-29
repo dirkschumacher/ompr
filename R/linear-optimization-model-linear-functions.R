@@ -251,7 +251,13 @@ update_owner <- function(fun) {
 
 check_ownership <- function(linear_function) {
   if (linear_function$owner != linear_function$terms$get("owner")) {
-    abort("Two linear functions share a mutable reference, this is a bug.")
+    abort(
+      paste(
+        "A linear functions is used without being the owner of the",
+        "underlying data structure. This is a bug. Please report that",
+        "as an issue."
+      )
+    )
   }
 }
 
