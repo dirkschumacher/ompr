@@ -27,7 +27,7 @@ new_linear_function <- function(terms, constant) {
     )
     map$mset(.list = terms)
   }
-  owner <- new_nonce()
+  owner <- new_ownership_id()
   map$set("owner", owner)
   structure(
     list(terms = map, constant = constant, owner = owner),
@@ -36,10 +36,17 @@ new_linear_function <- function(terms, constant) {
 }
 
 
-NonceManager <- new.env(hash = FALSE, size = 1L)
-NonceManager$counter <- 1
-new_nonce <- function() {
-  NonceManager$counter <- NonceManager$counter + 1
+# Re. ownership counter
+# LinearFunctions have a reference to a map, which is mutable and by reference
+# In the unexpected event that within the `MIPModel` framework two linear
+# functions access/modify the same referenced map, a run time error is thrown.
+# This is achieved by tracking ownership of each map. In order to implement
+# the ownership check, we need a stateful counter of "owners". That counter
+# is currently part of the package namespace.
+.OwnerShipManager <- new.env(hash = FALSE, size = 1L)
+.OwnerShipManager$counter <- 1
+new_ownership_id <- function() {
+  .OwnerShipManager$counter <- .OwnerShipManager$counter + 1
 }
 
 #' @export
@@ -237,7 +244,7 @@ terms_list <- function(linear_function) {
 }
 
 update_owner <- function(fun) {
-  fun$owner <- new_nonce()
+  fun$owner <- new_ownership_id()
   fun$terms$set("owner", fun$owner)
   fun
 }
