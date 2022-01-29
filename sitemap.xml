@@ -73,9 +73,6 @@
     <loc>https://dirkschumacher.github.io/ompr/reference/colwise.html</loc>
   </url>
   <url>
-    <loc>https://dirkschumacher.github.io/ompr/reference/extract_bound_from_constraint.html</loc>
-  </url>
-  <url>
     <loc>https://dirkschumacher.github.io/ompr/reference/extract_constraints.html</loc>
   </url>
   <url>
@@ -89,12 +86,6 @@
   </url>
   <url>
     <loc>https://dirkschumacher.github.io/ompr/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://dirkschumacher.github.io/ompr/reference/linear-constraints.html</loc>
-  </url>
-  <url>
-    <loc>https://dirkschumacher.github.io/ompr/reference/linear-functions.html</loc>
   </url>
   <url>
     <loc>https://dirkschumacher.github.io/ompr/reference/milp-linear-variables.html</loc>
