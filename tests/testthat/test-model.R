@@ -96,9 +96,9 @@ test_that("multiplications in objective fun", {
     add_variable(y, type = "continuous", ub = 4) %>%
     add_constraint(x + y <= 10) %>%
     set_objective(5 * (-x + y), sense = "max")
-  expect_equal(m$objective$fun@constant, 0)
-  expect_equal(m$objective$fun@terms[[1]]@coefficient, -5)
-  expect_equal(m$objective$fun@terms[[2]]@coefficient, 5)
+  expect_equal(m$objective$fun$constant, 0)
+  expect_equal(terms_list(m$objective$fun)[["1"]]$coefficient, -5)
+  expect_equal(terms_list(m$objective$fun)[["2"]]$coefficient, 5)
 })
 
 test_that("model output works without an obj. function", {
@@ -218,4 +218,34 @@ test_that("MIPModel add_variable signals some errors", {
     add_variable(model, sum(x), i = 1:2, j = 1:2, i != j),
     "form"
   )
+})
+
+test_that("Adding constraints with no variables works", {
+  model <- MIPModel() %>%
+    add_variable(x[i], i = 1:10) %>%
+    add_constraint(sum_over(x[i], i = 1:10, i < 1) <= 10)
+  expect_equal(length(model$constraints), 0)
+})
+
+test_that("An error is thrown if a constraint is false", {
+  expect_error(
+    MIPModel() %>%
+      add_variable(x[i], i = 1:10) %>%
+      add_constraint(sum_over(x[i], i = 1:10, i < 1) + 100 <= 10),
+    "true"
+  )
+})
+
+test_that("constraint senses are correct", {
+  model <- MIPModel() %>%
+    add_variable(x) %>%
+    add_constraint(x <= 10) %>%
+    add_constraint(x == 10) %>%
+    add_constraint(x >= 10)
+  expect_s3_class(model$constraints[[1]]$sense, "LinearConstraintSenseLeq")
+  expect_s3_class(model$constraints[[2]]$sense, "LinearConstraintSenseEq")
+  expect_s3_class(model$constraints[[3]]$sense, "LinearConstraintSenseGeq")
+  expect_equal(model$constraints[[1]]$sense$sense, "<=")
+  expect_equal(model$constraints[[2]]$sense$sense, "==")
+  expect_equal(model$constraints[[3]]$sense$sense, ">=")
 })

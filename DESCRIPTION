@@ -32,9 +32,9 @@ ByteCompile: Yes
 Collate:
     'abstract-model-impl.R'
     'helper.R'
-    'linear-optimization-model-linear-functions.R'
-    'linear-optimization-model-linear-constraints.R'
     'linear-optimization-model-impl.R'
+    'linear-optimization-model-linear-constraints.R'
+    'linear-optimization-model-linear-functions.R'
     'model-api.R'
     'milp-impl.R'
     'milp-linearopt-variables.R'

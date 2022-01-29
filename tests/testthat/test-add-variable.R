@@ -128,5 +128,5 @@ test_that("bug 20161014: division with number in rhs", {
   m <- MIPModel() %>%
     add_variable(x) %>%
     add_constraint(x / 5 <= 1)
-  expect_equal(m$constraints[[1]]@lhs@terms[[1]]@coefficient, 1 / 5)
+  expect_equal(terms_list(m$constraints[[1]]$lhs)[[1]]$coefficient, 1 / 5)
 })

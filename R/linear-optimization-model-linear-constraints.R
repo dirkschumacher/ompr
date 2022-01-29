@@ -1,167 +1,77 @@
-#' Internal linear constraints classes and methods
-#' @rdname linear-constraints
-#' @slot sense leq, geq or eq
-#' @keywords internal
-setClass("LinearConstraintSense", slots = c(
-  sense = "character"
-))
+sense_leq <- structure(
+  list(sense = "<="),
+  class = c("LinearConstraintSenseLeq", "LinearConstraintSense")
+)
+sense_eq <- structure(
+  list(sense = "=="),
+  class = c("LinearConstraintSenseEq", "LinearConstraintSense")
+)
+sense_geq <- structure(
+  list(sense = ">="),
+  class = c("LinearConstraintSenseGeq", "LinearConstraintSense")
+)
 
-#' @rdname linear-constraints
-setClass("LinearConstraintSenseLeq", contains = "LinearConstraintSense")
-#' @rdname linear-constraints
-setClass("LinearConstraintSenseEq", contains = "LinearConstraintSense")
-#' @rdname linear-constraints
-setClass("LinearConstraintSenseGeq", contains = "LinearConstraintSense")
+flip_constaint_sense <- function(sense) {
+  UseMethod("flip_constaint_sense")
+}
 
-sense_leq <- new("LinearConstraintSenseLeq", sense = "<=")
-sense_eq <- new("LinearConstraintSenseEq", sense = "==")
-sense_geq <- new("LinearConstraintSenseGeq", sense = ">=")
-
-
-#' @rdname linear-constraints
-setGeneric("flip_constaint_sense", function(sense) {
+#' @export
+flip_constaint_sense.LinearConstraintSenseEq <- function(sense) {
   sense
-})
+}
 
-#' @rdname linear-constraints
-setMethod(
-  "flip_constaint_sense",
-  signature(
-    sense = "LinearConstraintSenseLeq"
-  ),
-  function(sense) {
-    sense_geq
-  }
-)
+#' @export
+flip_constaint_sense.LinearConstraintSenseLeq <- function(sense) {
+  sense_geq
+}
 
-#' @rdname linear-constraints
-setMethod(
-  "flip_constaint_sense",
-  signature(
-    sense = "LinearConstraintSenseGeq"
-  ),
-  function(sense) {
-    sense_leq
-  }
-)
+#' @export
+flip_constaint_sense.LinearConstraintSenseGeq <- function(sense) {
+  sense_leq
+}
 
-#' @include linear-optimization-model-linear-functions.R
-#' @rdname linear-constraints
-#' @param lhs a linear function
-#' @param rhs a numeric scalar
-#' @param sense the constraint sense
-setClass("LinearConstraint", slots = c(
-  lhs = "LinearFunction",
-  rhs = "numeric",
-  sense = "LinearConstraintSense"
-))
+new_linear_constraint <- function(lhs, rhs, sense) {
+  UseMethod("new_linear_constraint", lhs)
+}
 
-#' @rdname linear-constraints
-setGeneric("new_linear_constraint", function(lhs, rhs, sense) {
-  stop("not implemented") #nocovr
-})
+#' @export
+new_linear_constraint.LinearTerm <- function(lhs, rhs, sense) {
+  lhs <- lhs + 0 # now it is a Linearfunction
+  new_linear_constraint(lhs, rhs, sense)
+}
 
-#' @rdname linear-constraints
-setMethod(
-  "new_linear_constraint",
-  signature(
-    lhs = "LinearFunction", rhs = "numeric",
-    sense = "LinearConstraintSense"
-  ),
-  function(lhs, rhs, sense) {
-    new("LinearConstraint", lhs = lhs, rhs = rhs, sense = sense)
-  }
-)
+#' @export
+new_linear_constraint.LinearFunction <- function(lhs, rhs, sense) {
+  lhs <- lhs - rhs
+  rhs <- -1 * lhs$constant
+  lhs$constant <- 0
+  structure(
+    list(lhs = lhs, rhs = rhs, sense = sense),
+    class = "LinearConstraint"
+  )
+}
 
-#' @rdname linear-constraints
-setMethod(
-  "new_linear_constraint",
-  signature(
-    lhs = "LinearFunction", rhs = "LinearTerm",
-    sense = "LinearConstraintSense"
-  ),
-  function(lhs, rhs, sense) {
-    rhs <- rhs + 0
-    new_linear_constraint(lhs, rhs, sense)
-  }
-)
-
-#' @rdname linear-constraints
-setMethod(
-  "new_linear_constraint",
-  signature(
-    lhs = "LinearFunction", rhs = "LinearFunction",
-    sense = "LinearConstraintSense"
-  ),
-  function(lhs, rhs, sense) {
-    lhs <- lhs - rhs
-    rhs <- -1 * lhs@constant
-    lhs@constant <- 0
-    new_linear_constraint(lhs, rhs, sense)
-  }
-)
-
-#' @rdname linear-constraints
-setMethod(
-  "new_linear_constraint",
-  signature(
-    lhs = "LinearTerm", rhs = "ANY",
-    sense = "LinearConstraintSense"
-  ),
-  function(lhs, rhs, sense) {
-    lhs <- lhs + 0
-    new_linear_constraint(lhs, rhs, sense)
-  }
-)
-
-#' @rdname linear-constraints
-#' @param e1 a parameter
-#' @param e2 a parameter
-setMethod(
-  "<=", signature(e1 = "AbstractLinearFunction", e2 = "ANY"),
+equation_dispatcher <- function(sense) {
   function(e1, e2) {
-    new_linear_constraint(e1, e2, sense_leq)
+    if (inherits(e1, "AbstractLinearFunction")) {
+      new_linear_constraint(e1, e2, sense)
+    } else if (inherits(e2, "AbstractLinearFunction")) {
+      new_linear_constraint(e2 * -1, e1 * -1, sense)
+    } else {
+      unreachable()
+    }
   }
-)
+}
 
-#' @rdname linear-constraints
-setMethod(
-  "==", signature(e1 = "AbstractLinearFunction", e2 = "ANY"),
-  function(e1, e2) {
-    new_linear_constraint(e1, e2, sense_eq)
-  }
-)
+#' @export
+`<=.AbstractLinearFunction` <- equation_dispatcher(sense_leq)
 
-#' @rdname linear-constraints
-setMethod(
-  ">=", signature(e1 = "AbstractLinearFunction", e2 = "ANY"),
-  function(e1, e2) {
-    new_linear_constraint(e1, e2, sense_geq)
-  }
-)
+#' @export
+`==.AbstractLinearFunction` <- equation_dispatcher(sense_eq)
 
-#' @rdname linear-constraints
-#' @param e1 a parameter
-#' @param e2 a parameter
-setMethod(
-  "<=", signature(e1 = "ANY", e2 = "AbstractLinearFunction"),
-  function(e1, e2) {
-    new_linear_constraint(e2 * -1, e1 * -1, sense_leq)
-  }
-)
+#' @export
+`>=.AbstractLinearFunction` <- equation_dispatcher(sense_geq)
 
-#' @rdname linear-constraints
-setMethod(
-  "==", signature(e1 = "ANY", e2 = "AbstractLinearFunction"),
-  function(e1, e2) {
-    new_linear_constraint(e2 * -1, e1 * -1, sense_eq)
-  }
-)
-
-#' @rdname linear-constraints
-setMethod(
-  ">=", signature(e1 = "ANY", e2 = "AbstractLinearFunction"),
-  function(e1, e2) {
-    new_linear_constraint(e2 * -1, e1 * -1, sense_geq)
-  }
-)
+unreachable <- function() {
+  abort("Unreachable")
+}

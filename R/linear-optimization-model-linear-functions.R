@@ -1,245 +1,266 @@
-#' Internal linear function classes and methods
-#' @rdname linear-functions
-#' @keywords internal
-setClass("OmprLinearVariable", slots = c(column_idx = "numeric"))
-
-#' @rdname linear-functions
-setClass("AbstractLinearFunction")
-
-#' @rdname linear-functions
-setClass("LinearTerm", slots = c(
-  coefficient = "numeric", variable = "OmprLinearVariable"
-), contains = "AbstractLinearFunction")
-
-#' @rdname linear-functions
-setClass("LinearFunction", slots = c(
-  terms = "list",
-  constant = "numeric"
-), contains = "AbstractLinearFunction")
-
 new_linear_variable <- function(column_idx) {
-  stopifnot(length(column_idx) == 1, !is.na(column_idx), column_idx >= 1)
-  new("OmprLinearVariable", column_idx = column_idx)
+  structure(list(column_idx = column_idx), class = "OmprLinearVariable")
+}
+
+new_variable_collection <- function(map = map) {
+  structure(
+    list(map = map),
+    class = "OmprLinearVariableCollection"
+  )
 }
 
 new_linear_term <- function(variable, coefficient) {
-  stopifnot(length(coefficient) == 1, !is.na(coefficient))
-  stopifnot(inherits(variable, "OmprLinearVariable"))
-  new("LinearTerm", variable = variable, coefficient = coefficient)
+  structure(
+    list(variable = variable, coefficient = coefficient),
+    class = c("LinearTerm", "AbstractLinearFunction")
+  )
 }
 
 new_linear_function <- function(terms, constant) {
-  stopifnot(length(constant) == 1, !is.na(constant))
-  stopifnot(
-    all(
-      vapply(terms, function(term) {
-        inherits(term, "LinearTerm")
-      }, logical(1L))
+  map <- fastmap()
+  if (length(terms) > 0) {
+    terms <- setNames(
+      terms,
+      vapply(terms, function(x) {
+        as.character(x$variable$column_idx)
+      }, character(1))
     )
+    map$mset(.list = terms)
+  }
+  owner <- new_ownership_id()
+  map$set("owner", owner)
+  structure(
+    list(terms = map, constant = constant, owner = owner),
+    class = c("LinearFunction", "AbstractLinearFunction")
   )
-  # TODO: make it a typed list, maybe
-  new("LinearFunction", terms = terms, constant = constant)
 }
 
-# Linear Terms
-#' @rdname linear-functions
-#' @param e1 a parameter
-#' @param e2 a parameter
-setMethod(
-  "*", signature(e1 = "LinearTerm", e2 = "numeric"),
-  function(e1, e2) {
-    e1@coefficient <- e1@coefficient * e2
-    e1
+
+# Re. ownership counter
+# LinearFunctions have a reference to a map, which is mutable and by reference
+# In the unexpected event that within the `MIPModel` framework two linear
+# functions access/modify the same referenced map, a run time error is thrown.
+# This is achieved by tracking ownership of each map. In order to implement
+# the ownership check, we need a stateful counter of "owners". That counter
+# is currently part of the package namespace.
+.OwnerShipManager <- new.env(hash = FALSE, size = 1L)
+.OwnerShipManager$counter <- 1
+new_ownership_id <- function() {
+  .OwnerShipManager$counter <- .OwnerShipManager$counter + 1
+}
+
+#' @export
+`+.AbstractLinearFunction` <- function(x, y) {
+  if (inherits(x, "LinearTerm")) {
+    add.LinearTerm(x, y)
+  } else if (inherits(x, "LinearFunction")) {
+    add.LinearFunction(x, y)
+  } else if (is.numeric(x)) {
+    add.numeric(x, y)
+  } else {
+    not_supported()
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "*", signature(e1 = "numeric", e2 = "LinearTerm"),
-  function(e1, e2) e2 * e1
-)
-
-#' @rdname linear-functions
-setMethod(
-  "/", signature(e1 = "LinearTerm", e2 = "numeric"),
-  function(e1, e2) {
-    e1@coefficient <- e1@coefficient / e2
-    e1
+add.LinearFunction <- function(x, y) {
+  if (missing(y)) {
+    x
+  } else if (inherits(y, "LinearTerm")) {
+    x + (y + 0)
+  } else if (inherits(y, "LinearFunction")) {
+    x$constant <- x$constant + y$constant
+    new_terms <- merge_terms(x, y)
+    x$terms <- new_terms
+    update_owner(x)
+  } else if (is.numeric(y)) {
+    x$constant <- x$constant + y
+    x
+  } else {
+    not_supported()
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearTerm", e2 = "numeric"),
-  function(e1, e2) {
-    new_linear_function(terms = list(e1), constant = e2)
+add.LinearTerm <- function(x, y) {
+  if (missing(y)) {
+    x
+  } else if (inherits(y, "LinearTerm")) {
+    (x + 0) + (y + 0)
+  } else if (inherits(y, "LinearFunction")) {
+    y + x
+  } else if (is.numeric(y)) {
+    new_linear_function(list(x), y)
+  } else {
+    not_supported()
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "numeric", e2 = "LinearTerm"),
-  function(e1, e2) e2 + e1
-)
-
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearTerm", e2 = "missing"),
-  function(e1, e2) {
-    e1
+add.numeric <- function(x, y) {
+  if (missing(y)) {
+    x
+  } else if (inherits(y, "LinearTerm")) {
+    new_linear_function(list(y), x)
+  } else if (inherits(y, "LinearFunction")) {
+    y$constant <- y$constant + x
+    y
+  } else if (is.numeric(y)) {
+    unreachable() # nocovr
+  } else {
+    not_supported()
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearTerm", e2 = "LinearTerm"),
-  function(e1, e2) {
-    new_linear_function(terms = list(e1, e2), constant = 0)
+#' @export
+`-.AbstractLinearFunction` <- function(x, y) {
+  if (missing(y)) {
+    -1 * x
+  } else {
+    x + (-1 * y)
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearTerm", e2 = "missing"),
-  function(e1, e2) {
-    e1@coefficient <- -1 * e1@coefficient
-    e1
+#' @export
+`*.AbstractLinearFunction` <- function(x, y) {
+  if (inherits(x, "LinearTerm")) {
+    multiply.LinearTerm(x, y)
+  } else if (inherits(x, "LinearFunction")) {
+    multiply.LinearFunction(x, y)
+  } else if (is.numeric(x)) {
+    multiply.numeric(x, y)
+  } else {
+    not_supported()
   }
-)
+}
 
-# Linear Functions
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearFunction", e2 = "numeric"),
-  function(e1, e2) {
-    e1@constant <- e1@constant + e2
-    e1
+multiply.LinearTerm <- function(x, y) {
+  if (inherits(y, "LinearTerm")) {
+    abort("Quadratic expression are not supported")
+  } else if (inherits(y, "LinearFunction")) {
+    abort("Quadratic expression are not supported")
+  } else if (is.numeric(y)) {
+    x$coefficient <- x$coefficient * y
+    x
+  } else {
+    not_supported()
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "numeric", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e2 + e1
+multiply.LinearFunction <- function(x, y) {
+  if (inherits(y, "LinearTerm")) {
+    abort("Quadratic expression are not supported")
+  } else if (inherits(y, "LinearFunction")) {
+    abort("Quadratic expression are not supported")
+  } else if (is.numeric(y)) {
+    x$constant <- x$constant * y
+    update_terms(x, function(value) value * y)
+    update_owner(x)
+  } else {
+    not_supported()
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearFunction", e2 = "LinearTerm"),
-  function(e1, e2) {
-    e1@terms <- c(e1@terms, list(e2))
-    e1
+multiply.numeric <- function(x, y) {
+  if (inherits(y, "LinearTerm")) {
+    y$coefficient <- y$coefficient * x
+    y
+  } else if (inherits(y, "LinearFunction")) {
+    y$constant <- y$constant * x
+    update_terms(y, function(value) value * x)
+    update_owner(y)
+  } else {
+    not_supported()
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearTerm", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e2 + e1
+#' @export
+`/.AbstractLinearFunction` <- function(x, y) {
+  if (inherits(x, "LinearTerm")) {
+    divide.LinearTerm(x, y)
+  } else if (inherits(x, "LinearFunction")) {
+    divide.LinearFunction(x, y)
+  } else {
+    not_supported()
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "+", signature(e1 = "LinearFunction", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e1@terms <- c(e1@terms, e2@terms)
-    e1@constant <- e1@constant + e2@constant
-    e1
+divide.LinearFunction <- function(x, y) {
+  if (is.numeric(y)) {
+    x$constant <- x$constant / y
+    update_terms(x, function(value) value / y)
+    update_owner(x)
+  } else {
+    abort("Operation not supported")
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearFunction", e2 = "numeric"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
+divide.LinearTerm <- function(x, y) {
+  if (is.numeric(y)) {
+    x$coefficient <- x$coefficient / y
+    x
+  } else {
+    abort("Operation not supported")
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "numeric", e2 = "LinearFunction"),
-  function(e1, e2) {
-    (-1 * e2) + e1
+update_terms <- function(linear_fun, update_fun) {
+  terms <- linear_fun$terms
+  # we modify linear_fun's terms, so make sure we are the owner
+  check_ownership(linear_fun)
+  for (key in terms$keys()) {
+    if (key == "owner") {
+      next
+    }
+    terms$set(key, update_fun(terms$get(key)))
   }
-)
+  invisible(linear_fun)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearTerm", e2 = "LinearTerm"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
+merge_terms <- function(linear_fun1, linear_fun2) {
+  terms1 <- linear_fun1$terms
+  terms2 <- linear_fun2$terms
+  # we modify linear_fun1's terms, so make sure we are the owner
+  # also for we check ownership of linear_fun2 as well, why not
+  check_ownership(linear_fun1)
+  check_ownership(linear_fun2)
+  for (key in terms2$keys()) {
+    if (key == "owner") {
+      next
+    }
+    if (terms1$has(key)) {
+      term1 <- terms1$get(key)
+      term2 <- terms2$get(key)
+      term1$coefficient <- term1$coefficient + term2$coefficient
+      terms1$set(key, term1)
+    } else {
+      terms1$set(key, terms2$get(key))
+    }
   }
-)
+  terms1
+}
 
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "numeric", e2 = "LinearTerm"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
-  }
-)
+terms_list <- function(linear_function) {
+  check_ownership(linear_function)
+  x <- linear_function$terms$as_list()
+  x[names(x) != "owner"]
+}
 
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearFunction", e2 = "LinearTerm"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
-  }
-)
+update_owner <- function(fun) {
+  fun$owner <- new_ownership_id()
+  fun$terms$set("owner", fun$owner)
+  fun
+}
 
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearTerm", e2 = "LinearFunction"),
-  function(e1, e2) {
-    (-1 * e2) + e1
+check_ownership <- function(linear_function) {
+  if (linear_function$owner != linear_function$terms$get("owner")) {
+    abort(
+      paste(
+        "A linear functions is used without being the owner of the",
+        "underlying data structure. This is a bug. Please report that",
+        "as an issue."
+      )
+    )
   }
-)
+}
 
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearFunction", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e1 + (-1 * e2)
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "-", signature(e1 = "LinearFunction", e2 = "LinearFunction"),
-  function(e1, e2) {
-    (-1 * e2) + e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "*", signature(e1 = "LinearFunction", e2 = "numeric"),
-  function(e1, e2) {
-    e1@constant <- e1@constant * e2
-    e1@terms <- lapply(e1@terms, function(x) x * e2)
-    e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "*", signature(e1 = "numeric", e2 = "LinearFunction"),
-  function(e1, e2) {
-    e2 * e1
-  }
-)
-
-#' @rdname linear-functions
-setMethod(
-  "/", signature(e1 = "LinearFunction", e2 = "numeric"),
-  function(e1, e2) {
-    e1@constant <- e1@constant / e2
-    e1@terms <- lapply(e1@terms, function(x) x / e2)
-    e1
-  }
-)
+not_supported <- function() {
+  abort("Operation not supported")
+}

@@ -241,7 +241,7 @@ test_that("get_solution_ is supported (though deprecated)", {
       )
     )
   )
-  res <- get_solution_(solution, ~x[i, j])
+  res <- get_solution_(solution, ~ x[i, j])
   expect_equal(res$value, c(2, 1, 2, 1, 2, 1))
   expect_equal(res$i, c(10, 11, 10, 11, 10, 11))
   expect_equal(res$j, c(10, 10, 11, 11, 12, 12))
@@ -279,10 +279,12 @@ test_that("row and column duals", {
       rep.int(1, length(letters)),
       paste0("x[", letters, "]")
     ),
-    solution_column_duals <- function() setNames(
-      rep.int(42, length(letters)),
-      paste0("x[", letters, "]")
-    ),
+    solution_column_duals <- function() {
+      setNames(
+        rep.int(42, length(letters)),
+        paste0("x[", letters, "]")
+      )
+    },
     solution_row_duals <- function() rep.int(48, length(letters))
   )
   expect_equal(
