@@ -1,5 +1,10 @@
 # ompr (development version)
 
+## Bugfixes
+
+* Fixed a bug where `get_solution` returns incorrect solutions on R
+  version `< 4`. Affected package versions are `1.0.0` and `1.0.1`. (#404)
+
 ## General changes
 
 * Model-building is now significantly faster
