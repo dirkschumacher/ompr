@@ -73,7 +73,10 @@ extract_solution <- function(model, solution_vector, expr) {
       var_values <- solution_vector[grepl(solution_names,
         pattern = instance_pattern
       )]
-      result_df <- as.data.frame(var_index[, seq_len(ncol(var_index))[-1]])
+      result_df <- as.data.frame(
+        var_index[, seq_len(ncol(var_index))[-1]],
+        stringsAsFactors = FALSE
+      )
       for (x in colnames(result_df)) {
         is_all_integer <- all(grepl("\\d+", result_df[[x]]))
         if (!is.na(is_all_integer) && is_all_integer) {

@@ -61,7 +61,10 @@ describe("objective_function()", {
       add_constraint(sum_expr(x[i, j], i = 1:n, j = 1:n) <= 10)
     result <- objective_function(model)
     expected <- Matrix::sparseVector(rep.int(1, n^2), seq_len(n^2), n^2)
-    expect_equal(expected, result$solution)
+    expect_s4_class(result$solution, "dsparseVector")
+    expect_equal(result$solution@length, expected@length)
+    expect_setequal(result$solution@x, expected@x)
+    expect_setequal(result$solution@i, expected@i)
   })
 })
 
