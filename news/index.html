@@ -56,6 +56,10 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ompr-development-version">ompr (development version)<a class="anchor" aria-label="anchor" href="#ompr-development-version"></a></h2>
 <div class="section level3">
+<h3 id="bugfixes-development-version">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-development-version"></a></h3>
+<ul><li>Fixed a bug where <code>get_solution</code> returns incorrect solutions on R version <code>&lt; 4</code>. Affected package versions are <code>1.0.0</code> and <code>1.0.1</code>. (<a href="https://github.com/dirkschumacher/ompr/issues/404" class="external-link">#404</a>)</li>
+</ul></div>
+<div class="section level3">
 <h3 id="general-changes-development-version">General changes<a class="anchor" aria-label="anchor" href="#general-changes-development-version"></a></h3>
 <ul><li>Model-building is now significantly faster</li>
 <li>Constraints without variables that evaluate to <code>TRUE</code> are not added to the model, as they are always satisfied. Likewise, constraints that evaluate to <code>FALSE</code> throw an error. Previously specifying a constraint without a variable would have caused a run time error.</li>
