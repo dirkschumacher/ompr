@@ -12,6 +12,8 @@
   model, as they are always satisfied. Likewise, constraints that evaluate to
   `FALSE` throw an error. Previously specifying a constraint without
   a variable would have caused a run time error.
+* The minimum required R version is now `3.4` as {ompr.roi} has the same
+  minimum R version.
 
 # ompr 1.0.1
 
