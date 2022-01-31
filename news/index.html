@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">ompr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,15 +54,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="ompr-development-version">ompr (development version)<a class="anchor" aria-label="anchor" href="#ompr-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.2" id="ompr-102">ompr 1.0.2<a class="anchor" aria-label="anchor" href="#ompr-102"></a></h2><p class="text-muted">CRAN release: 2022-01-31</p>
 <div class="section level3">
-<h3 id="bugfixes-development-version">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-development-version"></a></h3>
-<ul><li>Fixed a bug where <code>get_solution</code> returns incorrect solutions on R version <code>&lt; 4</code>. Affected package versions are <code>1.0.0</code> and <code>1.0.1</code>. (<a href="https://github.com/dirkschumacher/ompr/issues/404" class="external-link">#404</a>)</li>
+<h3 id="bugfixes-1-0-2">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-1-0-2"></a></h3>
+<ul><li>Fixed a bug where <code>get_solution</code> returns incorrect results on R version <code>&lt; 4</code>. Affected package versions are <code>1.0.0</code> and <code>1.0.1</code>. (<a href="https://github.com/dirkschumacher/ompr/issues/404" class="external-link">#404</a>)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="general-changes-development-version">General changes<a class="anchor" aria-label="anchor" href="#general-changes-development-version"></a></h3>
+<h3 id="general-changes-1-0-2">General changes<a class="anchor" aria-label="anchor" href="#general-changes-1-0-2"></a></h3>
 <ul><li>Model-building is now significantly faster</li>
 <li>Constraints without variables that evaluate to <code>TRUE</code> are not added to the model, as they are always satisfied. Likewise, constraints that evaluate to <code>FALSE</code> throw an error. Previously specifying a constraint without a variable would have caused a run time error.</li>
+<li>The minimum required R version is now <code>3.4</code> as {ompr.roi} has the same minimum R version.</li>
 </ul></div>
 </div>
     <div class="section level2">
