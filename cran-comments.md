@@ -1,6 +1,6 @@
 ## Test environments
 * local Mac OS install, R 4.1.2
-* ubuntu (on github actions/rhub), R release, oldrel, devel
+* ubuntu (on github actions/rhub), R release, oldrel, devel, 3.4
 * Windows (on github actions/win-builder), R release, devel
 
 ## R CMD check results
