@@ -90,7 +90,8 @@ extract_solution <- function(model, solution_vector, expr) {
 
       # at last, for backwards compatibility order by free vars
       ordering <- do.call(order, lapply(rev(free_vars), function(x) result_df[[x]]))
-      result_df <- result_df[ordering, ]
+      result_df <- result_df[ordering, , drop = FALSE]
+
       return(result_df)
     }
   } else {
