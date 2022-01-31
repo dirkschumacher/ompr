@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* Fixed a bug where `get_solution` returns incorrect solutions on R
+* Fixed a bug where `get_solution` returns incorrect results on R
   version `< 4`. Affected package versions are `1.0.0` and `1.0.1`. (#404)
 
 ## General changes
