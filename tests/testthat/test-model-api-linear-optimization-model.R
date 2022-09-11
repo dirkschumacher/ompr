@@ -281,3 +281,14 @@ test_that("bug github#266: reverting the index names fails", {
     )
   )
 })
+
+test_that("extract_constraints does not contain explicit 0 values", {
+  m <- MIPModel() %>%
+    add_variable(x) %>%
+    add_constraint(0 * x <= 1)
+  res <- extract_constraints(m)
+  expect_equal(
+    res$matrix@x,
+    numeric(0L)
+  )
+})

@@ -610,6 +610,11 @@ extract_constraints.linear_optimization_model <- function(model) {
   i_s <- unlist(lapply(matrix_coefs, function(x) x[[1]]))
   j_s <- unlist(lapply(matrix_coefs, function(x) x[[2]]))
   values <- unlist(lapply(matrix_coefs, function(x) x[[3]]))
+  # we filter out explicit 0 coefficient and make them implicit
+  nnzero <- values != 0
+  i_s <- i_s[nnzero]
+  j_s <- j_s[nnzero]
+  values <- values[nnzero]
   matrix <- sparseMatrix(
     i = i_s,
     j = j_s,
