@@ -1,5 +1,10 @@
 # ompr (development version)
 
+## Bugfixes
+
+* `extract_constraints()` previously created explicit 0 values in the sparse
+matrix. They are now implicit.
+
 # ompr 1.0.2
 
 ## Bugfixes
