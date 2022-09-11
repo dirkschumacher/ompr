@@ -8,8 +8,8 @@
 <meta name="description" content="ompr">
 <title>Modelling techniques in OMPR • ompr</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Modelling techniques in OMPR">
 <meta property="og:description" content="ompr">
@@ -72,7 +72,7 @@
 
 
 <script src="modelling_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Modelling techniques in OMPR</h1>
                         <h4 data-toc-skip class="author">Dirk Schumacher</h4>
             
@@ -100,12 +100,12 @@
 \]</span></p>
 <p>This is the <code>ompr</code> equivalent:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10</span>; <span class="va">W</span> <span class="op">&lt;-</span> <span class="fl">2</span>
-<span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>;<span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>, type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">v</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">w</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">W</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10</span>; <span class="va">W</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>;<span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>, type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">v</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">w</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">W</span><span class="op">)</span></span></code></pre></div>
 <p>The overall idea is to use modern R idioms to construct models like the one above as readable as possible directly in R. <code>ompr</code> will do the heavy lifting and transforms everything into matrices/vectors and pass it to your favorite solver.</p>
 </div>
 <div class="section level2">
@@ -113,67 +113,67 @@
 </h2>
 <p>Each function in <code>ompr</code> creates immutable copies of the models. In addition the function interface has been designed to work with <code>magrittr</code> pipes. You always start with an empty model and add components to it.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Mixed integer linear optimization problem</span>
-<span class="co">## Variables:</span>
-<span class="co">##   Continuous: 1 </span>
-<span class="co">##   Integer: 0 </span>
-<span class="co">##   Binary: 0 </span>
-<span class="co">## Model sense: maximize </span>
-<span class="co">## Constraints: 1</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Mixed integer linear optimization problem</span></span>
+<span><span class="co">## Variables:</span></span>
+<span><span class="co">##   Continuous: 1 </span></span>
+<span><span class="co">##   Integer: 0 </span></span>
+<span><span class="co">##   Binary: 0 </span></span>
+<span><span class="co">## Model sense: maximize </span></span>
+<span><span class="co">## Constraints: 1</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="variable-types">Variable types<a class="anchor" aria-label="anchor" href="#variable-types"></a>
 </h2>
 <p>Variables can be of type <code>continuous</code>, <code>integer</code> or <code>binary</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="st">"integer"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">y</span>, type <span class="op">=</span> <span class="st">"continuous"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">z</span>, type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Mixed integer linear optimization problem</span>
-<span class="co">## Variables:</span>
-<span class="co">##   Continuous: 1 </span>
-<span class="co">##   Integer: 1 </span>
-<span class="co">##   Binary: 1 </span>
-<span class="co">## No objective function. </span>
-<span class="co">## Constraints: 0</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="st">"integer"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">y</span>, type <span class="op">=</span> <span class="st">"continuous"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">z</span>, type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Mixed integer linear optimization problem</span></span>
+<span><span class="co">## Variables:</span></span>
+<span><span class="co">##   Continuous: 1 </span></span>
+<span><span class="co">##   Integer: 1 </span></span>
+<span><span class="co">##   Binary: 1 </span></span>
+<span><span class="co">## No objective function. </span></span>
+<span><span class="co">## Constraints: 0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="variable-bounds">Variable bounds<a class="anchor" aria-label="anchor" href="#variable-bounds"></a>
 </h2>
 <p>Variables can have lower and upper bounds.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span>, lb <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">y</span>, lb <span class="op">=</span> <span class="fl">5</span>, ub <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Mixed integer linear optimization problem</span>
-<span class="co">## Variables:</span>
-<span class="co">##   Continuous: 2 </span>
-<span class="co">##   Integer: 0 </span>
-<span class="co">##   Binary: 0 </span>
-<span class="co">## No objective function. </span>
-<span class="co">## Constraints: 0</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span>, lb <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">y</span>, lb <span class="op">=</span> <span class="fl">5</span>, ub <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Mixed integer linear optimization problem</span></span>
+<span><span class="co">## Variables:</span></span>
+<span><span class="co">##   Continuous: 2 </span></span>
+<span><span class="co">##   Integer: 0 </span></span>
+<span><span class="co">##   Binary: 0 </span></span>
+<span><span class="co">## No objective function. </span></span>
+<span><span class="co">## Constraints: 0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="indexed-variables">Indexed variables<a class="anchor" aria-label="anchor" href="#indexed-variables"></a>
 </h2>
 <p>Often when you develop a complex model you work with indexed variables. This is an important concept <code>ompr</code> supports.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>  <span class="co"># creates 10 decision variables</span>
-  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Mixed integer linear optimization problem</span>
-<span class="co">## Variables:</span>
-<span class="co">##   Continuous: 10 </span>
-<span class="co">##   Integer: 0 </span>
-<span class="co">##   Binary: 0 </span>
-<span class="co">## Model sense: maximize </span>
-<span class="co">## Constraints: 1</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>  <span class="co"># creates 10 decision variables</span></span>
+<span>  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Mixed integer linear optimization problem</span></span>
+<span><span class="co">## Variables:</span></span>
+<span><span class="co">##   Continuous: 10 </span></span>
+<span><span class="co">##   Integer: 0 </span></span>
+<span><span class="co">##   Binary: 0 </span></span>
+<span><span class="co">## Model sense: maximize </span></span>
+<span><span class="co">## Constraints: 1</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="summation-over-variables">Summation over variables<a class="anchor" aria-label="anchor" href="#summation-over-variables"></a>
@@ -181,88 +181,88 @@
 <p>If you have indexed variables then you often want to sum over a subset of variables.</p>
 <p>The following code creates a model with three decision variables <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, <span class="math inline">\(x_3\)</span>. An objective function <span class="math inline">\(\sum_i x_i\)</span> and one constraint <span class="math inline">\(\sum_i x_i \leq 10\)</span>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Mixed integer linear optimization problem</span>
-<span class="co">## Variables:</span>
-<span class="co">##   Continuous: 3 </span>
-<span class="co">##   Integer: 0 </span>
-<span class="co">##   Binary: 0 </span>
-<span class="co">## Model sense: maximize </span>
-<span class="co">## Constraints: 1</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Mixed integer linear optimization problem</span></span>
+<span><span class="co">## Variables:</span></span>
+<span><span class="co">##   Continuous: 3 </span></span>
+<span><span class="co">##   Integer: 0 </span></span>
+<span><span class="co">##   Binary: 0 </span></span>
+<span><span class="co">## Model sense: maximize </span></span>
+<span><span class="co">## Constraints: 1</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="quantifiers">Quantifiers<a class="anchor" aria-label="anchor" href="#quantifiers"></a>
 </h2>
 <p><code>add_variable</code>, <code>add_constraint</code>, <code>set_bounds</code>, <code>sum_over</code> all support a common quantifier interface that also supports filter expression. A more complex example will show what that means.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="co"># Create x_{i, j} variables for all combinations of i and j where</span>
-  <span class="co"># i = 1:10 and j = 1:10.</span>
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"binary"</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  
-  <span class="co"># add a y_i variable for all i between 1 and 10 with i mod 2 = 0</span>
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"binary"</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="va">i</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  
-  <span class="co"># we maximize all x_{i,j} where i = j + 1</span>
-  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="va">i</span> <span class="op">==</span> <span class="va">j</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  
-  <span class="co"># for each i between 1 and 10 with i mod 2 = 0</span>
-  <span class="co"># we add a constraint \sum_j x_{i,j}</span>
-  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">1</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="va">i</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  
-  <span class="co"># of course you can leave out filters or add more than 1</span>
-  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">2</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> </code></pre></div>
-<pre><code><span class="co">## Mixed integer linear optimization problem</span>
-<span class="co">## Variables:</span>
-<span class="co">##   Continuous: 0 </span>
-<span class="co">##   Integer: 0 </span>
-<span class="co">##   Binary: 105 </span>
-<span class="co">## Model sense: maximize </span>
-<span class="co">## Constraints: 15</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="co"># Create x_{i, j} variables for all combinations of i and j where</span></span>
+<span>  <span class="co"># i = 1:10 and j = 1:10.</span></span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"binary"</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  </span>
+<span>  <span class="co"># add a y_i variable for all i between 1 and 10 with i mod 2 = 0</span></span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"binary"</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="va">i</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  </span>
+<span>  <span class="co"># we maximize all x_{i,j} where i = j + 1</span></span>
+<span>  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="va">i</span> <span class="op">==</span> <span class="va">j</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  </span>
+<span>  <span class="co"># for each i between 1 and 10 with i mod 2 = 0</span></span>
+<span>  <span class="co"># we add a constraint \sum_j x_{i,j}</span></span>
+<span>  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">1</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="va">i</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  </span>
+<span>  <span class="co"># of course you can leave out filters or add more than 1</span></span>
+<span>  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">2</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> </span></code></pre></div>
+<pre><code><span><span class="co">## Mixed integer linear optimization problem</span></span>
+<span><span class="co">## Variables:</span></span>
+<span><span class="co">##   Continuous: 0 </span></span>
+<span><span class="co">##   Integer: 0 </span></span>
+<span><span class="co">##   Binary: 105 </span></span>
+<span><span class="co">## Model sense: maximize </span></span>
+<span><span class="co">## Constraints: 15</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="special-bounds-on-a-subset-of-variables">Special bounds on a subset of variables<a class="anchor" aria-label="anchor" href="#special-bounds-on-a-subset-of-variables"></a>
 </h2>
 <p>Imagine you want to model a matching problem with a single binary decision variable <span class="math inline">\(x_{i,j}\)</span> that is <span class="math inline">\(1\)</span> iff object <span class="math inline">\(i\)</span> is matched to object <span class="math inline">\(j\)</span>. One constraint would be to allow matches only if <span class="math inline">\(i \neq j\)</span>. This can be modeled by a constraint or by selectively changing bounds on variables. The latter approach can be used by solvers to improve the solution process.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, 
-               type <span class="op">=</span> <span class="st">"integer"</span>, lb <span class="op">=</span> <span class="fl">0</span>, ub <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="fl">0</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  
-   <span class="co"># this sets the ub to 0 without adding new constraints</span>
-  <span class="fu"><a href="../reference/set_bounds.html">set_bounds</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">i</span><span class="op">]</span> <span class="op">&lt;=</span> <span class="fl">0</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Mixed integer linear optimization problem</span>
-<span class="co">## Variables:</span>
-<span class="co">##   Continuous: 0 </span>
-<span class="co">##   Integer: 100 </span>
-<span class="co">##   Binary: 0 </span>
-<span class="co">## Model sense: maximize </span>
-<span class="co">## Constraints: 10</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, </span>
+<span>               type <span class="op">=</span> <span class="st">"integer"</span>, lb <span class="op">=</span> <span class="fl">0</span>, ub <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="fl">0</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  </span>
+<span>   <span class="co"># this sets the ub to 0 without adding new constraints</span></span>
+<span>  <span class="fu"><a href="../reference/set_bounds.html">set_bounds</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">i</span><span class="op">]</span> <span class="op">&lt;=</span> <span class="fl">0</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Mixed integer linear optimization problem</span></span>
+<span><span class="co">## Variables:</span></span>
+<span><span class="co">##   Continuous: 0 </span></span>
+<span><span class="co">##   Integer: 100 </span></span>
+<span><span class="co">##   Binary: 0 </span></span>
+<span><span class="co">## Model sense: maximize </span></span>
+<span><span class="co">## Constraints: 10</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="external-model-parameters">External model parameters<a class="anchor" aria-label="anchor" href="#external-model-parameters"></a>
 </h2>
 <p>Of course you will need external parameters for your models. You can reuse any variable defined in your R environment within the MIP Model.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># number of our variables</span>
-<span class="va">costs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="va">n</span>, lambda <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="co"># a cost vector</span>
-<span class="va">max_elements</span> <span class="op">&lt;-</span> <span class="fl">3</span>
-<span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"binary"</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">costs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">max_elements</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Mixed integer linear optimization problem</span>
-<span class="co">## Variables:</span>
-<span class="co">##   Continuous: 0 </span>
-<span class="co">##   Integer: 0 </span>
-<span class="co">##   Binary: 5 </span>
-<span class="co">## Model sense: maximize </span>
-<span class="co">## Constraints: 1</span></code></pre>
+<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># number of our variables</span></span>
+<span><span class="va">costs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="va">n</span>, lambda <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="co"># a cost vector</span></span>
+<span><span class="va">max_elements</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
+<span><span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"binary"</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">costs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">max_elements</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Mixed integer linear optimization problem</span></span>
+<span><span class="co">## Variables:</span></span>
+<span><span class="co">##   Continuous: 0 </span></span>
+<span><span class="co">##   Integer: 0 </span></span>
+<span><span class="co">##   Binary: 5 </span></span>
+<span><span class="co">## Model sense: maximize </span></span>
+<span><span class="co">## Constraints: 1</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="extract-model-solutions">Extract model solutions<a class="anchor" aria-label="anchor" href="#extract-model-solutions"></a>
@@ -270,57 +270,57 @@
 <p>Once you have a model, you pass it to a solver and get back a solutions. The main interface to extract variable values from a solution is the function <code>get_solution</code>. It returns a data.frame for indexed variable and thus makes it easy to subsequently use the value.</p>
 <p>We use <code>ROI</code> and <code>GLPK</code> to solve it.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://roi.r-forge.r-project.org/" class="external-link">ROI</a></span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## ROI: R Optimization Infrastructure</span></code></pre>
-<pre><code><span class="co">## Registered solver plugins: nlminb, glpk.</span></code></pre>
-<pre><code><span class="co">## Default solver: auto.</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://roi.r-forge.r-project.org/" class="external-link">ROI</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## ROI: R Optimization Infrastructure</span></span></code></pre>
+<pre><code><span><span class="co">## Registered solver plugins: nlminb, glpk.</span></span></code></pre>
+<pre><code><span><span class="co">## Default solver: auto.</span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://roi.r-forge.r-project.org/" class="external-link">ROI.plugin.glpk</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dirkschumacher/ompr.roi" class="external-link">ompr.roi</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://roi.r-forge.r-project.org/" class="external-link">ROI.plugin.glpk</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dirkschumacher/ompr.roi" class="external-link">ompr.roi</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span>
-<span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">n</span>, <span class="fl">5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="va">n</span>, nrow <span class="op">=</span> <span class="va">n</span><span class="op">)</span>
-<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>, type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">weights</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/solve_model.html">solve_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ompr.roi/man/with_ROI.html" class="external-link">with_ROI</a></span><span class="op">(</span><span class="st">"glpk"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## &lt;SOLVER MSG&gt;  ----</span>
-<span class="co">## GLPK Simplex Optimizer, v4.65</span>
-<span class="co">## 5 rows, 25 columns, 25 non-zeros</span>
-<span class="co">##       0: obj =  -0.000000000e+00 inf =   5.000e+00 (5)</span>
-<span class="co">##       5: obj =   2.400000000e+01 inf =   0.000e+00 (0)</span>
-<span class="co">## *    14: obj =   4.400000000e+01 inf =   0.000e+00 (0)</span>
-<span class="co">## OPTIMAL LP SOLUTION FOUND</span>
-<span class="co">## GLPK Integer Optimizer, v4.65</span>
-<span class="co">## 5 rows, 25 columns, 25 non-zeros</span>
-<span class="co">## 25 integer variables, all of which are binary</span>
-<span class="co">## Integer optimization begins...</span>
-<span class="co">## Long-step dual simplex will be used</span>
-<span class="co">## +    14: mip =     not found yet &lt;=              +inf        (1; 0)</span>
-<span class="co">## +    14: &gt;&gt;&gt;&gt;&gt;   4.400000000e+01 &lt;=   4.400000000e+01   0.0% (1; 0)</span>
-<span class="co">## +    14: mip =   4.400000000e+01 &lt;=     tree is empty   0.0% (0; 1)</span>
-<span class="co">## INTEGER OPTIMAL SOLUTION FOUND</span>
-<span class="co">## &lt;!SOLVER MSG&gt; ----</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">n</span>, <span class="fl">5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="va">n</span>, nrow <span class="op">=</span> <span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MIPModel.html">MIPModel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_variable.html">add_variable</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>, type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/set_objective.html">set_objective</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">weights</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_constraint.html">add_constraint</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_over.html">sum_over</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/solve_model.html">solve_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ompr.roi/man/with_ROI.html" class="external-link">with_ROI</a></span><span class="op">(</span><span class="st">"glpk"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;SOLVER MSG&gt;  ----</span></span>
+<span><span class="co">## GLPK Simplex Optimizer, v4.65</span></span>
+<span><span class="co">## 5 rows, 25 columns, 25 non-zeros</span></span>
+<span><span class="co">##       0: obj =  -0.000000000e+00 inf =   5.000e+00 (5)</span></span>
+<span><span class="co">##       5: obj =   2.400000000e+01 inf =   0.000e+00 (0)</span></span>
+<span><span class="co">## *    14: obj =   4.400000000e+01 inf =   0.000e+00 (0)</span></span>
+<span><span class="co">## OPTIMAL LP SOLUTION FOUND</span></span>
+<span><span class="co">## GLPK Integer Optimizer, v4.65</span></span>
+<span><span class="co">## 5 rows, 25 columns, 25 non-zeros</span></span>
+<span><span class="co">## 25 integer variables, all of which are binary</span></span>
+<span><span class="co">## Integer optimization begins...</span></span>
+<span><span class="co">## Long-step dual simplex will be used</span></span>
+<span><span class="co">## +    14: mip =     not found yet &lt;=              +inf        (1; 0)</span></span>
+<span><span class="co">## +    14: &gt;&gt;&gt;&gt;&gt;   4.400000000e+01 &lt;=   4.400000000e+01   0.0% (1; 0)</span></span>
+<span><span class="co">## +    14: mip =   4.400000000e+01 &lt;=     tree is empty   0.0% (0; 1)</span></span>
+<span><span class="co">## INTEGER OPTIMAL SOLUTION FOUND</span></span>
+<span><span class="co">## &lt;!SOLVER MSG&gt; ----</span></span></code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="va">result</span>, <span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##   variable i j value</span>
-<span class="co">## 1        x 4 1     1</span>
-<span class="co">## 2        x 2 2     1</span>
-<span class="co">## 3        x 5 3     1</span>
-<span class="co">## 4        x 3 4     1</span>
-<span class="co">## 5        x 1 5     1</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="va">result</span>, <span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   variable i j value</span></span>
+<span><span class="co">## 1        x 4 1     1</span></span>
+<span><span class="co">## 2        x 2 2     1</span></span>
+<span><span class="co">## 3        x 5 3     1</span></span>
+<span><span class="co">## 4        x 3 4     1</span></span>
+<span><span class="co">## 5        x 1 5     1</span></span></code></pre>
 <p>You can also fix certain indexes.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="va">result</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span>, <span class="va">j</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##   variable j value</span>
-<span class="co">## 1        x 1     0</span>
-<span class="co">## 2        x 2     1</span>
-<span class="co">## 3        x 3     0</span>
-<span class="co">## 4        x 4     0</span>
-<span class="co">## 5        x 5     0</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="va">result</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span>, <span class="va">j</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   variable j value</span></span>
+<span><span class="co">## 1        x 1     0</span></span>
+<span><span class="co">## 2        x 2     1</span></span>
+<span><span class="co">## 3        x 3     0</span></span>
+<span><span class="co">## 4        x 4     0</span></span>
+<span><span class="co">## 5        x 5     0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="feedback">Feedback<a class="anchor" aria-label="anchor" href="#feedback"></a>
@@ -340,7 +340,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>
