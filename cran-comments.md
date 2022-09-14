@@ -5,9 +5,5 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes
 
-## Important bugfix
-
-This is an important bugfix for R versions `< 4`, as otherwise
-non R 4 users might obtain wrong solutions.

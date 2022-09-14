@@ -1,5 +1,7 @@
 # ompr (development version)
 
+# ompr 1.0.3
+
 ## Bugfixes
 
 * `extract_constraints()` previously created explicit 0 values in the sparse
