@@ -3,6 +3,7 @@
 \docType{package}
 \name{ompr}
 \alias{ompr}
+\alias{ompr-package}
 \title{A package to Model (Mixed) Integer Programs}
 \description{
 A package to model (mixed) integer programs.
@@ -12,5 +13,16 @@ The model is solver-independent and thus offers the possibility
 to solve a model with different solvers. See the ompr
 website <https://dirkschumacher.github.io/ompr/> for more information, documentation and examples.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/dirkschumacher/ompr}
+  \item Report bugs at \url{https://github.com/dirkschumacher/ompr/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Dirk Schumacher \email{mail@dirk-schumacher.net}
+
+}
 \keyword{internal}
-\keyword{package}

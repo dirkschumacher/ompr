@@ -7,9 +7,7 @@
 #' to solve a model with different solvers. See the ompr
 #' website <https://dirkschumacher.github.io/ompr/> for more information, documentation and examples.
 #'
-#' @docType package
-#' @keywords package
 #' @keywords internal
 #' @importFrom methods new
 #' @name ompr
-NULL
+"_PACKAGE"
