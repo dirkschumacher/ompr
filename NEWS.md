@@ -1,4 +1,6 @@
-# ompr (development version)
+# ompr 1.0.4
+
+* Improves the package documentation to use the correct alias. No code changes.
 
 # ompr 1.0.3
 
