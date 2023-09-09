@@ -25,7 +25,16 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: pkgdown, dplyr, ROI.plugin.glpk, ompr.roi, ggplot2, purrr, tidyr, ggrepel, viridis
+          extra-packages: |
+            any::pkgdown
+            any::dplyr
+            any::ROI.plugin.glpk
+            any::ompr.roi
+            any::ggplot2
+            any::purrr
+            any::tidyr
+            any::ggrepel
+            any::viridis
           needs: website
 
       - name: Deploy package
